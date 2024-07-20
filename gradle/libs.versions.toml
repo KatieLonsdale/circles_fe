@@ -16,6 +16,7 @@ retrofit = "2.11.0"
 retrofitGson = "2.9.0"
 retrofitLoggingInterceptor = "4.9.0"
 androidxSecurityCrypto = "1.0.0"
+bouncycastle = "1.69"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,9 @@ retrofit = {  module = "com.squareup.retrofit2:retrofit", name = "retrofit", ver
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", name = "retrofit-gson", version.ref = "retrofitGson"}
 retrofit-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", name = "retrofit-logging-interceptor", version.ref = "retrofitLoggingInterceptor"}
 androidx-security-crypto = { module = "androidx.security:security-crypto", name = "security-crypto", version.ref = "androidxSecurityCrypto"}
+kotlin-std-lib = { module = "org.jetbrains.kotlin:kotlin-stdlib", name = "kotlin-std-lib" }
+bouncycastle = { module = "org.bouncycastle:bcprov-jdk15on", name = "bouncycastle", version.ref = "bouncycastle" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
