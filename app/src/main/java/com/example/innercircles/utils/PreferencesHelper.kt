@@ -1,4 +1,4 @@
-package com.innercircles.utils
+package com.example.innercircles.utils
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -24,3 +24,6 @@ class PreferencesHelper(context: Context) {
         return sharedPreferences.getString(userIdKey, null)
     }
 }
+
+// TO DO:
+// Session Manager and Preferences Helper are redundant
