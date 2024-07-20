@@ -18,7 +18,7 @@ import retrofit2.Response
 import com.example.innercircles.api.RetrofitClient.apiService
 import com.example.innercircles.api.data.SignUpRequest
 import com.example.innercircles.api.data.SignUpResponse
-import com.innercircles.utils.PreferencesHelper
+import com.example.innercircles.utils.PreferencesHelper
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
