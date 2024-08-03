@@ -9,36 +9,50 @@ object SessionManager {
 
     private const val PREF_NAME = "UserSession"
     private lateinit var sharedPreferences: SharedPreferences
+    private var isInitialized = false
 
     fun init(context: Context) {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        if (!isInitialized) {
+            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 
-        sharedPreferences = EncryptedSharedPreferences.create(
-            PREF_NAME,
-            masterKeyAlias,
-            context,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+            sharedPreferences = EncryptedSharedPreferences.create(
+                PREF_NAME,
+                masterKeyAlias,
+                context,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+            isInitialized = true
+        }
+    }
+
+    private fun checkInitialization() {
+        if (!isInitialized) {
+            throw IllegalStateException("SessionManager is not initialized. Call init() once in your Application class.")
+        }
     }
 
     fun saveUserId(userId: String) {
+        checkInitialization()
         val editor = sharedPreferences.edit()
         editor.putString("userId", userId)
         editor.apply()
     }
 
     fun getUserId(): String? {
+        checkInitialization()
         return sharedPreferences.getString("userId", null)
     }
 
     fun saveToken(token: String) {
+        checkInitialization()
         val editor = sharedPreferences.edit()
         editor.putString("token", token)
         editor.apply()
     }
 
     fun getToken(): String? {
+        checkInitialization()
         return sharedPreferences.getString("token", null)
     }
 }
