@@ -1,5 +1,6 @@
 package com.example.innercircles
 
+import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.innercircles.api.RetrofitClient.apiService
 import com.example.innercircles.api.data.PostRequest
 import com.example.innercircles.api.data.PostRequestContent
@@ -23,12 +25,12 @@ import retrofit2.Response
 import com.example.innercircles.utils.UploadManager
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 
 class UploadActivity : AppCompatActivity() {
 
     private lateinit var mediaPickerLauncher: ActivityResultLauncher<Intent>
     private var selectedMediaUri: Uri? = null
-    private lateinit var uploadManager: UploadManager
     private lateinit var preferencesHelper: PreferencesHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +87,7 @@ class UploadActivity : AppCompatActivity() {
         val postRequest = PostRequest(caption, content)
 //        TODO: hard coding circle for now, need to add option to choose
         val call = apiService.createPost(userId, "1", postRequest)
+
         call.enqueue(object : Callback<PostResponse> {
             override fun onResponse(
                 call: Call<PostResponse>,
@@ -105,12 +108,22 @@ class UploadActivity : AppCompatActivity() {
         })
     }
 
-    private fun createPostRequestContent(mediaUri: Uri) : PostRequestContent {
-        val mediaFile = File(mediaUri.path!!);
-        val mediaBitmap = BitmapFactory.decodeFile(mediaFile.absolutePath);
-        val mediaByteArray = convertMediaToByteArray(mediaBitmap);
-//        just working for images right now
-        return PostRequestContent(mediaByteArray, null);
+    private fun createPostRequestContent(mediaUri: Uri): PostRequestContent? {
+        val contentResolver: ContentResolver = contentResolver
+
+        try {
+            val inputStream = contentResolver.openInputStream(mediaUri)
+            val byteArray = inputStream?.readBytes()
+
+            return if (byteArray != null) {
+                PostRequestContent(byteArray, null) // Currently handling only images
+            } else {
+                null
+            }
+        } catch (e: IOException) {
+            Log.e("Upload", "Error creating post request content", e)
+            return null
+        }
     }
 
     private fun convertMediaToByteArray(media: Bitmap): ByteArray {
