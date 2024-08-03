@@ -28,9 +28,12 @@ interface ApiService {
 
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")
-    fun getPosts(@Path("userId") userId: String,
+    fun getPostsForCircle(@Path("userId") userId: String,
                  @Path("circleId") circleId: String
     ): Call<List<PostResponse>>
+
+    @GET("/api/v0/users/{userId}/newsfeed")
+    fun getNewsfeed(@Path("userId") userId: String): Call<PostResponse>
 
     @POST("users/{authorId}/circles/{circleId}/posts")
     fun createPost(@Path("authorId") userId: String?,
