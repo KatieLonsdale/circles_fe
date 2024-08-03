@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.bouncycastle)
     implementation(libs.kotlin.std.lib)
+    implementation(libs.coil.kt)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
