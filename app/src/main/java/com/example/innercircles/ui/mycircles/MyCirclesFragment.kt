@@ -65,13 +65,13 @@ class MyCirclesFragment : Fragment() {
                             tvNoCircles.visibility = View.VISIBLE
 
                         }
-                    tvNoCircles.visibility = View.GONE
-                    val sortedCircles = fetchedCircles.sortedBy { it.attributes.name }
-                    val diffCallback = CircleDiffCallback(circleList, sortedCircles)
-                    val diffResult = DiffUtil.calculateDiff(diffCallback)
-                    circleList.clear()
-                    circleList.addAll(sortedCircles)
-                    diffResult.dispatchUpdatesTo(adapter)
+                        tvNoCircles.visibility = View.GONE
+                        val sortedCircles = fetchedCircles.sortedBy { it.attributes.name }
+                        val diffCallback = CircleDiffCallback(circleList, sortedCircles)
+                        val diffResult = DiffUtil.calculateDiff(diffCallback)
+                        circleList.clear()
+                        circleList.addAll(sortedCircles)
+                        diffResult.dispatchUpdatesTo(adapter)
                     }
                 } else {
                     // Handle error

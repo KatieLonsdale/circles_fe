@@ -24,6 +24,3 @@ class PreferencesHelper(context: Context) {
         return sharedPreferences.getString(userIdKey, null)
     }
 }
-
-// TO DO:
-// Session Manager and Preferences Helper are redundant
