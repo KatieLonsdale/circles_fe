@@ -5,8 +5,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
 
     <application
+        android:name=".CustomApplication"
         android:networkSecurityConfig="@xml/network_security_config_dev"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
