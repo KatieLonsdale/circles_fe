@@ -13,4 +13,14 @@
     <string name="new_password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up_submit">Sign Up</string>
+    <string name="create">Create</string>
+    <string name="upload_photo_or_video">Upload Photo or Video</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="upload_video">Upload Video</string>
+    <string name="add_a_caption">Add a caption</string>
+    <string name="back">Back</string>
+    <string name="submit">Submit</string>
+    <string name="upload">Upload</string>
+    <string name="image_view">image view</string>
+    <string name="add_comment">Add Comment</string>
 </resources>

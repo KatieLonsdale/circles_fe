@@ -7,19 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.innercircles.R
-import com.example.innercircles.SessionManager
 import com.example.innercircles.databinding.FragmentMyCirclesBinding
 import com.example.innercircles.api.RetrofitClient.apiService
 import com.example.innercircles.api.data.MyCirclesAdapter
 import com.example.innercircles.api.data.Circle
 import com.example.innercircles.api.data.CirclesResponse
 import com.example.innercircles.utils.CircleDiffCallback
-import com.innercircles.utils.PreferencesHelper
+import com.example.innercircles.utils.PreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -68,13 +65,13 @@ class MyCirclesFragment : Fragment() {
                             tvNoCircles.visibility = View.VISIBLE
 
                         }
-                    tvNoCircles.visibility = View.GONE
-                    val sortedCircles = fetchedCircles.sortedBy { it.attributes.name }
-                    val diffCallback = CircleDiffCallback(circleList, sortedCircles)
-                    val diffResult = DiffUtil.calculateDiff(diffCallback)
-                    circleList.clear()
-                    circleList.addAll(sortedCircles)
-                    diffResult.dispatchUpdatesTo(adapter)
+                        tvNoCircles.visibility = View.GONE
+                        val sortedCircles = fetchedCircles.sortedBy { it.attributes.name }
+                        val diffCallback = CircleDiffCallback(circleList, sortedCircles)
+                        val diffResult = DiffUtil.calculateDiff(diffCallback)
+                        circleList.clear()
+                        circleList.addAll(sortedCircles)
+                        diffResult.dispatchUpdatesTo(adapter)
                     }
                 } else {
                     // Handle error

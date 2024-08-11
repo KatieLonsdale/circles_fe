@@ -2,6 +2,7 @@ package com.example.innercircles
 
 import android.content.Intent
 import android.os.Bundle
+import android.se.omapi.Session
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -18,7 +19,7 @@ import retrofit2.Response
 import com.example.innercircles.api.RetrofitClient.apiService
 import com.example.innercircles.api.data.SignUpRequest
 import com.example.innercircles.api.data.SignUpResponse
-import com.innercircles.utils.PreferencesHelper
+import com.example.innercircles.SessionManager
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
@@ -32,7 +33,6 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var etSignUpPassword: EditText
     private lateinit var etConfirmPassword: EditText
     private lateinit var btnSignUp: Button
-    private lateinit var preferencesHelper: PreferencesHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +51,9 @@ class SignInActivity : AppCompatActivity() {
         btnSignUp = findViewById(R.id.btn_sign_up)
 
 
-        preferencesHelper = PreferencesHelper(this)
-
+        val userId = SessionManager.getUserId()
         // Check if user is already signed in
-        if (preferencesHelper.getUserId() != null) {
+        if (userId != null) {
             navigateToMainActivity()
             finish() // Close the sign-in activity
         }
@@ -84,7 +83,7 @@ class SignInActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val userId = response.body()?.data?.id
                     if (userId != null) {
-                        preferencesHelper.saveUserIdSecurely(userId)
+                        SessionManager.saveUserId(userId)
                         saveUserId(userId)
                         Toast.makeText(this@SignInActivity, "Sign in successful!", Toast.LENGTH_SHORT).show()
                         navigateToMainActivity()
@@ -122,7 +121,7 @@ class SignInActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val userId = response.body()?.data?.id
                     if (userId != null) {
-                        preferencesHelper.saveUserIdSecurely(userId)
+                        SessionManager.saveUserId(userId)
                         saveUserId(userId)
                         Toast.makeText(this@SignInActivity, "Sign in successful!", Toast.LENGTH_SHORT).show()
                         navigateToMainActivity()

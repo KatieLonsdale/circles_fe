@@ -1,4 +1,4 @@
-package com.innercircles.utils
+package com.example.innercircles.utils
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
