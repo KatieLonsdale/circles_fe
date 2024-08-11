@@ -48,6 +48,3 @@ coil-kt = { module = "io.coil-kt:coil", name = "coil-kt", version.ref = "coil"}
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
-
-
-
