@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.innercircles.ui.home.NewsfeedScreen
+import com.example.innercircles.ui.mycircles.MyCirclesScreen
 import com.example.innercircles.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,13 +68,6 @@ sealed class Screen(val route: String, val iconResourceId: Int) {
     object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
     object MyCircles : Screen("My Circles", R.drawable.ic_my_circles_black_24dp)
     object Notifications : Screen("Notifications", R.drawable.ic_notifications_black_24dp)
-}
-
-@Composable
-fun MyCirclesScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text("My Circles Screen", style = MaterialTheme.typography.headlineMedium)
-    }
 }
 
 @Composable
