@@ -23,4 +23,5 @@
     <string name="upload">Upload</string>
     <string name="image_view">image view</string>
     <string name="add_comment">Add Comment</string>
+    <string name="description">image loading</string>
 </resources>
