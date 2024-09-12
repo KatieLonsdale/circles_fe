@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -33,6 +34,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 }
 
@@ -53,8 +55,29 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.bouncycastle)
     implementation(libs.kotlin.std.lib)
-    implementation(libs.coil.kt)
+    implementation(libs.coil.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.compose.bom)
+    androidTestImplementation(libs.compose.bom)
+
+    // Material Design 3
+    implementation(libs.compose.material3)
+
+    // Android Studio Preview support
+    implementation(libs.compose.tooling.preview)
+    debugImplementation(libs.compose.debug.tooling)
+
+    // UI Tests
+    androidTestImplementation(libs.compose.test.junit)
+    debugImplementation(libs.compose.test.manifest)
+
+//    // Optional - Integration with activities
+    implementation(libs.compose.activity)
+//    // Optional - Integration with ViewModels
+    implementation(libs.compose.lifecycle.viewmodel)
+
+    implementation(libs.compose.navigation)
 }
