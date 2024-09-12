@@ -1,6 +1,8 @@
 package com.example.innercircles.api
 
 import com.example.innercircles.api.data.CirclesResponse
+import com.example.innercircles.api.data.CommentRequest
+import com.example.innercircles.api.data.CommentResponse
 import com.example.innercircles.api.data.PostRequest
 import com.example.innercircles.api.data.PostResponse
 import com.example.innercircles.api.data.SignInRequest
@@ -33,11 +35,19 @@ interface ApiService {
     ): Call<List<PostResponse>>
 
     @GET("/api/v0/users/{userId}/newsfeed")
-    fun getNewsfeed(@Path("userId") userId: String): Call<PostResponse>
+    fun getNewsfeed(@Path("userId") userId: String?): Call<PostResponse>
 
     @POST("users/{authorId}/circles/{circleId}/posts")
     fun createPost(@Path("authorId") userId: String?,
                    @Path("circleId") circleId: String?,
                    @Body postRequest: PostRequest
     ): Call<PostResponse>
+//    TODO: these should not be nullable
+
+    @POST("users/{userId}/circles/{circleId}/posts/{postsId}/comments")
+    fun createComment(@Path("userId") userId: String?,
+                      @Path("circleId") circleId: String,
+                      @Path("postsId") postsId: String,
+                      @Body commentRequest: CommentRequest
+    ): Call<CommentResponse>
 }
