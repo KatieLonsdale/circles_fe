@@ -22,20 +22,21 @@ import coil.request.ImageRequest
 import com.example.innercircles.R
 import com.example.innercircles.SampleData
 import com.example.innercircles.SessionManager
-import com.example.innercircles.api.RetrofitClient
+import com.example.innercircles.api.RetrofitClient.apiService
 import com.example.innercircles.api.data.Post
 import com.example.innercircles.api.data.PostResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+var posts by mutableStateOf(emptyList<Post>())
 @Composable
 fun NewsfeedScreen() {
-    var posts by remember { mutableStateOf<List<Post>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
+    val userId = SessionManager.getUserId()
 
     LaunchedEffect(Unit) {
-        posts = getPosts()  // Await the result of getPosts
+        getPosts(userId)  // Await the result of getPosts
         isLoading = false    // Set loading to false after fetching the posts
     }
 
@@ -91,25 +92,20 @@ fun PostCard(post: Post) {
     }
 }
 
-private fun getPosts(): List<Post> {
-    val userId = SessionManager.getUserId()
-    var postList = listOf<Post>()
-    RetrofitClient.apiService.getNewsfeed(userId).enqueue(object : Callback<PostResponse> {
+private fun getPosts(userId: String?) {
+    apiService.getNewsfeed(userId).enqueue(object : Callback<PostResponse> {
         override fun onResponse(call: Call<PostResponse>, response: Response<PostResponse>) {
             if (response.isSuccessful) {
-                postList = response.body()?.data ?: emptyList()
+                posts = response.body()?.data ?: emptyList()
             } else {
-                // Handle error
                 Log.e("MainActivity", "Failed to fetch newsfeed: ${response.errorBody()?.string()}")
             }
         }
 
         override fun onFailure(call: Call<PostResponse>, t: Throwable) {
-            // Handle failure
-            Log.e("MainActivity", "Error fetching posts", t)
+            Log.e("NewsfeedScreen", "Error fetching posts", t)
         }
     })
-    return postList
 }
 
 @Preview(showBackground = true)
