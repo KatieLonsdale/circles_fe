@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,12 +18,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.innercircles.ui.home.NewsfeedScreen
 import com.example.innercircles.ui.mycircles.MyCirclesScreen
 import com.example.innercircles.R
+import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+
+enum class InnerCirclesScreen {
+    Circle,
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
-
+fun MainScreen(
+    viewModel: CircleViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
+) {
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -52,14 +61,28 @@ fun MainScreen() {
             }
         }
     ) { innerPadding ->
+        val uiState by viewModel.uiState.collectAsState()
+
         NavHost(
+
             navController = navController,
             startDestination = Screen.Newsfeed.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Newsfeed.route) { NewsfeedScreen() }
-            composable(Screen.MyCircles.route) { MyCirclesScreen() }
+            composable(Screen.MyCircles.route) { MyCirclesScreen(
+                onCircleClick = {
+                    viewModel.setCurrentCircle(it)
+                    navController.navigate(InnerCirclesScreen.Circle.name)
+                }
+            ) }
             composable(Screen.Notifications.route) { NotificationsScreen() }
+//            routes without icons (not in nav bar)
+            composable(route = InnerCirclesScreen.Circle.name) {
+                CircleScreen(
+                    circleId = uiState.id
+                )
+            }
         }
     }
 }

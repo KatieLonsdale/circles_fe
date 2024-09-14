@@ -30,9 +30,9 @@ interface ApiService {
 
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")
-    fun getPostsForCircle(@Path("userId") userId: String,
+    fun getPostsForCircle(@Path("userId") userId: String?,
                  @Path("circleId") circleId: String
-    ): Call<List<PostResponse>>
+    ): Call<PostResponse>
 
     @GET("/api/v0/users/{userId}/newsfeed")
     fun getNewsfeed(@Path("userId") userId: String?): Call<PostResponse>
