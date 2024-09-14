@@ -23,7 +23,10 @@ import com.example.innercircles.R
 import com.example.innercircles.SampleData
 import com.example.innercircles.SessionManager
 import com.example.innercircles.api.RetrofitClient.apiService
+import com.example.innercircles.api.data.Attribute
+import com.example.innercircles.api.data.Circle
 import com.example.innercircles.api.data.Post
+import com.example.innercircles.api.data.PostAttributes
 import com.example.innercircles.api.data.PostResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -72,19 +75,20 @@ fun PostCard(post: Post) {
                     .build(),
                 error = painterResource(R.drawable.ic_image_error_24dp),
                 contentDescription = stringResource(R.string.description),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.border(BorderStroke(1.dp, Color.Black))
+                contentScale = ContentScale.Fit
             )
         }
 
         Spacer(modifier = Modifier.height(5.dp))
-
-        var textSize: Int
-        if(!hasMedia) { textSize = 25 } else { textSize = 15 }
+        val textSize: Int = if(!hasMedia) {
+            25
+        } else {
+            15
+        }
 
         Text(
             text = post.attributes.caption,
-            color = MaterialTheme.colorScheme.primary,
+            color = Color.DarkGray,
             fontSize = textSize.sp,
         )
 
@@ -98,7 +102,7 @@ private fun getPosts(userId: String?) {
             if (response.isSuccessful) {
                 posts = response.body()?.data ?: emptyList()
             } else {
-                Log.e("MainActivity", "Failed to fetch newsfeed: ${response.errorBody()?.string()}")
+                Log.e("NewsfeedScreen", "Failed to fetch newsfeed: ${response.errorBody()?.string()}")
             }
         }
 
