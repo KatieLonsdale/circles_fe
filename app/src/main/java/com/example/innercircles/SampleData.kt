@@ -187,7 +187,7 @@ object SampleData {
     val gson = Gson()
     val postResponse: PostResponse = gson.fromJson(jsonResponse, PostResponse::class.java)
 
-    val samplePosts: List<Post> = gson.fromJson(jsonResponse, PostResponse::class.java).data
+    private val samplePosts: List<Post> = gson.fromJson(jsonResponse, PostResponse::class.java).data
 
     fun returnSamplePosts(): List<Post> {
         return samplePosts
