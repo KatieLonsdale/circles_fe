@@ -1,12 +1,19 @@
 package com.example.innercircles.ui
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +52,7 @@ var circlePosts by mutableStateOf(emptyList<Post>())
 @Composable
 fun CircleScreen(
     circleId: String,
+    onClickBack: () -> Unit = {}
 ) {
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
@@ -56,15 +65,45 @@ fun CircleScreen(
     if (isLoading) {
         CircularProgressIndicator()
     } else {
-        DisplayPosts(circlePosts)
+        DisplayPosts(circlePosts, onClickBack)
     }
 }
 
 @Composable
-fun DisplayPosts(posts: List<Post>) {
-    LazyColumn {
-        items(posts) { post ->
-            PostCard(post)
+fun DisplayPosts(
+    posts: List<Post>,
+    onClickBack: () -> Unit,
+    ) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(16.dp)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    onClickBack()
+                },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Color.White
+                ),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
+                    contentDescription = "Back",
+                    modifier = Modifier.align(Alignment.TopStart),
+
+                    )
+            }
+        }
+
+        LazyColumn {
+            items(posts) { post ->
+                PostCard(post)
+            }
         }
     }
 }
@@ -126,9 +165,12 @@ private fun getPostsForCircle(circleId: String, userId: String?) {
 @Composable
 fun PreviewCircleScreen() {
     MaterialTheme {
-        Surface {
+        Surface{
             val posts = SampleData.returnSamplePosts()
-            DisplayPosts(posts)
+            DisplayPosts(
+                posts,
+                onClickBack = {}
+            )
         }
     }
 }

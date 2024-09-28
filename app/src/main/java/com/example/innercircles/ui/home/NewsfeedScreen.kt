@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,11 +87,22 @@ fun PostCard(post: Post) {
             15
         }
 
-        Text(
-            text = post.attributes.caption,
-            color = Color.DarkGray,
-            fontSize = textSize.sp,
-        )
+//        TODO: change newsfeed return to include author display name
+        Row{
+            Text(
+                text = "Author Name",
+                color = Color.DarkGray,
+                fontSize = textSize.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Text(
+                text = post.attributes.caption,
+                color = Color.DarkGray,
+                fontSize = textSize.sp,
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
     }

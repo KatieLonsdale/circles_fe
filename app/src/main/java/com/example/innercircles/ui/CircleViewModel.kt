@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 
 class CircleViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CircleUiState())
-    val uiState: StateFlow<CircleUiState> = _uiState.asStateFlow()
+    open val uiState: StateFlow<CircleUiState> = _uiState.asStateFlow()
 
     fun setCurrentCircle(circleId: String) {
         _uiState.update { currentState ->
