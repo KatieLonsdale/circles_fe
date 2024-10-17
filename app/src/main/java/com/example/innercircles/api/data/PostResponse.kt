@@ -8,6 +8,10 @@ data class PostResponse (
     @SerializedName("data") val data: List<Post>
 )
 
+data class NewPostResponse (
+    @SerializedName("data") val data: Post
+)
+
 @Parcelize
 data class Post(
     @SerializedName("id") val id: String,
@@ -23,7 +27,10 @@ data class PostAttributes(
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
     @SerializedName("contents") val contents: Contents,
-    @SerializedName("comments") val comments: Comments
+    @SerializedName("comments") val comments: Comments,
+    @SerializedName("author_display_name") val authorDisplayName: String,
+    @SerializedName("circle_id") val circleId: String,
+    @SerializedName("circle_name") val circleName: String,
 ) : Parcelable
 
 @Parcelize
@@ -53,15 +60,16 @@ data class Comments(
 @Parcelize
 data class Comment(
     @SerializedName("id") val id: String,
-    @SerializedName("type") val type: String,
     @SerializedName("attributes") val attributes: CommentAttributes
 ) : Parcelable
 
 @Parcelize
 data class CommentAttributes(
-    @SerializedName("id") val id: Int,
+    @SerializedName("id") val id: String,
     @SerializedName("comment_text") val commentText: String,
-    @SerializedName("author_id") val authorId: Int,
+    @SerializedName("author_id") val authorId: String,
     @SerializedName("created_at") val createdAt: String,
-    @SerializedName("author_display_name") val authorDisplayName: String
+    @SerializedName("updated_at") val updatedAt: String,
+    @SerializedName("author_display_name") val authorDisplayName: String,
+    @SerializedName("parent_comment_id") val parentCommentId: String?,
 ) : Parcelable
