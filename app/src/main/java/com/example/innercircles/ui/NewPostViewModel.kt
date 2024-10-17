@@ -83,20 +83,3 @@ class NewPostViewModel : ViewModel() {
     }
 
 }
-
-@Composable
-private fun convertUriToByteArray(uri: Uri): ByteArray? {
-    val context = LocalContext.current
-    val contentResolver = context.contentResolver
-    val scope = rememberCoroutineScope()
-    var byteArray by remember { mutableStateOf<ByteArray?>(null) }
-
-    scope.launch {
-        byteArray = withContext(Dispatchers.IO) {
-            // Convert URI to ByteArray in IO thread
-            val inputStream = contentResolver.openInputStream(uri)
-            inputStream?.readBytes()
-        }
-    }
-    return byteArray
-}
