@@ -24,12 +24,16 @@ import com.example.innercircles.ui.mycircles.MyCirclesScreen
 import com.example.innercircles.R
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.innercircles.api.data.Comment
+import com.example.innercircles.api.data.CommentViewModel
+import com.example.innercircles.api.data.PostViewModel
 
 
 enum class InnerCirclesScreen {
     Circle,
     NewPost,
     SelectCircles,
+    DisplayPost,
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +41,8 @@ enum class InnerCirclesScreen {
 fun MainScreen(
     circleViewModel: CircleViewModel = viewModel(),
     newPostViewModel: NewPostViewModel = viewModel(),
+    postViewModel: PostViewModel = viewModel(),
+    commentViewModel: CommentViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
@@ -83,13 +89,23 @@ fun MainScreen(
     ) { innerPadding ->
         val circleUiState by circleViewModel.uiState.collectAsState()
         val newPostUiState by newPostViewModel.uiState.collectAsState()
+        val postUiState by postViewModel.uiState.collectAsState()
+        val commentUiState by commentViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
             startDestination = Screen.Newsfeed.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Newsfeed.route) { NewsfeedScreen() }
+            composable(Screen.Newsfeed.route) {
+                NewsfeedScreen(
+                    onClickDisplayPost = {
+                        postViewModel.resetPost()
+                        postViewModel.setCurrentPost(it)
+                        navController.navigate(InnerCirclesScreen.DisplayPost.name)
+                    }
+                )
+            }
             composable(Screen.MyCircles.route) {
                 MyCirclesScreen(
                     onCircleClick = {
@@ -103,7 +119,12 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.Circle.name) {
                 CircleScreen(
                     circleId = circleUiState.id,
-                    onClickBack = { navController.popBackStack() }
+                    onClickBack = { navController.popBackStack() },
+                    onClickDisplayPost = {
+                        postViewModel.resetPost()
+                        postViewModel.setCurrentPost(it)
+                        navController.navigate(InnerCirclesScreen.DisplayPost.name)
+                    }
                 )
             }
             composable(route = InnerCirclesScreen.SelectCircles.name) {
@@ -125,6 +146,17 @@ fun MainScreen(
                     onMediaSelected = { newPostViewModel.setContent(it) },
                     onClickNext = {navController.navigate(InnerCirclesScreen.SelectCircles.name)},
                     onClickBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(route = InnerCirclesScreen.DisplayPost.name) {
+                DisplayPostScreen(
+                    post = postUiState,
+                    comment = commentUiState,
+                    onClickBack = { navController.popBackStack() },
+                    onCommentChanged = { commentViewModel.setCommentText(it) },
+                    addCommentToPost = { postViewModel.addComment(it) },
+                    clearComment = { commentViewModel.resetComment() }
                 )
             }
         }
