@@ -39,6 +39,7 @@ import com.example.innercircles.api.data.PostRequest
 import com.example.innercircles.api.data.PostRequestContent
 import com.example.innercircles.api.data.PostResponse
 import com.example.innercircles.R
+import com.example.innercircles.api.data.NewPostResponse
 
 var circles by mutableStateOf(emptyList<Circle>())
 
@@ -182,10 +183,10 @@ private fun createPost(
     var success = false
 
     for (circleId in circleIds) {
-        RetrofitClient.apiService.createPost(userId, circleId, postRequest).enqueue(object : Callback<PostResponse> {
+        RetrofitClient.apiService.createPost(userId, circleId, postRequest).enqueue(object : Callback<NewPostResponse> {
             override fun onResponse(
-                call: Call<PostResponse>,
-                response: Response<PostResponse>
+                call: Call<NewPostResponse>,
+                response: Response<NewPostResponse>
             ) {
                 if (response.isSuccessful) {
                     success = true
@@ -201,7 +202,7 @@ private fun createPost(
                 }
             }
 
-            override fun onFailure(call: Call<PostResponse>, t: Throwable) {
+            override fun onFailure(call: Call<NewPostResponse>, t: Throwable) {
                 Log.e("SelectCirclesScreen", "Error creating posts", t)
             }
         })
