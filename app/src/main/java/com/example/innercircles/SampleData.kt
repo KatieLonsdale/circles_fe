@@ -18,6 +18,8 @@ object SampleData {
                 "caption": "This is a caption",
                 "created_at": "2024-07-20T00:34:51.898Z",
                 "updated_at": "2024-07-20T00:34:51.898Z",
+                "author_display_name": "KT",
+                "circle_name": "High school friends",
                 "contents": {
                     "data": []
                 },
@@ -64,6 +66,8 @@ object SampleData {
                 "caption": "7/28",
                 "created_at": "2024-07-28T18:16:48.258Z",
                 "updated_at": "2024-07-28T18:16:48.258Z",
+                "author_display_name": "Maxwell",
+                "circle_name": "High school friends",
                 "contents": {
                     "data": [
                         {
@@ -162,6 +166,8 @@ object SampleData {
                 "caption": "Beach Views 😎",
                 "created_at": "2024-08-06T02:57:33.045Z",
                 "updated_at": "2024-08-06T02:57:33.045Z",
+                "author_display_name": "Pam the Punisher",
+                "circle_name": "College friends",
                 "contents": {
                     "data": [
                         {
