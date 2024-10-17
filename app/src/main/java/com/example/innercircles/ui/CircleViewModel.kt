@@ -14,7 +14,8 @@ class CircleViewModel : ViewModel() {
     fun setCurrentCircle(circleId: String) {
         _uiState.update { currentState ->
             currentState.copy(
-                id = circleId
+                id = circleId,
+
             )
         }
     }
