@@ -11,6 +11,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        todo: is this being initialized twice?
+        SessionManager.init(this)
         setContent {
             MaterialTheme {
                 MainScreen()
