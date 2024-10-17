@@ -3,7 +3,7 @@ package com.example.innercircles.api.data
 import com.google.gson.annotations.SerializedName
 
 data class CommentResponse(
-    @SerializedName("data") val data: List<Comment>
+    @SerializedName("data") val data: Comment
 )
 
 //comment is defined in PostResponse.kt
