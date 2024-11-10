@@ -253,3 +253,5 @@ fun NewPostScreenPreview(){
         onClickNext = {}
     )
 }
+
+//todo: add error handling if image and caption are blank
