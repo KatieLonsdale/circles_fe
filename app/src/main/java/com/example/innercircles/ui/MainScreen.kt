@@ -9,10 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -24,9 +27,10 @@ import com.example.innercircles.ui.mycircles.MyCirclesScreen
 import com.example.innercircles.R
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.innercircles.api.data.Comment
+import com.example.innercircles.SessionManager
 import com.example.innercircles.api.data.CommentViewModel
 import com.example.innercircles.api.data.PostViewModel
+import com.example.innercircles.ui.notifications.NotificationsScreen
 
 
 enum class InnerCirclesScreen {
@@ -34,18 +38,18 @@ enum class InnerCirclesScreen {
     NewPost,
     SelectCircles,
     DisplayPost,
+    SignIn,
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScreen(
     circleViewModel: CircleViewModel = viewModel(),
     newPostViewModel: NewPostViewModel = viewModel(),
     postViewModel: PostViewModel = viewModel(),
     commentViewModel: CommentViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
-    val context = LocalContext.current
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -58,7 +62,12 @@ fun MainScreen(
                     Screen.Notifications
                 ).forEach { screen ->
                     NavigationBarItem(
-                        icon = { Icon(painterResource(screen.iconResourceId), contentDescription = null) },
+                        icon = {
+                            Icon(
+                                painterResource(screen.iconResourceId),
+                                contentDescription = null
+                            )
+                        },
                         label = { Text(screen.route) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
@@ -114,11 +123,18 @@ fun MainScreen(
                     }
                 )
             }
-            composable(Screen.Notifications.route) { NotificationsScreen() }
+            composable(Screen.Notifications.route) {
+                NotificationsScreen(
+                    logOutUser = {
+                        SessionManager.clearSession()
+                        navController.navigate(InnerCirclesScreen.SignIn.name)
+                    }
+                )
+            }
             // Routes without icons (not in nav bar)
             composable(route = InnerCirclesScreen.Circle.name) {
                 CircleScreen(
-                    circleId = circleUiState.id,
+                    circle = circleUiState,
                     onClickBack = { navController.popBackStack() },
                     onClickDisplayPost = {
                         postViewModel.resetPost()
@@ -132,8 +148,8 @@ fun MainScreen(
                     newPostUiState = newPostUiState,
                     setCircles = { newPostViewModel.setCircleIds(it) },
                     onClickPost = {
-                        navController.navigate(Screen.Newsfeed.route)
                         newPostViewModel.resetNewPost()
+                        navController.navigate(Screen.Newsfeed.route)
                     },
                     onClickBack = { navController.popBackStack() }
                 )
@@ -159,6 +175,10 @@ fun MainScreen(
                     clearComment = { commentViewModel.resetComment() }
                 )
             }
+
+            composable(route = InnerCirclesScreen.SignIn.name) {
+                SignInMainScreen()
+            }
         }
     }
 }
@@ -170,11 +190,5 @@ sealed class Screen(val route: String, val iconResourceId: Int) {
     object Notifications : Screen("Notifications", R.drawable.ic_notifications_black_24dp)
 }
 
-@Composable
-fun NotificationsScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text("Notifications Screen", style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
+//todo: nav bar should not be visible when user is not signed or signed up
 

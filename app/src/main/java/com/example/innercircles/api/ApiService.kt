@@ -32,7 +32,7 @@ interface ApiService {
     fun authenticateUser(@Body signInRequest: SignInRequest): Call<SignInResponse>
 
     @POST("users")
-    fun signUp(@Body signUpRequest: SignUpRequest): Call<SignUpResponse>
+    fun signUpUser(@Body signUpRequest: SignUpRequest): Call<SignUpResponse>
 
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")

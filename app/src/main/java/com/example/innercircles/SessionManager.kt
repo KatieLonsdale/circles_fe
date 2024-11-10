@@ -2,6 +2,7 @@ package com.example.innercircles
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
@@ -10,6 +11,7 @@ object SessionManager {
     private const val PREF_NAME = "UserSession"
     private lateinit var sharedPreferences: SharedPreferences
     private var isInitialized = false
+    private var isSignedIn = false
 
     fun init(context: Context) {
         if (!isInitialized) {
@@ -32,16 +34,34 @@ object SessionManager {
         }
     }
 
-    fun saveUserId(userId: String) {
-        checkInitialization()
-        val editor = sharedPreferences.edit()
-        editor.putString("userId", userId)
-        editor.apply()
+    fun saveUserId(userId: String?) {
+        if (userId != null) {
+            checkInitialization()
+            val editor = sharedPreferences.edit()
+            editor.putString("userId", userId)
+            editor.apply()
+            isSignedIn = true
+        } else {
+             Log.d("Session Manager.saveUserId()", "userId null")
+        }
     }
 
     fun getUserId(): String? {
         checkInitialization()
         return sharedPreferences.getString("userId", null)
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        checkInitialization()
+        return isSignedIn
+    }
+
+    fun clearSession() {
+        checkInitialization()
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+        isSignedIn = false
     }
 
     fun saveToken(token: String) {
