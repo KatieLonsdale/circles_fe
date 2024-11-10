@@ -1,6 +1,7 @@
 package com.example.innercircles.ui
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -37,36 +38,42 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.example.innercircles.ui.components.PostCard
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.innercircles.api.data.CircleUiState
+import androidx.compose.foundation.layout.Row
 
 var circlePosts by mutableStateOf(emptyList<Post>())
 
 @Composable
 fun CircleScreen(
-    circleId: String,
+    circle: CircleUiState,
     onClickBack: () -> Unit = {},
     onClickDisplayPost: (Post) -> Unit = {}
 ) {
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
 
-    Text(
-        text = "Circle ID: $circleId",
-    )
-
     LaunchedEffect(Unit) {
-        getPostsForCircle(circleId, userId)
+        getPostsForCircle(circle.id, userId)
         isLoading = false
     }
 
     if (isLoading) {
         CircularProgressIndicator()
     } else {
-        DisplayPosts(circlePosts, onClickBack, onClickDisplayPost)
+        DisplayPosts(
+            circle,
+            circlePosts,
+            onClickBack,
+            onClickDisplayPost
+        )
     }
 }
 
 @Composable
 fun DisplayPosts(
+    circle: CircleUiState,
     posts: List<Post>,
     onClickBack: () -> Unit,
     onClickDisplayPost: (Post) -> Unit
@@ -95,6 +102,19 @@ fun DisplayPosts(
 
                     )
             }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = circle.name,
+                color = Color.DarkGray,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+            )
         }
 
         LazyColumn {
@@ -131,10 +151,12 @@ private fun getPostsForCircle(circleId: String, userId: String?) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewCircleScreen() {
+    val circle = CircleUiState("1", "Sample Circle")
+    val posts = SampleData.returnSamplePosts()
     MaterialTheme {
         Surface{
-            val posts = SampleData.returnSamplePosts()
             DisplayPosts(
+                circle,
                 posts,
                 onClickBack = {},
                 onClickDisplayPost = {}

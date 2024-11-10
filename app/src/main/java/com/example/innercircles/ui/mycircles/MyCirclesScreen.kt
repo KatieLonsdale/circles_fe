@@ -38,7 +38,7 @@ var circles by mutableStateOf(emptyList<Circle>())
 
 @Composable
 fun MyCirclesScreen(
-    onCircleClick: (String) -> Unit = {},
+    onCircleClick: (Circle) -> Unit = {},
 ) {
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
@@ -57,7 +57,7 @@ fun MyCirclesScreen(
 }
 
 @Composable
-fun MyCirclesList(circles: List<Circle>, onCircleClick: (String) -> Unit) {
+fun MyCirclesList(circles: List<Circle>, onCircleClick: (Circle) -> Unit) {
     LazyColumn {
         items(circles) { circle ->
             CircleCard(circle, onCircleClick)
@@ -66,13 +66,13 @@ fun MyCirclesList(circles: List<Circle>, onCircleClick: (String) -> Unit) {
 }
 
 @Composable
-fun CircleCard(circle: Circle, onCircleClick: (String) -> Unit = {}) {
+fun CircleCard(circle: Circle, onCircleClick: (Circle) -> Unit = {}) {
     val circleAttributes = circle.attributes
-    val circleId = circle.id
     Row(
         modifier = Modifier.clickable(
             onClick = {
-                onCircleClick(circleId)
+//                todo: when setting circle, add its attributes as well
+                onCircleClick(circle)
         })
             .fillMaxWidth()
     ) {
@@ -120,7 +120,7 @@ fun PreviewMyCirclesList() {
         type = "circle",
         attributes = Attribute(
             id = 1,
-            userId = 1,
+            userId = "1",
             name = "College",
             description = "College Friends."
         )
@@ -130,7 +130,7 @@ fun PreviewMyCirclesList() {
         type = "circle",
         attributes = Attribute(
             id = 2,
-            userId = 1,
+            userId = "1",
             name = "High School",
             description = "High school friends."
         )
