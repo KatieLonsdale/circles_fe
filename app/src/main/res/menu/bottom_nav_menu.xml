@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/navigation_my_circles"
-        android:icon="@drawable/ic_my_circles_black_24dp"
+        android:icon="@drawable/ic_my_chatters_icon_24dp"
         android:title="@string/title_my_circles" />
 
     <item
