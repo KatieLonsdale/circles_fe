@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -86,13 +88,7 @@ fun DisplayPostScreen(
     Column(
         Modifier
             .padding(top = 10.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    // Remove focus and dismiss keyboard when tapping outside the TextField
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
-                })
-            },
+            .verticalScroll(rememberScrollState()) // Enable vertical scrolling
     ) {
         // Box for back arrow
         Box() {
@@ -126,7 +122,14 @@ fun DisplayPostScreen(
                     shape = RoundedCornerShape(16.dp)
                 )  // Apply shadow with rounded corners
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color.LightGray),  // Set background color (e.g., white),
+                .background(Color.LightGray)  // Set background color (e.g., white),
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        // Remove focus and dismiss keyboard when tapping outside the TextField
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                    })
+        },
             Arrangement.Center,
         ) {
 
