@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Circles</string>
+    <string name="app_name">ChatterBox</string>
     <string name="title_home">Home</string>
-    <string name="title_my_circles">My Circles</string>
+    <string name="title_my_circles">My Chatters</string>
     <string name="title_search">Search</string>
     <string name="title_notifications">Notifications</string>
     <string name="sign_in">Sign In</string>
