@@ -46,7 +46,6 @@ var circles by mutableStateOf(emptyList<Circle>())
 @Composable
 fun SelectCirclesScreen(
     newPostUiState: NewPostUiState,
-    setCircles: (Array<String>) -> Unit = {},
     onClickPost: () -> Unit = {},
     onClickBack: () -> Unit = {}
 ){
@@ -61,14 +60,13 @@ fun SelectCirclesScreen(
     if (isLoading) {
         CircularProgressIndicator()
     } else {
-        SelectCircles(newPostUiState, setCircles, onClickPost, onClickBack)
+        SelectCircles(newPostUiState, onClickPost, onClickBack)
     }
 }
 
 @Composable
 fun SelectCircles(
     newPostUiState: NewPostUiState,
-    setCircles: (Array<String>) -> Unit,
     onClickPost: () -> Unit,
     onClickBack: () -> Unit,
 ){
@@ -130,14 +128,10 @@ fun SelectCircles(
         ) {
             ElevatedButton(
                 onClick = {
+                    Log.e("SelectCirclesScreen", "Button clicked")
                     // Call the ViewModel's method with the selectedCircleIds
-                    setCircles(selectedCircleIds.toTypedArray())
-                    val success = createPost(newPostUiState)
-                    if (success) {
-                        onClickPost()
-                    } else {
-                        showError = true
-                    }
+                    createPost(selectedCircleIds.toList(),newPostUiState)
+                    onClickPost()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray, // Background color
@@ -175,10 +169,10 @@ private fun getCircles(userId: String?) {
 }
 
 private fun createPost(
+    circleIds: List<String>,
     newPostUiState: NewPostUiState
 ) : Boolean {
     val userId = SessionManager.getUserId()
-    val circleIds = newPostUiState.circleIds
     val postRequest = createPostRequest(newPostUiState)
     var success = false
 
@@ -245,7 +239,6 @@ fun SelectCirclesPreview() {
     MaterialTheme {
         SelectCircles(
             newPostUiState,
-            setCircles = {},
             onClickPost = {},
             onClickBack = {}
         )
