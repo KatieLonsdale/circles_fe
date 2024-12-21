@@ -38,7 +38,7 @@ fun SignInScreen(
         TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email or Username") },
+            label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -87,16 +87,19 @@ fun SignInScreen(
     }
 }
 
-fun loginUser(username: String, password: String, onResult: (Boolean, String?) -> Unit) {
+
+private fun loginUser(username: String, password: String, onResult: (Boolean, String?) -> Unit) {
     val signInRequest = SignInRequest(username, password)
 
     apiService.authenticateUser(signInRequest).enqueue(object : Callback<SignInResponse> {
         override fun onResponse(call: Call<SignInResponse>, response: Response<SignInResponse>) {
             if (response.isSuccessful) {
                 // HTTP 200: Success
-                val userId = response.body()?.data?.id
-                if (userId != null) {
+                val userId = response.body()?.user?.data?.id
+                val authToken = response.body()?.token
+                if (userId != null && authToken != null) {
                     SessionManager.saveUserId(userId)
+                    SessionManager.saveToken(authToken)
                     onResult(true, null)
                 } else {
                     val errorMessage = response.message()

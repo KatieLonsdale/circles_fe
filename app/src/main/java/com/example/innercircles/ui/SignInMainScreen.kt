@@ -33,7 +33,7 @@ fun SignInMainScreen(
         }
         composable(route = SignInScreen.SignUp.name) {
             SignUpScreen(
-                onClickSignUp = { navController.navigate(SignInScreen.MainScreen.name) },
+                onClickSignUp = { navController.navigate(SignInScreen.SignIn.name) },
                 onClickBack = { navController.popBackStack() }
             )
         }

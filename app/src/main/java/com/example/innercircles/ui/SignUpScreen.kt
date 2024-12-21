@@ -34,7 +34,7 @@ import com.example.innercircles.api.data.SignUpResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+//todo: get token when someone signs up? or have them sign in
 
 @Composable
 fun SignUpScreen(

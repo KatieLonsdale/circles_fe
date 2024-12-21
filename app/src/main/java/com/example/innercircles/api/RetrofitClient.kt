@@ -1,6 +1,7 @@
 package com.example.innercircles.api
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.innercircles.SessionManager
 
 object RetrofitClient {
 
@@ -13,7 +14,6 @@ object RetrofitClient {
             .build()
     }
 
-    val apiService: ApiService by lazy {
-        retrofitInstance.create(ApiService::class.java)
-    }
+    val sessionManager = SessionManager
+    val apiService = ApiClient.createApiService(sessionManager)
 }
