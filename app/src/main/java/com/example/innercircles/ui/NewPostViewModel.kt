@@ -59,7 +59,7 @@ class NewPostViewModel : ViewModel() {
         return postRequestContent
     }
 
-    fun setCircleIds(newCircleIds: Array<String>) {
+    fun setCircleIds(newCircleIds: List<String>) {
         _uiState.update { currentState ->
             currentState.copy(
                 circleIds = newCircleIds
@@ -67,7 +67,7 @@ class NewPostViewModel : ViewModel() {
         }
     }
 
-    fun getCircleIds(): Array<String> {
+    fun getCircleIds(): List<String> {
         return _uiState.value.circleIds
     }
 
