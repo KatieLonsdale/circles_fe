@@ -49,14 +49,22 @@ fun Newsfeed(
     posts: List<Post>,
     onClickDisplayPost: (Post) -> Unit,
 ) {
-//    todo: sort posts by updatedAt
-    LazyColumn {
-        items(posts) { post ->
-            PostCard(
-                post,
-                onClickDisplayPost,
-                true
-            )
+    if (posts.isEmpty()) {
+        Text(
+            text = "No posts available.",
+            modifier = Modifier.padding(16.dp)
+        )
+        return
+    } else {
+        val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
+        LazyColumn {
+            items(sortedPosts) { post ->
+                PostCard(
+                    post,
+                    onClickDisplayPost,
+                    true
+                )
+            }
         }
     }
 }
