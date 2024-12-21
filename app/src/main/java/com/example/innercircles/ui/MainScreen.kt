@@ -1,7 +1,5 @@
 package com.example.innercircles.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -9,13 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -146,7 +140,6 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.SelectCircles.name) {
                 SelectCirclesScreen(
                     newPostUiState = newPostUiState,
-                    setCircles = { newPostViewModel.setCircleIds(it) },
                     onClickPost = {
                         newPostViewModel.resetNewPost()
                         navController.navigate(Screen.Newsfeed.route)
@@ -186,9 +179,7 @@ fun MainScreen(
 
 sealed class Screen(val route: String, val iconResourceId: Int) {
     object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
-    object MyCircles : Screen("My Circles", R.drawable.ic_my_circles_black_24dp)
+    object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
     object Notifications : Screen("Notifications", R.drawable.ic_notifications_black_24dp)
 }
-
-//todo: nav bar should not be visible when user is not signed or signed up
 
