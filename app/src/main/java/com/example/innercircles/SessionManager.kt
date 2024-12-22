@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import java.time.LocalDateTime
 
 object SessionManager {
 
@@ -12,6 +13,7 @@ object SessionManager {
     private lateinit var sharedPreferences: SharedPreferences
     private var isInitialized = false
     private var isSignedIn = false
+    val latestTouDate = LocalDateTime.parse("2024-12-21T14:30:00Z")
 
     fun init(context: Context) {
         if (!isInitialized) {

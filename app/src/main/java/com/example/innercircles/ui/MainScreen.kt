@@ -38,11 +38,12 @@ enum class InnerCirclesScreen {
 
 @Composable
 fun MainScreen(
+    userViewModel: UserViewModel,
+    navController: NavHostController = rememberNavController(),
     circleViewModel: CircleViewModel = viewModel(),
     newPostViewModel: NewPostViewModel = viewModel(),
     postViewModel: PostViewModel = viewModel(),
     commentViewModel: CommentViewModel = viewModel(),
-    navController: NavHostController = rememberNavController(),
 ) {
     Scaffold(
         bottomBar = {

@@ -48,6 +48,7 @@ fun SignUpScreen(
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+//    todo: create reusable component for back arrow
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,6 +70,7 @@ fun SignUpScreen(
             )
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
