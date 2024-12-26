@@ -19,14 +19,14 @@ import com.example.innercircles.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.innercircles.SessionManager
 import com.example.innercircles.api.data.AuthenticatedUser
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @Composable
 fun SignInScreen(
     updateUser: (Map<String, String>) -> Unit,
     onClickSignIn: () -> Unit,
     onTouOutdated: () -> Unit,
-    onClickSignUp: () -> Unit = {},
+    onClickSignUp: () -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -57,7 +57,11 @@ fun SignInScreen(
         Button(
             onClick = {
                 errorMessage = ""
-                loginUser(email, password) { isSuccess, error ->
+                loginUser(
+                    email,
+                    password,
+                    updateUser,
+                ) { isSuccess, error ->
                     if (isSuccess) {
                         onClickSignIn()
                     } else if (error === "TOU NOT UP TO DATE") {
@@ -94,7 +98,12 @@ fun SignInScreen(
 }
 
 
-private fun loginUser(username: String, password: String, onResult: (Boolean, String?) -> Unit) {
+private fun loginUser(
+    username: String,
+    password: String,
+    updateUser: (Map<String, String>) -> Unit,
+    onResult: (Boolean, String?) -> Unit,
+) {
     val signInRequest = SignInRequest(username, password)
 
     apiService.authenticateUser(signInRequest).enqueue(object : Callback<SignInResponse> {
@@ -103,28 +112,35 @@ private fun loginUser(username: String, password: String, onResult: (Boolean, St
                 // HTTP 200: Success
                 val authToken = response.body()?.token
                 val attributes = extractUserAttributes(response.body()?.user?.data)
-                val lastTouAcceptance = LocalDateTime.parse(attributes["lastTouAcceptance"])
-                if (SessionManager.latestTouDate.isAfter(lastTouAcceptance)) {
-                    val error = "TOU NOT UP TO DATE"
-                    onResult(false, error)
+                var lastTouAcceptance: OffsetDateTime? = null
+                if (!attributes["lastTouAcceptance"].isNullOrEmpty()) {
+                    lastTouAcceptance = OffsetDateTime.parse(attributes["lastTouAcceptance"])
                 }
                 SessionManager.saveUserId(attributes["id"])
                 if (authToken != null) {
                     SessionManager.saveToken(authToken)
+                    updateUser(attributes)
+                    if (lastTouAcceptance == null || SessionManager.latestTouDate.isAfter(lastTouAcceptance)) {
+                        val error = "TOU NOT UP TO DATE"
+                        onResult(false, error)
+                        return
+                    }
                 } else {
                     val errorMessage = "Token is null"
                     onResult(false, errorMessage)
+                    return
                 }
                 onResult(true, null)
-                val errorMessage = response.message()
-                onResult(false, errorMessage)
+                return
             } else if (response.code() == 404) {
                 val errorMessage = response.message()
                 onResult(false, errorMessage)
+                return
             } else {
                 // Handle other error codes as needed
                 val errorMessage = response.message()
                 onResult(false, errorMessage)
+                return
             }
         }
 
@@ -137,11 +153,11 @@ private fun loginUser(username: String, password: String, onResult: (Boolean, St
 
 private fun extractUserAttributes(userData: AuthenticatedUser?): Map<String, String> {
     val attributes = mutableMapOf<String, String>()
-    attributes["id"] = userData?.id.toString() ?: ""
-    attributes["email"] = userData?.email.toString() ?: ""
-    attributes["displayName"] = userData?.displayName.toString() ?: ""
-    attributes["notificationFrequency"] = userData?.notificationFrequency.toString() ?: ""
-    attributes["lastTouAcceptance"] = userData?.lastTouAcceptance.toString() ?: ""
+    attributes["id"] = userData?.id.toString()
+    attributes["email"] = userData?.attributes?.email.toString()
+    attributes["displayName"] = userData?.attributes?.displayName.toString()
+    attributes["notificationFrequency"] = userData?.attributes?.notificationFrequency.toString()
+    attributes["lastTouAcceptance"] = userData?.attributes?.lastTouAcceptance ?: ""
 
     return attributes
 }
