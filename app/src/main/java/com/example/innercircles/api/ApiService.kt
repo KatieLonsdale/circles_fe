@@ -11,10 +11,12 @@ import com.example.innercircles.api.data.SignInRequest
 import com.example.innercircles.api.data.SignInResponse
 import com.example.innercircles.api.data.SignUpRequest
 import com.example.innercircles.api.data.SignUpResponse
+import com.example.innercircles.api.data.UserRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -50,6 +52,12 @@ interface ApiService {
     fun signUpUser(
         @Body signUpRequest: SignUpRequest
     ): Call<SignUpResponse>
+
+    @PATCH("users/{userId}")
+    fun updateUser(
+        @Path("userId") userId: String?,
+        @Body userRequest: UserRequest,
+    ): Call<Void>
 
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")
