@@ -54,7 +54,6 @@ fun Newsfeed(
             text = "No posts available.",
             modifier = Modifier.padding(16.dp)
         )
-        return
     } else {
         val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
         LazyColumn {
