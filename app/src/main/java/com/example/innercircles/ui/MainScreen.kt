@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -33,60 +34,79 @@ enum class InnerCirclesScreen {
     SelectCircles,
     DisplayPost,
     SignIn,
+    SignUp,
+    TermsOfUseScreen,
+    CompleteTermsOfUseScreen,
 }
-
 
 @Composable
 fun MainScreen(
-    userViewModel: UserViewModel,
     navController: NavHostController = rememberNavController(),
     circleViewModel: CircleViewModel = viewModel(),
     newPostViewModel: NewPostViewModel = viewModel(),
     postViewModel: PostViewModel = viewModel(),
     commentViewModel: CommentViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel()
 ) {
+    val isUserLoggedIn by SessionManager.isUserLoggedIn.collectAsState()
+
+    LaunchedEffect(isUserLoggedIn) {
+        if (!isUserLoggedIn) {
+            navController.navigate(InnerCirclesScreen.SignIn.name) {
+                popUpTo(0) // Clear the back stack
+            }
+        }
+    }
+
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
+            if (isUserLoggedIn) {
+                NavigationBar {
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentDestination = navBackStackEntry?.destination
 
-                listOf(
-                    Screen.Newsfeed,
-                    Screen.MyCircles,
-                    Screen.Notifications
-                ).forEach { screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painterResource(screen.iconResourceId),
-                                contentDescription = null
-                            )
-                        },
-                        label = { Text(screen.route) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                    listOf(
+                        Screen.Newsfeed,
+                        Screen.MyCircles,
+                        Screen.Notifications
+                    ).forEach { screen ->
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    painterResource(screen.iconResourceId),
+                                    contentDescription = null
+                                )
+                            },
+                            label = { Text(screen.route) },
+                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(InnerCirclesScreen.NewPost.name)
-                },
-                containerColor = Color.DarkGray,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "Add") // Replace with your preferred icon
+            if (isUserLoggedIn) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(InnerCirclesScreen.NewPost.name)
+                    },
+                    containerColor = Color.DarkGray,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "Add"
+                    ) // Replace with your preferred icon
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.Center // Optional, can position FAB in the center or elsewhere
@@ -171,7 +191,38 @@ fun MainScreen(
             }
 
             composable(route = InnerCirclesScreen.SignIn.name) {
-                SignInMainScreen()
+                SignInScreen(
+                    updateUser = {
+                        userViewModel.setAttributes(it)
+                    },
+                    onClickSignIn = { navController.navigate(Screen.Newsfeed.route) },
+                    onTouOutdated = {
+                        navController.navigate(InnerCirclesScreen.TermsOfUseScreen.name)
+                    },
+                    onClickSignUp = {
+                        navController.navigate(InnerCirclesScreen.SignUp.name)
+                    }
+                )
+            }
+            composable(route = InnerCirclesScreen.SignUp.name) {
+                SignUpScreen(
+                    onClickSignUp = { navController.navigate(InnerCirclesScreen.SignIn.name) },
+                    onClickBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(route = InnerCirclesScreen.TermsOfUseScreen.name) {
+                TermsOfUseScreen(
+                    onClickBack = { navController.popBackStack() },
+                    onReadFullTermsOfUse = { navController.navigate(InnerCirclesScreen.CompleteTermsOfUseScreen.name) },
+                    onClickAccept = { navController.navigate(Screen.Newsfeed.route) }
+                )
+            }
+
+            composable(route = InnerCirclesScreen.CompleteTermsOfUseScreen.name) {
+                CompleteTermsOfUseScreen(
+                    onClickBack = { navController.popBackStack() },
+                )
             }
         }
     }

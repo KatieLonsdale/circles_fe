@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import com.example.innercircles.ui.MainScreen
-import com.example.innercircles.ui.SignInMainScreen
 
 
 class MainActivity : AppCompatActivity() {
@@ -14,18 +13,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        todo: is this being initialized twice
         SessionManager.init(this)
-        if (SessionManager.isUserLoggedIn()) {
             setContent {
                 MaterialTheme {
                     MainScreen()
                 }
             }
-        } else {
-            setContent{
-                MaterialTheme {
-                    SignInMainScreen()
-                }
-            }
-        }
     }
 }

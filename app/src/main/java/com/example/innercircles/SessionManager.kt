@@ -5,15 +5,18 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import java.time.LocalDateTime
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import java.time.OffsetDateTime
 
 object SessionManager {
 
     private const val PREF_NAME = "UserSession"
     private lateinit var sharedPreferences: SharedPreferences
     private var isInitialized = false
-    private var isSignedIn = false
-    val latestTouDate = LocalDateTime.parse("2024-12-21T14:30:00Z")
+    private var _isUserLoggedIn = MutableStateFlow(false) // Reactive state
+    val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn
+    val latestTouDate = OffsetDateTime.parse("2024-12-21T14:30:00Z")
 
     fun init(context: Context) {
         if (!isInitialized) {
@@ -42,7 +45,7 @@ object SessionManager {
             val editor = sharedPreferences.edit()
             editor.putString("userId", userId)
             editor.apply()
-            isSignedIn = true
+            _isUserLoggedIn.value = true
         } else {
              Log.d("Session Manager.saveUserId()", "userId null")
         }
@@ -55,7 +58,7 @@ object SessionManager {
 
     fun isUserLoggedIn(): Boolean {
         checkInitialization()
-        return isSignedIn
+        return _isUserLoggedIn.value
     }
 
     fun clearSession() {
@@ -63,7 +66,7 @@ object SessionManager {
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()
-        isSignedIn = false
+        _isUserLoggedIn.value = false
     }
 
     fun saveToken(token: String) {
@@ -71,6 +74,7 @@ object SessionManager {
         val editor = sharedPreferences.edit()
         editor.putString("token", token)
         editor.apply()
+        _isUserLoggedIn.value = true
     }
 
     fun getToken(): String? {
