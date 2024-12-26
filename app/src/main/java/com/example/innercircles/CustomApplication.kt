@@ -8,9 +8,10 @@ class CustomApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        SessionManager.init(this)
-//        clear image cache
-        val imageLoader = ImageLoader(this)
-        imageLoader.memoryCache?.clear()
+//        todo: delete?
+//        SessionManager.init(this)
+////        clear image cache
+//        val imageLoader = ImageLoader(this)
+//        imageLoader.memoryCache?.clear()
     }
 }
