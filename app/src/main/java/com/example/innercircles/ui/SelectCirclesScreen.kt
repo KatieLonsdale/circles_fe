@@ -101,7 +101,7 @@ fun SelectCircles(
         }
 
         Text(
-            text = "Select Circles",
+            text = "Select Chatters",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
