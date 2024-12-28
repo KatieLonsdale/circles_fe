@@ -49,6 +49,7 @@ fun MainScreen(
     userViewModel: UserViewModel = viewModel()
 ) {
     val isUserLoggedIn by SessionManager.isUserLoggedIn.collectAsState()
+    val isTouUpToDate by SessionManager.isTouUpToDate.collectAsState()
 
     LaunchedEffect(isUserLoggedIn) {
         if (!isUserLoggedIn) {
@@ -60,7 +61,7 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            if (isUserLoggedIn) {
+            if (isUserLoggedIn && isTouUpToDate) {
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentDestination = navBackStackEntry?.destination
@@ -94,7 +95,7 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            if (isUserLoggedIn) {
+            if (isUserLoggedIn && isTouUpToDate) {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(InnerCirclesScreen.NewPost.name)

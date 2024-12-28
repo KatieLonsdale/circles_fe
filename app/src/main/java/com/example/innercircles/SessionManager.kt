@@ -15,7 +15,9 @@ object SessionManager {
     private lateinit var sharedPreferences: SharedPreferences
     private var isInitialized = false
     private var _isUserLoggedIn = MutableStateFlow(false) // Reactive state
+    private var _isTouUpToDate = MutableStateFlow(false) // Reactive state
     val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn
+    val isTouUpToDate: StateFlow<Boolean> = _isTouUpToDate
     val latestTouDate = OffsetDateTime.parse("2024-12-21T14:30:00Z")
 
     fun init(context: Context) {
@@ -61,6 +63,11 @@ object SessionManager {
         return _isUserLoggedIn.value
     }
 
+    fun isTouUpToDate(): Boolean {
+        checkInitialization()
+        return _isTouUpToDate.value
+    }
+
     fun clearSession() {
         checkInitialization()
         val editor = sharedPreferences.edit()
@@ -80,5 +87,9 @@ object SessionManager {
     fun getToken(): String? {
         checkInitialization()
         return sharedPreferences.getString("token", null)
+    }
+
+    fun setIsTouUpToDate(isUpToDate: Boolean) {
+        _isTouUpToDate.value = isUpToDate
     }
 }

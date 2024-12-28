@@ -121,9 +121,12 @@ private fun loginUser(
                     SessionManager.saveToken(authToken)
                     updateUser(attributes)
                     if (lastTouAcceptance == null || SessionManager.latestTouDate.isAfter(lastTouAcceptance)) {
+                        SessionManager.setIsTouUpToDate(false)
                         val error = "TOU NOT UP TO DATE"
                         onResult(false, error)
                         return
+                    } else {
+                        SessionManager.setIsTouUpToDate(true)
                     }
                 } else {
                     val errorMessage = "Token is null"

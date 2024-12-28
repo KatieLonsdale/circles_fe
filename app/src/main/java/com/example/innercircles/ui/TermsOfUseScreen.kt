@@ -109,6 +109,7 @@ private fun updateUserTou() {
             if (response.isSuccessful) {
                 // HTTP 200: Success
                 Log.d("updateUserTou", "User updated successfully")
+                SessionManager.setIsTouUpToDate(true)
             } else if (response.code() == 404) {
                 Log.d("updateUserTou", "User not found")
             } else {
