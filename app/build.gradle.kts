@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.innercircles"
+    namespace = "com.katielonsdale.chatterbox"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.innercircles"
+        applicationId = "com.katielonsdale.chatterbox"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
