@@ -11,10 +11,15 @@ class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor 
         val noAuthHeader = request.header("No-Authorization")
         if (noAuthHeader != null && noAuthHeader.toBoolean()) {
             // Skip adding the Authorization header for this request
-            return chain.proceed(request.newBuilder().removeHeader("No-Authorization").build())
+            return chain.proceed(
+                request.newBuilder()
+                    .removeHeader("No-Authorization")
+                    .addHeader("Content-Type", "application/json")
+                    .build())
         }
         val token = sessionManager.getToken()
         val newRequest = chain.request().newBuilder()
+            .addHeader("Content-Type", "application/json")
             .addHeader("Authorization", "Bearer $token")
             .build()
         return chain.proceed(newRequest)
