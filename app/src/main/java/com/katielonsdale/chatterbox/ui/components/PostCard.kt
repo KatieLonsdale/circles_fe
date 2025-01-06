@@ -30,6 +30,9 @@ import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.ui.home.CommentCard
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 
 @Composable
 fun PostCard(
@@ -69,7 +72,7 @@ fun PostCard(
 
         Spacer(modifier = Modifier.height(5.dp))
         val textSize: Int = if (!hasMedia) {
-            25
+            20
         } else {
             15
         }
@@ -81,12 +84,26 @@ fun PostCard(
             Text(
                 text = post.attributes.authorDisplayName,
                 color = Color.DarkGray,
-                fontSize = textSize.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(5.dp))
 
+            Text(
+                text = formatTimeStamp(post.attributes.updatedAt),
+                color = Color.DarkGray,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp)) // Small gap between header and comment
+
+        Row(
+            modifier = Modifier
+                .padding(start = 10.dp)
+        ) {
             Text(
                 text = post.attributes.caption,
                 color = Color.DarkGray,
@@ -124,6 +141,16 @@ fun PostCard(
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
+    }
+}
+
+fun formatTimeStamp(originalTimestamp: String) : String{
+    try {
+        // Parse the ISO-8601 timestamp and format it
+        val zonedDateTime = ZonedDateTime.parse(originalTimestamp)
+        return zonedDateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
+    } catch (e: Exception) {
+        return "Invalid date" // Fallback if parsing fails
     }
 }
 
