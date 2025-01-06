@@ -50,7 +50,8 @@ interface ApiService {
 
     @POST("users")
     fun signUpUser(
-        @Body signUpRequest: SignUpRequest
+        @Body signUpRequest: SignUpRequest,
+        @Header("No-Authorization") noAuth: Boolean = true
     ): Call<SignUpResponse>
 
     @PATCH("users/{userId}")
