@@ -71,11 +71,8 @@ fun PostCard(
         }
 
         Spacer(modifier = Modifier.height(5.dp))
-        val textSize: Int = if (!hasMedia) {
-            20
-        } else {
-            15
-        }
+
+        val fontSize = 15.sp
 
         Row(
             modifier = Modifier
@@ -84,16 +81,17 @@ fun PostCard(
             Text(
                 text = post.attributes.authorDisplayName,
                 color = Color.DarkGray,
-                fontSize = 15.sp,
+                fontSize = fontSize,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.width(5.dp))
 
+
             Text(
                 text = formatTimeStamp(post.attributes.updatedAt),
                 color = Color.DarkGray,
-                fontSize = 15.sp,
+                fontSize = fontSize,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -107,7 +105,7 @@ fun PostCard(
             Text(
                 text = post.attributes.caption,
                 color = Color.DarkGray,
-                fontSize = textSize.sp,
+                fontSize = fontSize,
             )
         }
 
@@ -115,7 +113,7 @@ fun PostCard(
         if (comments.isNotEmpty()) {
             Column(
                 Modifier
-                    .padding(start = 20.dp, top = 5.dp, bottom = 5.dp)
+                    .padding(start = 15.dp, top = 5.dp, bottom = 5.dp)
             ) {
                 comments.take(2).forEach { comment ->
                     CommentCard(comment)
@@ -135,7 +133,7 @@ fun PostCard(
                 Text(
                     text = post.attributes.circleName,
                     color = Color.DarkGray,
-                    fontSize = 15.sp,
+                    fontSize = fontSize,
                     fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
                 )
             }
