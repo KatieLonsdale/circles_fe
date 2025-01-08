@@ -2,11 +2,12 @@ package com.katielonsdale.chatterbox.ui.mycircles
 
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -68,31 +69,40 @@ fun MyCirclesList(circles: List<Circle>, onCircleClick: (Circle) -> Unit) {
 @Composable
 fun CircleCard(circle: Circle, onCircleClick: (Circle) -> Unit = {}) {
     val circleAttributes = circle.attributes
-    Row(
+    Column(
         modifier = Modifier.clickable(
+            //todo: when setting circle, add its attributes as well
             onClick = {
-//                todo: when setting circle, add its attributes as well
                 onCircleClick(circle)
-        })
+            })
             .fillMaxWidth()
+            .padding(
+                start = 5.dp,
+                top = 5.dp,
+            )
     ) {
-        Text (
-            text = circleAttributes.name,
-            color = Color.DarkGray,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Bottom)
-        )
-        Spacer(modifier = Modifier.width(5.dp))
+        Row() {
+            Text(
+                text = circleAttributes.name,
+                color = Color.DarkGray,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Bottom)
+            )
+        }
 
-        Text(
-            text = circleAttributes.description,
-            color = Color.DarkGray,
-            fontSize = 15.sp,
-            modifier = Modifier.align(Alignment.Bottom)
-        )
+        Spacer(modifier = Modifier.height(5.dp))
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Row() {
+            Text(
+                text = circleAttributes.description,
+                color = Color.DarkGray,
+                fontSize = 15.sp,
+                modifier = Modifier.align(Alignment.Bottom)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
@@ -132,7 +142,7 @@ fun PreviewMyCirclesList() {
             id = 2,
             userId = "1",
             name = "High School",
-            description = "High school friends."
+            description = "High school friends. This description is super long. I need to make it look nicer."
         )
     )
     MaterialTheme {

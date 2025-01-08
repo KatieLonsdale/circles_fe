@@ -15,7 +15,7 @@ object SampleData {
             "attributes": {
                 "id": 1,
                 "author_id": 1,
-                "caption": "This is a caption",
+                "caption": "This is a caption. It is very long. These captions should look nicer when they are really long.",
                 "created_at": "2024-07-20T00:34:51.898Z",
                 "updated_at": "2024-07-20T00:34:51.898Z",
                 "author_display_name": "KT",
