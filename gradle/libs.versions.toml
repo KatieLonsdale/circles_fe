@@ -28,6 +28,9 @@ composeActivity = "1.9.0"
 composeLifecycleViewModel = "2.6.1"
 coilCompose = "2.7.0"
 composeNavigation = "2.5.3"
+googleServices = "4.4.2"
+firebaseBom = "33.7.0"
+firebaseMessagingKtx = "24.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,9 +63,14 @@ compose-test-junit = { module = "androidx.compose.ui:ui-test-junit4", name = "co
 compose-activity = { module = "androidx.activity:activity-compose", name = "composeActivity", version.ref = "composeActivity" }
 compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", name = "composeLifecycleViewModel", version.ref = "composeLifecycleViewModel" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", name = "composeNavigation", version.ref = "composeNavigation" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", name = "firebaseBom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", name = "firebaseMessaging" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
