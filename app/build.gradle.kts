@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
     alias(libs.plugins.compose.compiler)
+//    Push Notifications
+    alias(libs.plugins.google.services) apply false
 }
 
 android {
@@ -21,7 +23,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
@@ -57,6 +59,7 @@ dependencies {
     implementation(libs.bouncycastle)
     implementation(libs.kotlin.std.lib)
     implementation(libs.coil.compose)
+    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,4 +84,8 @@ dependencies {
     implementation(libs.compose.lifecycle.viewmodel)
 
     implementation(libs.compose.navigation)
+
+    // Firebase Messaging
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.messaging)
 }
