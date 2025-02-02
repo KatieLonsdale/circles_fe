@@ -4,6 +4,7 @@ import com.katielonsdale.chatterbox.api.data.Circle
 import com.katielonsdale.chatterbox.api.data.CirclesResponse
 import com.katielonsdale.chatterbox.api.data.CommentRequest
 import com.katielonsdale.chatterbox.api.data.CommentResponse
+import com.katielonsdale.chatterbox.api.data.NewCircleRequest
 import com.katielonsdale.chatterbox.api.data.NewPostResponse
 import com.katielonsdale.chatterbox.api.data.PostRequest
 import com.katielonsdale.chatterbox.api.data.PostResponse
@@ -87,4 +88,11 @@ interface ApiService {
         @Path("postsId") postsId: String,
         @Body commentRequest: CommentRequest
     ): Call<CommentResponse>
+
+    // CIRCLES
+    @POST("users/{userId}/circles")
+    fun createCircle(
+        @Path("userId") userId: String?,
+        @Body circleRequest: NewCircleRequest
+    ): Call<Circle>
 }
