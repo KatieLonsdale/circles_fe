@@ -24,4 +24,7 @@
     <string name="image_view">image view</string>
     <string name="add_comment">Add Comment</string>
     <string name="description">image loading</string>
+    <string name ="create_circle_title">Create Circle</string>"
+    <string name="new_circle_name_label">Name</string>"
+    <string name="new_circle_description_label">Description</string>"
 </resources>
