@@ -214,7 +214,6 @@ fun CaptionInput(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(onDone = {
-                onCaptionChanged(value)
                 keyboardController?.hide()
                 focusManager.clearFocus()
             }),
@@ -229,10 +228,10 @@ private fun convertUriToByteArray(uri: Uri?, context: Context): ByteArray? {
     val scope = rememberCoroutineScope()
     var byteArray by remember { mutableStateOf<ByteArray?>(null) }
 
-    if (uri != null) {
-        scope.launch {
+    // Run the coroutine only when the `uri` changes
+    LaunchedEffect(uri) {
+        if (uri != null) {
             byteArray = withContext(Dispatchers.IO) {
-                // Convert URI to ByteArray in IO thread
                 val inputStream = contentResolver.openInputStream(uri)
                 inputStream?.readBytes()
             }

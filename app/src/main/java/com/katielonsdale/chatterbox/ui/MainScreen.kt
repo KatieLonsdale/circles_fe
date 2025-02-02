@@ -31,8 +31,11 @@ import com.katielonsdale.chatterbox.R
 enum class InnerCirclesScreen {
     Circle,
     NewPost,
+    NewCircle,
     SelectCircles,
     DisplayPost,
+    CreateNew,
+    AddFriend,
     SignIn,
     SignUp,
     TermsOfUseScreen,
@@ -98,7 +101,7 @@ fun MainScreen(
             if (isUserLoggedIn && isTouUpToDate) {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate(InnerCirclesScreen.NewPost.name)
+                        navController.navigate(InnerCirclesScreen.CreateNew.name)
                     },
                     containerColor = Color.DarkGray,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -180,6 +183,13 @@ fun MainScreen(
                 )
             }
 
+            composable(route = InnerCirclesScreen.NewCircle.name) {
+                NewCircleScreen(
+                    onClickBack = { navController.popBackStack() },
+                    onClickCreate = { navController.navigate(Screen.MyCircles.route) }
+                )
+            }
+
             composable(route = InnerCirclesScreen.DisplayPost.name) {
                 DisplayPostScreen(
                     post = postUiState,
@@ -188,6 +198,21 @@ fun MainScreen(
                     onCommentChanged = { commentViewModel.setCommentText(it) },
                     addCommentToPost = { postViewModel.addComment(it) },
                     clearComment = { commentViewModel.resetComment() }
+                )
+            }
+
+            composable(route = InnerCirclesScreen.CreateNew.name) {
+                CreateNewScreen(
+                    onClickBack = { navController.popBackStack() },
+                    onClickNewPost = { navController.navigate(InnerCirclesScreen.NewPost.name) },
+                    onClickNewCircle = { navController.navigate(InnerCirclesScreen.NewCircle.name) },
+                    onClickNewFriend = { navController.navigate(InnerCirclesScreen.AddFriend.name) }
+                )
+            }
+
+            composable(route = InnerCirclesScreen.AddFriend.name) {
+                AddFriendScreen(
+                    onClickBack = { navController.popBackStack() },
                 )
             }
 
