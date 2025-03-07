@@ -1,0 +1,33 @@
+---
+description: Here are the security considerations of building an Android app that you should keep in mind.
+globs: 
+---
+1. Secure Data Storage
+ - Avoid Storing Sensitive Data on the Device: If possible, avoid storing sensitive information locally. 
+ - If needed, use EncryptedSharedPreferences or Android Keystore for sensitive data.
+ - Use Encrypted Databases: If your app uses a local database (e.g., Room, SQLite), encrypt it using SQLCipher.
+ - Use External Storage Cautiously: Data stored in external storage is accessible by other apps. Use internal storage or encrypt files if necessary.
+2. Secure Network Communication
+ - Use HTTPS (TLS 1.2 or 1.3): Always use HTTPS instead of HTTP to encrypt data in transit.
+ - Enable Certificate Pinning: Protect against man-in-the-middle (MITM) attacks by verifying the server’s certificate explicitly.
+ - Avoid Hardcoding API Keys: Use a secure backend or store them in Android Keystore.
+3. Secure Authentication and Authorization
+ - Use Secure Authentication Methods: Implement OAuth 2.0, OpenID Connect, or Firebase Authentication instead of rolling your own.
+ - Enforce Strong Passwords: Require complex passwords and encourage multi-factor authentication (MFA).
+4. Prevent Reverse Engineering
+ - Obfuscate Your Code: Use ProGuard, R8, or other obfuscation tools to make your APK harder to reverse-engineer.
+ - Remove Debug Information: Disable logging and strip debug symbols before releasing the app.
+ - Use Integrity Checks: Implement Google Play Integrity API to detect if the app is running in a compromised environment.
+5. Secure API Calls
+ - Use Proper API Authentication: Implement OAuth 2.0, API tokens, or JWTs for secure communication.
+6. Secure Permissions and Components
+ - Minimize Permissions: Request only the necessary permissions and justify them to users.
+ - Use Scoped Storage: From Android 10 onwards, use Scoped Storage instead of broad file access.
+ - Restrict Exported Components: Ensure that activities, services, and broadcast receivers are properly secured using android:exported="false" unless explicitly needed.
+7. Protect Against Tampering and Rooting
+ - Detect Rooted Devices: Apps handling sensitive data should check for root access (though not foolproof).
+ - Verify APK Signature: Ensure the app hasn't been modified by checking the app signature at runtime.
+8. Implement Secure Session Management
+ - Use Secure Tokens: Store session tokens in SharedPreferences or Android Keystore (not in local storage or databases).
+ - Enforce Session Expiry: Implement token expiration and refresh mechanisms.
+ - Prevent Session Hijacking: Use secure cookies and HTTP headers.

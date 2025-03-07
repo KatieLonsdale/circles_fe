@@ -1,0 +1,62 @@
+---
+description: The technical stack for this repo
+globs: 
+---
+# InnerCircles Tech Stack
+
+This document outlines the technical stack used in the InnerCircles Android application.
+
+## Core Technologies
+- **Kotlin** (v2.0.0) - Primary programming language
+- **Android Gradle Plugin** (v8.4.1) - Build system
+
+## UI Framework
+- **Jetpack Compose** (BOM v2024.06.00) - Modern UI toolkit
+  - Material 3 (v1.2.1)
+  - Compose Navigation (v2.5.3)
+  - Compose Activity (v1.9.0)
+  - Compose ViewModel (v2.6.1)
+
+## Android Architecture Components
+- **AndroidX Core KTX** (v1.10.1) - Kotlin extensions for Android core
+- **AndroidX AppCompat** (v1.6.1) - Backward compatibility
+- **Material Design** (v1.10.0) - UI components and theming
+- **ConstraintLayout** (v2.1.4) - Flexible layout system
+- **Fragment KTX** (v1.3.4) - Fragment management with Kotlin extensions
+- **Activity KTX** (v1.2.3) - Activity management with Kotlin extensions
+
+## Navigation
+- **Navigation Component** (v2.6.0) - Navigation framework
+  - Navigation Fragment KTX
+  - Navigation UI KTX
+
+## Lifecycle Components
+- **Lifecycle ViewModel KTX** (v2.6.1) - ViewModel with Kotlin extensions
+- **Lifecycle LiveData KTX** (v2.6.1) - LiveData with Kotlin extensions
+
+## Networking
+- **Retrofit** (v2.11.0) - HTTP client
+- **Retrofit Gson Converter** (v2.9.0) - JSON serialization/deserialization
+- **OkHttp Logging Interceptor** (v4.9.0) - Network logging
+
+## Image Loading
+- **Coil** (v2.1.0) - Image loading library
+- **Coil Compose** (v2.7.0) - Compose integration for Coil
+
+## Security
+- **AndroidX Security Crypto** (v1.0.0) - Encryption utilities
+- **Bouncy Castle** (v1.69) - Cryptography library
+
+## Firebase
+- **Firebase BOM** (v33.7.0) - Firebase dependency management
+- **Firebase Messaging** (v24.1.0) - Push notifications
+
+## Testing
+- **JUnit** (v4.13.2) - Unit testing
+- **AndroidX JUnit** (v1.1.5) - Android testing extensions
+- **Espresso** (v3.5.1) - UI testing
+- **Compose Testing** - UI testing for Compose
+
+## Build Tools
+- **KSP** (v1.9.0-1.0.11) - Kotlin Symbol Processing
+- **Google Services Plugin** (v4.4.2) - Google services integration
