@@ -13,6 +13,9 @@ import com.katielonsdale.chatterbox.api.data.SignInResponse
 import com.katielonsdale.chatterbox.api.data.SignUpRequest
 import com.katielonsdale.chatterbox.api.data.SignUpResponse
 import com.katielonsdale.chatterbox.api.data.UserRequest
+import com.katielonsdale.chatterbox.api.data.UsersResponse
+import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
+import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,6 +23,7 @@ import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 //    LOGIN
@@ -61,6 +65,11 @@ interface ApiService {
         @Body userRequest: UserRequest,
     ): Call<Void>
 
+    @GET("users/search")
+    fun searchUsers(
+        @Query("query") searchQuery: String
+    ): Call<UsersResponse>
+
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")
     fun getPostsForCircle(
@@ -95,4 +104,12 @@ interface ApiService {
         @Path("userId") userId: String?,
         @Body circleRequest: NewCircleRequest
     ): Call<Circle>
+    
+    // CIRCLE MEMBERS
+    @POST("users/{userId}/circles/{circleId}/circle_members")
+    fun createCircleMember(
+        @Path("userId") userId: String?,
+        @Path("circleId") circleId: String,
+        @Body circleMemberRequest: CircleMemberRequest
+    ): Call<CircleMemberResponse>
 }

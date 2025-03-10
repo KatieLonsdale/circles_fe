@@ -87,6 +87,29 @@ globs:
   }
   ```
 
+### Search Users
+- **URL**: `/api/v0/users/search`
+- **Method**: `GET`
+- **URL Parameters**: 
+  - `query`: Search string to match against user display names
+- **Response**:
+  ```json
+  {
+    "data": [
+      {
+        "id": "string",
+        "type": "user",
+        "attributes": {
+          "id": "integer",
+          "email": "string",
+          "display_name": "string",
+          "notification_frequency": "string"
+        }
+      }
+    ]
+  }
+  ```
+
 ### Get User
 - **URL**: `/api/v0/users/{id}`
 - **Method**: `GET`

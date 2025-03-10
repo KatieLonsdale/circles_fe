@@ -39,6 +39,12 @@ android {
         viewBinding = true
         compose = true
     }
+    
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -60,9 +66,19 @@ dependencies {
     implementation(libs.kotlin.std.lib)
     implementation(libs.coil.compose)
     implementation(libs.firebase.messaging.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    
+// Testing
+testImplementation(libs.junit)
+testImplementation(libs.mockito.core)
+testImplementation(libs.mockito.kotlin)
+testImplementation(libs.coroutines.test)
+testImplementation(libs.arch.core.testing)
+
+androidTestImplementation(libs.androidx.junit)
+androidTestImplementation(libs.androidx.espresso.core)
+androidTestImplementation(libs.mockito.android)
+androidTestImplementation(libs.mockito.kotlin)
+androidTestImplementation(libs.arch.core.testing)
 
     implementation(libs.compose.bom)
     androidTestImplementation(libs.compose.bom)
