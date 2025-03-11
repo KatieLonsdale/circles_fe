@@ -16,8 +16,11 @@ import com.katielonsdale.chatterbox.api.data.UserRequest
 import com.katielonsdale.chatterbox.api.data.UsersResponse
 import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
 import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
+import com.katielonsdale.chatterbox.api.data.FriendshipRequest
+import com.katielonsdale.chatterbox.api.data.FriendshipResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -112,4 +115,39 @@ interface ApiService {
         @Path("circleId") circleId: String,
         @Body circleMemberRequest: CircleMemberRequest
     ): Call<CircleMemberResponse>
+    
+    // FRIENDSHIPS
+    @POST("users/{userId}/friendships")
+    fun createFriendship(
+        @Path("userId") userId: String?,
+        @Body friendshipRequest: FriendshipRequest
+    ): Call<FriendshipResponse>
+    
+    @GET("users/{userId}/friendships")
+    fun getFriendships(
+        @Path("userId") userId: String?
+    ): Call<UsersResponse>
+    
+    @GET("users/{userId}/friendships/pending")
+    fun getPendingFriendships(
+        @Path("userId") userId: String?
+    ): Call<UsersResponse>
+    
+    @PATCH("users/{userId}/friendships/{friendshipId}/accept")
+    fun acceptFriendship(
+        @Path("userId") userId: String?,
+        @Path("friendshipId") friendshipId: String
+    ): Call<FriendshipResponse>
+    
+    @PATCH("users/{userId}/friendships/{friendshipId}/reject")
+    fun rejectFriendship(
+        @Path("userId") userId: String?,
+        @Path("friendshipId") friendshipId: String
+    ): Call<FriendshipResponse>
+    
+    @DELETE("users/{userId}/friendships/{friendshipId}")
+    fun deleteFriendship(
+        @Path("userId") userId: String?,
+        @Path("friendshipId") friendshipId: String
+    ): Call<Void>
 }
