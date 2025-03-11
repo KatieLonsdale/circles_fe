@@ -3,8 +3,8 @@ package com.katielonsdale.chatterbox.ui
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.ApiClient
 import com.katielonsdale.chatterbox.api.ApiService
-import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
-import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
+import com.katielonsdale.chatterbox.api.data.FriendshipRequest
+import com.katielonsdale.chatterbox.api.data.FriendshipResponse
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.api.data.UserData
 import com.katielonsdale.chatterbox.api.data.UsersResponse

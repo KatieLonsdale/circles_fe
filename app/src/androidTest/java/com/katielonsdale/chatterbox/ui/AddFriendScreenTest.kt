@@ -221,7 +221,7 @@ class AddFriendScreenTest {
         composeTestRule.onNodeWithText("Test User").performClick()
 
         // Then
-        verify(viewModel).sendFriendRequest(1, "1")
+        verify(viewModel).sendFriendRequest(1)
     }
 
     @Test

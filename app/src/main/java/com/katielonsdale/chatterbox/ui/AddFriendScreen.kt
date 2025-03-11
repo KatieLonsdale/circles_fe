@@ -61,8 +61,7 @@ fun AddFriendScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
     
-    // For circle selection
-    var showCircleSelection by remember { mutableStateOf(false) }
+    // For user selection
     var selectedUser by remember { mutableStateOf<UserData?>(null) }
     
     // For snackbar
@@ -148,9 +147,7 @@ fun AddFriendScreen(
                             user = user,
                             onClick = {
                                 selectedUser = user
-                                // For simplicity, we'll use a default circle ID "1"
-                                // In a real app, you would show a dialog to select which circle to add the user to
-                                viewModel.sendFriendRequest(user.attributes.id, "1")
+                                viewModel.sendFriendRequest(user.attributes.id)
                             }
                         )
                     }

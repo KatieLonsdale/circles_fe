@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.ApiClient
-import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
-import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
+import com.katielonsdale.chatterbox.api.data.FriendshipRequest
+import com.katielonsdale.chatterbox.api.data.FriendshipResponse
 import com.katielonsdale.chatterbox.api.data.UserData
 import com.katielonsdale.chatterbox.api.data.UsersResponse
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,7 +65,7 @@ class AddFriendViewModel : ViewModel() {
         })
     }
     
-    fun sendFriendRequest(userId: Int, circleId: String) {
+    fun sendFriendRequest(userId: Int) {
         _isLoading.value = true
         _errorMessage.value = null
         _successMessage.value = null
@@ -78,13 +78,13 @@ class AddFriendViewModel : ViewModel() {
             return
         }
         
-        val request = CircleMemberRequest(userId)
+        val request = FriendshipRequest(userId)
         
-        ApiClient.apiService.createCircleMember(currentUserId, circleId, request)
-            .enqueue(object : Callback<CircleMemberResponse> {
+        ApiClient.apiService.createFriendship(currentUserId, request)
+            .enqueue(object : Callback<FriendshipResponse> {
                 override fun onResponse(
-                    call: Call<CircleMemberResponse>,
-                    response: Response<CircleMemberResponse>
+                    call: Call<FriendshipResponse>,
+                    response: Response<FriendshipResponse>
                 ) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
@@ -94,7 +94,7 @@ class AddFriendViewModel : ViewModel() {
                     }
                 }
                 
-                override fun onFailure(call: Call<CircleMemberResponse>, t: Throwable) {
+                override fun onFailure(call: Call<FriendshipResponse>, t: Throwable) {
                     _isLoading.value = false
                     _errorMessage.value = "Network error: ${t.message}"
                 }
