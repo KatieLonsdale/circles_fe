@@ -22,10 +22,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Development URL (emulator localhost)
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3000/api/v0/\"")
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
+            
+            // Production URL - replace with your actual production URL
+            buildConfigField("String", "API_BASE_URL", "\"https://chatter-box-be-c1487dd4c370.herokuapp.com/\"")
         }
     }
     compileOptions {
@@ -38,6 +45,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
     }
     
     testOptions {
