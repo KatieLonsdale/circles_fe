@@ -248,7 +248,7 @@ class AddFriendViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then
-        assertEquals("Friend request sent successfully!", viewModel.successMessage.first())
+        assertEquals("Friend request sent successfully to Friend User!", viewModel.successMessage.first())
     }
 
     @Test
@@ -298,6 +298,44 @@ class AddFriendViewModelTest {
         
         // Then
         assertTrue(viewModel.errorMessage.first()?.contains("Network error") ?: false)
+    }
+
+    @Test
+    fun `sendFriendRequest handles friendship already exists error`() = runTest {
+        // Given
+        val userId = 42
+        val displayName = "Test Friend"
+        val mockCall = mock(Call::class.java) as Call<FriendshipResponse>
+        val friendshipRequest = FriendshipRequest(userId)
+        
+        // Add the user to search results so we can get the display name
+        val userData = UserData(
+            id = "42",
+            type = "user",
+            attributes = UserAttributes(
+                id = userId,
+                email = "friend@example.com",
+                displayName = displayName
+            )
+        )
+        viewModel.updateSearchResults(listOf(userData))
+        
+        `when`(apiService.createFriendship(TEST_USER_ID, friendshipRequest)).thenReturn(mockCall)
+        
+        // Mock the enqueue to immediately call onResponse with friendship already exists error
+        Mockito.doAnswer { invocation ->
+            val callback = invocation.getArgument(0) as Callback<FriendshipResponse>
+            val responseBody = "{\"error\":\"friendship already exists\"}".toResponseBody("application/json".toMediaTypeOrNull())
+            callback.onResponse(mockCall, Response.error(400, responseBody))
+            null
+        }.`when`(mockCall).enqueue(Mockito.any())
+        
+        // When
+        viewModel.sendFriendRequest(userId)
+        testDispatcher.scheduler.advanceUntilIdle()
+        
+        // Then
+        assertEquals("You're already friends with $displayName", viewModel.errorMessage.first())
     }
 
     @Test

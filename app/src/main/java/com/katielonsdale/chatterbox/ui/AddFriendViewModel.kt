@@ -83,6 +83,10 @@ class AddFriendViewModel : ViewModel() {
             return
         }
         
+        // Find the user in search results to get their display name
+        val user = _searchResults.value.find { it.attributes.id == userId }
+        val displayName = user?.attributes?.displayName ?: "this user"
+        
         val request = FriendshipRequest(userId)
         
         ApiClient.apiService.createFriendship(currentUserId, request)
@@ -93,9 +97,15 @@ class AddFriendViewModel : ViewModel() {
                 ) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
-                        _successMessage.value = "Friend request sent successfully!"
+                        _successMessage.value = "Friend request sent successfully to $displayName!"
                     } else {
-                        _errorMessage.value = "Error sending friend request: ${response.message()}"
+                        // Check if the error is "friendship already exists"
+                        val errorBody = response.errorBody()?.string() ?: ""
+                        if (errorBody.contains("friendship already exists", ignoreCase = true)) {
+                            _errorMessage.value = "You're already friends with $displayName"
+                        } else {
+                            _errorMessage.value = "Error sending friend request: ${response.message()}"
+                        }
                     }
                 }
                 
@@ -109,5 +119,10 @@ class AddFriendViewModel : ViewModel() {
     fun clearMessages() {
         _errorMessage.value = null
         _successMessage.value = null
+    }
+    
+    // Helper method for testing
+    internal fun updateSearchResults(results: List<UserData>) {
+        _searchResults.value = results
     }
 } 
