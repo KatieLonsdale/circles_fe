@@ -22,10 +22,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Development URL (emulator localhost)
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3000/api/v0/\"")
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
+            
+            // Production URL - replace with your actual production URL
+            buildConfigField("String", "API_BASE_URL", "\"https://chatter-box-be-c1487dd4c370.herokuapp.com/\"")
         }
     }
     compileOptions {
@@ -38,6 +45,13 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        buildConfig = true
+    }
+    
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 
@@ -60,9 +74,19 @@ dependencies {
     implementation(libs.kotlin.std.lib)
     implementation(libs.coil.compose)
     implementation(libs.firebase.messaging.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    
+// Testing
+testImplementation(libs.junit)
+testImplementation(libs.mockito.core)
+testImplementation(libs.mockito.kotlin)
+testImplementation(libs.coroutines.test)
+testImplementation(libs.arch.core.testing)
+
+androidTestImplementation(libs.androidx.junit)
+androidTestImplementation(libs.androidx.espresso.core)
+androidTestImplementation(libs.mockito.android)
+androidTestImplementation(libs.mockito.kotlin)
+androidTestImplementation(libs.arch.core.testing)
 
     implementation(libs.compose.bom)
     androidTestImplementation(libs.compose.bom)

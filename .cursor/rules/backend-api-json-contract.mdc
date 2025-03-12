@@ -80,7 +80,31 @@ globs:
         "attributes": {
           "id": "integer",
           "email": "string",
-          "display_name": "string"
+          "display_name": "string",
+          "notification_frequency": "string"
+        }
+      }
+    ]
+  }
+  ```
+
+### Search Users
+- **URL**: `/api/v0/users/search`
+- **Method**: `GET`
+- **URL Parameters**: 
+  - `query`: Search string to match against user display names
+- **Response**:
+  ```json
+  {
+    "data": [
+      {
+        "id": "string",
+        "type": "user",
+        "attributes": {
+          "id": "integer",
+          "email": "string",
+          "display_name": "string",
+          "notification_frequency": "string"
         }
       }
     ]
@@ -194,7 +218,7 @@ globs:
                 "type": "content",
                 "attributes": {
                   "video_url": "string",
-                  "signed_image_url": "string"
+                  "presigned_image_url": "string"
                 }
               }
             ]
@@ -407,7 +431,7 @@ globs:
                 "type": "content",
                 "attributes": {
                   "video_url": "string",
-                  "signed_image_url": "string"
+                  "presigned_image_url": "string"
                 }
               }
             ]
@@ -475,7 +499,7 @@ globs:
               "type": "content",
               "attributes": {
                 "video_url": "string",
-                "signed_image_url": "string"
+                "presigned_image_url": "string"
               }
             }
           ]
@@ -525,7 +549,7 @@ globs:
               "type": "content",
               "attributes": {
                 "video_url": "string",
-                "signed_image_url": "string"
+                "presigned_image_url": "string"
               }
             }
           ]
@@ -682,4 +706,215 @@ globs:
   - `post_id`: ID of the post
   - `id`: ID of the comment
 - **Request Body**: None
-- **Response**: Status 204 No Content 
+- **Response**: Status 204 No Content
+
+## Friendship Endpoints
+
+### Get User's Friends
+
+```
+GET /api/v0/users/:user_id/friendships
+```
+
+Returns a list of all accepted friends for the specified user.
+
+#### Response
+
+```json
+{
+  "data": [
+    {
+      "id": "1",
+      "type": "user",
+      "attributes": {
+        "id": 1,
+        "email": "user1@example.com",
+        "display_name": "User One",
+        "notification_frequency": "live",
+        "last_tou_acceptance": "2023-01-15T12:00:00Z",
+        "friends_count": 5,
+        "pending_friends_count": 2
+      }
+    },
+    {
+      "id": "2",
+      "type": "user",
+      "attributes": {
+        "id": 2,
+        "email": "user2@example.com",
+        "display_name": "User Two",
+        "notification_frequency": "daily",
+        "last_tou_acceptance": "2023-01-16T12:00:00Z",
+        "friends_count": 3,
+        "pending_friends_count": 1
+      }
+    }
+  ]
+}
+```
+
+### Get Pending Friend Requests
+
+```
+GET /api/v0/users/:user_id/friendships/pending
+```
+
+Returns a list of pending friend requests for the specified user.
+
+#### Response
+
+```json
+{
+  "data": [
+    {
+      "id": "3",
+      "type": "user",
+      "attributes": {
+        "id": 3,
+        "email": "user3@example.com",
+        "display_name": "User Three",
+        "notification_frequency": "hourly",
+        "last_tou_acceptance": "2023-01-17T12:00:00Z",
+        "friends_count": 2,
+        "pending_friends_count": 4
+      }
+    }
+  ]
+}
+```
+
+### Send Friend Request
+
+```
+POST /api/v0/users/:user_id/friendships
+```
+
+Sends a friend request from the specified user to another user.
+
+#### Request Body
+
+```json
+{
+  "friend_id": 3
+}
+```
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "1",
+    "type": "friendship",
+    "attributes": {
+      "id": 1,
+      "status": "pending",
+      "created_at": "2023-03-07T21:51:21.000Z",
+      "updated_at": "2023-03-07T21:51:21.000Z",
+      "friend": {
+        "id": 3,
+        "email": "user3@example.com",
+        "display_name": "User Three"
+      },
+      "user": {
+        "id": 1,
+        "email": "user1@example.com",
+        "display_name": "User One"
+      }
+    }
+  }
+}
+```
+
+### Accept Friend Request
+
+```
+PATCH /api/v0/users/:user_id/friendships/:id/accept
+```
+
+Accepts a friend request from another user.
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "1",
+    "type": "friendship",
+    "attributes": {
+      "id": 1,
+      "status": "accepted",
+      "created_at": "2023-03-07T21:51:21.000Z",
+      "updated_at": "2023-03-07T21:55:30.000Z",
+      "friend": {
+        "id": 1,
+        "email": "user1@example.com",
+        "display_name": "User One"
+      },
+      "user": {
+        "id": 3,
+        "email": "user3@example.com",
+        "display_name": "User Three"
+      }
+    }
+  }
+}
+```
+
+### Reject Friend Request
+
+```
+PATCH /api/v0/users/:user_id/friendships/:id/reject
+```
+
+Rejects a friend request from another user.
+
+#### Response
+
+```json
+{
+  "data": {
+    "id": "1",
+    "type": "friendship",
+    "attributes": {
+      "id": 1,
+      "status": "rejected",
+      "created_at": "2023-03-07T21:51:21.000Z",
+      "updated_at": "2023-03-07T21:56:45.000Z",
+      "friend": {
+        "id": 1,
+        "email": "user1@example.com",
+        "display_name": "User One"
+      },
+      "user": {
+        "id": 3,
+        "email": "user3@example.com",
+        "display_name": "User Three"
+      }
+    }
+  }
+}
+```
+
+### Remove Friend
+
+```
+DELETE /api/v0/users/:user_id/friendships/:id
+```
+
+Removes a friendship between the specified user and another user.
+
+#### Response
+
+On success:
+```
+204 No Content
+```
+
+On failure (friendship doesn't exist):
+```json
+{
+  "errors": ["Friendship does not exist"]
+}
+```
+Status: 422 Unprocessable Entity 

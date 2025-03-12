@@ -213,6 +213,7 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.AddFriend.name) {
                 AddFriendScreen(
                     onClickBack = { navController.popBackStack() },
+                    onNavigateToNewsfeed = { navController.navigate(Screen.Newsfeed.route) }
                 )
             }
 
