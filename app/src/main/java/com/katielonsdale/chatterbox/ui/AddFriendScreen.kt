@@ -207,11 +207,6 @@ fun UserItem(
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
-                Text(
-                    text = user.attributes.email,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
             }
         }
     }
