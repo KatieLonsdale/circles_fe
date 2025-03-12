@@ -5,6 +5,9 @@ import com.katielonsdale.chatterbox.api.ApiClient
 import com.katielonsdale.chatterbox.api.ApiService
 import com.katielonsdale.chatterbox.api.data.FriendshipRequest
 import com.katielonsdale.chatterbox.api.data.FriendshipResponse
+import com.katielonsdale.chatterbox.api.data.FriendshipUser
+import com.katielonsdale.chatterbox.api.data.FriendshipAttributes
+import com.katielonsdale.chatterbox.api.data.FriendshipData
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.api.data.UserData
 import com.katielonsdale.chatterbox.api.data.UsersResponse
@@ -16,11 +19,15 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -29,6 +36,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 
 @ExperimentalCoroutinesApi
 class AddFriendViewModelTest {
@@ -36,8 +45,8 @@ class AddFriendViewModelTest {
     private lateinit var viewModel: AddFriendViewModel
     private val testDispatcher = StandardTestDispatcher()
     private val apiService = mock(ApiService::class.java)
+    private val TEST_USER_ID = "123"
     
-    // Use PowerMockito to mock static methods
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -45,17 +54,27 @@ class AddFriendViewModelTest {
         // Mock ApiClient
         ApiClient.apiService = apiService
         
-        // Create the view model
-        viewModel = AddFriendViewModel()
-        
-        // Mock the SessionManager.getUserId() method
-        val originalSessionManager = SessionManager
+        // Mock the SessionManager
         val sessionManagerClass = SessionManager::class.java
         
         // Use reflection to set isInitialized to true
         val isInitializedField = sessionManagerClass.getDeclaredField("isInitialized")
         isInitializedField.isAccessible = true
         isInitializedField.set(SessionManager, true)
+        
+        // Mock getUserId to return a test user ID
+        val getUserIdMethod = sessionManagerClass.getDeclaredMethod("getUserId")
+        val originalMethod = sessionManagerClass.getDeclaredMethod("getUserId")
+        
+        // Create a new instance of the view model
+        viewModel = AddFriendViewModel()
+        
+        // Use reflection to set a mock implementation for getUserId
+        val sharedPreferencesField = sessionManagerClass.getDeclaredField("sharedPreferences")
+        sharedPreferencesField.isAccessible = true
+        val mockSharedPreferences = mock(android.content.SharedPreferences::class.java)
+        `when`(mockSharedPreferences.getString("userId", null)).thenReturn(TEST_USER_ID)
+        sharedPreferencesField.set(SessionManager, mockSharedPreferences)
     }
 
     @After
@@ -85,6 +104,7 @@ class AddFriendViewModelTest {
         
         // Then
         assertEquals("Please enter a search term", viewModel.errorMessage.first())
+        assertFalse(viewModel.hasSearched.first())
     }
 
     @Test
@@ -122,6 +142,7 @@ class AddFriendViewModelTest {
         // Then
         assertEquals(1, viewModel.searchResults.first().size)
         assertEquals("Test User", viewModel.searchResults.first()[0].attributes.displayName)
+        assertTrue(viewModel.hasSearched.first())
     }
 
     @Test
@@ -136,7 +157,9 @@ class AddFriendViewModelTest {
         // Mock the enqueue to immediately call onResponse with error
         Mockito.doAnswer { invocation ->
             val callback = invocation.getArgument(0) as Callback<UsersResponse>
-            callback.onResponse(mockCall, Response.error(404, okhttp3.ResponseBody.create(null, "")))
+            // Use the updated ResponseBody creation method
+            val responseBody = "".toResponseBody("application/json".toMediaTypeOrNull())
+            callback.onResponse(mockCall, Response.error(404, responseBody))
             null
         }.`when`(mockCall).enqueue(Mockito.any())
         
@@ -146,6 +169,7 @@ class AddFriendViewModelTest {
         
         // Then
         assertTrue(viewModel.errorMessage.first()?.contains("Error searching for users") ?: false)
+        assertTrue(viewModel.hasSearched.first())
     }
 
     @Test
@@ -170,37 +194,83 @@ class AddFriendViewModelTest {
         
         // Then
         assertTrue(viewModel.errorMessage.first()?.contains("Network error") ?: false)
+        assertTrue(viewModel.hasSearched.first())
+    }
+
+    @Test
+    fun `hasSearched is initially false`() = runTest {
+        // Then
+        assertFalse(viewModel.hasSearched.first())
     }
 
     @Test
     fun `sendFriendRequest with valid data calls API and shows success message`() = runTest {
-        // For this test, we'll just directly set the success message since we can't easily mock the static method
-        viewModel.clearMessages()
+        // Given
+        val userId = 42
+        val mockCall = mock(Call::class.java) as Call<FriendshipResponse>
+        val friendshipRequest = FriendshipRequest(userId)
+        
+        `when`(apiService.createFriendship(TEST_USER_ID, friendshipRequest)).thenReturn(mockCall)
+        
+        // Mock the enqueue to immediately call onResponse with success
+        Mockito.doAnswer { invocation ->
+            val callback = invocation.getArgument(0) as Callback<FriendshipResponse>
+            
+            val friendshipUser = FriendshipUser(
+                id = 42,
+                email = "friend@example.com",
+                displayName = "Friend User"
+            )
+            
+            val friendshipAttributes = FriendshipAttributes(
+                id = 1,
+                status = "pending",
+                createdAt = "2023-01-01T00:00:00Z",
+                updatedAt = "2023-01-01T00:00:00Z",
+                friend = friendshipUser,
+                user = friendshipUser
+            )
+            
+            val friendshipData = FriendshipData(
+                id = "1",
+                type = "friendship",
+                attributes = friendshipAttributes
+            )
+            
+            val friendshipResponse = FriendshipResponse(data = friendshipData)
+            
+            callback.onResponse(mockCall, Response.success(friendshipResponse))
+            null
+        }.`when`(mockCall).enqueue(Mockito.any())
         
         // When
-        // Simulate the behavior of sendFriendRequest with valid data
-        val successMessage = "Friend request sent successfully!"
-        val successMessageField = viewModel.javaClass.getDeclaredField("_successMessage")
-        successMessageField.isAccessible = true
-        val successMessageState = successMessageField.get(viewModel) as MutableStateFlow<String?>
-        successMessageState.value = successMessage
+        viewModel.sendFriendRequest(userId)
+        testDispatcher.scheduler.advanceUntilIdle()
         
         // Then
-        assertEquals(successMessage, viewModel.successMessage.first())
+        assertEquals("Friend request sent successfully!", viewModel.successMessage.first())
     }
 
     @Test
     fun `sendFriendRequest handles API error`() = runTest {
-        // For this test, we'll just directly set the error message since we can't easily mock the static method
-        viewModel.clearMessages()
+        // Given
+        val userId = 42
+        val mockCall = mock(Call::class.java) as Call<FriendshipResponse>
+        val friendshipRequest = FriendshipRequest(userId)
+        
+        `when`(apiService.createFriendship(TEST_USER_ID, friendshipRequest)).thenReturn(mockCall)
+        
+        // Mock the enqueue to immediately call onResponse with error
+        Mockito.doAnswer { invocation ->
+            val callback = invocation.getArgument(0) as Callback<FriendshipResponse>
+            val responseBody = "".toResponseBody("application/json".toMediaTypeOrNull())
+            callback.onResponse(mockCall, Response.error(404, responseBody))
+            null
+        }.`when`(mockCall).enqueue(Mockito.any())
         
         // When
-        // Simulate the behavior of sendFriendRequest with API error
-        val errorMessage = "Error sending friend request: Not Found"
-        val errorMessageField = viewModel.javaClass.getDeclaredField("_errorMessage")
-        errorMessageField.isAccessible = true
-        val errorMessageState = errorMessageField.get(viewModel) as MutableStateFlow<String?>
-        errorMessageState.value = errorMessage
+        viewModel.sendFriendRequest(userId)
+        testDispatcher.scheduler.advanceUntilIdle()
         
         // Then
         assertTrue(viewModel.errorMessage.first()?.contains("Error sending friend request") ?: false)
@@ -208,16 +278,23 @@ class AddFriendViewModelTest {
 
     @Test
     fun `sendFriendRequest handles network failure`() = runTest {
-        // For this test, we'll just directly set the error message since we can't easily mock the static method
-        viewModel.clearMessages()
+        // Given
+        val userId = 42
+        val mockCall = mock(Call::class.java) as Call<FriendshipResponse>
+        val friendshipRequest = FriendshipRequest(userId)
+        
+        `when`(apiService.createFriendship(TEST_USER_ID, friendshipRequest)).thenReturn(mockCall)
+        
+        // Mock the enqueue to immediately call onFailure
+        Mockito.doAnswer { invocation ->
+            val callback = invocation.getArgument(0) as Callback<FriendshipResponse>
+            callback.onFailure(mockCall, IOException("Network error"))
+            null
+        }.`when`(mockCall).enqueue(Mockito.any())
         
         // When
-        // Simulate the behavior of sendFriendRequest with network failure
-        val errorMessage = "Network error: Failed to connect"
-        val errorMessageField = viewModel.javaClass.getDeclaredField("_errorMessage")
-        errorMessageField.isAccessible = true
-        val errorMessageState = errorMessageField.get(viewModel) as MutableStateFlow<String?>
-        errorMessageState.value = errorMessage
+        viewModel.sendFriendRequest(userId)
+        testDispatcher.scheduler.advanceUntilIdle()
         
         // Then
         assertTrue(viewModel.errorMessage.first()?.contains("Network error") ?: false)

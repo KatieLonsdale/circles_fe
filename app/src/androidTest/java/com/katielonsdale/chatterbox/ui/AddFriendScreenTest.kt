@@ -67,6 +67,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(false))
         
         composeTestRule.setContent {
             AddFriendScreen(
@@ -100,6 +101,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(true))
         
         composeTestRule.setContent {
             AddFriendScreen(
@@ -125,6 +127,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(true))
         
         composeTestRule.setContent {
             AddFriendScreen(
@@ -139,6 +142,30 @@ class AddFriendScreenTest {
     }
 
     @Test
+    fun noResultsMessageNotDisplayedBeforeSearch() {
+        // Given
+        val viewModel = mock(AddFriendViewModel::class.java)
+        
+        `when`(viewModel.searchQuery).thenReturn(MutableStateFlow("test"))
+        `when`(viewModel.searchResults).thenReturn(MutableStateFlow(emptyList()))
+        `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
+        `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(false))
+        
+        composeTestRule.setContent {
+            AddFriendScreen(
+                onClickBack = {},
+                onNavigateToNewsfeed = {},
+                viewModel = viewModel
+            )
+        }
+
+        // Then
+        composeTestRule.onNodeWithText("No users found").assertDoesNotExist()
+    }
+
+    @Test
     fun loadingIndicatorIsDisplayed() {
         // Given
         val viewModel = mock(AddFriendViewModel::class.java)
@@ -148,6 +175,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(true))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(true))
         
         composeTestRule.setContent {
             AddFriendScreen(
@@ -173,6 +201,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(false))
         
         composeTestRule.setContent {
             AddFriendScreen(
@@ -208,6 +237,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow(null))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(true))
         
         composeTestRule.setContent {
             AddFriendScreen(
@@ -235,6 +265,7 @@ class AddFriendScreenTest {
         `when`(viewModel.isLoading).thenReturn(MutableStateFlow(false))
         `when`(viewModel.errorMessage).thenReturn(MutableStateFlow(null))
         `when`(viewModel.successMessage).thenReturn(MutableStateFlow("Friend request sent successfully!"))
+        `when`(viewModel.hasSearched).thenReturn(MutableStateFlow(true))
         
         composeTestRule.setContent {
             AddFriendScreen(

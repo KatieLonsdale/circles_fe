@@ -60,6 +60,7 @@ fun AddFriendScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val successMessage by viewModel.successMessage.collectAsState()
+    val hasSearched by viewModel.hasSearched.collectAsState()
     
     // For user selection
     var selectedUser by remember { mutableStateOf<UserData?>(null) }
@@ -152,7 +153,7 @@ fun AddFriendScreen(
                         )
                     }
                 }
-            } else if (!isLoading && searchQuery.isNotEmpty()) {
+            } else if (!isLoading && hasSearched && searchQuery.isNotEmpty()) {
                 Text(
                     text = "No users found",
                     style = MaterialTheme.typography.bodyMedium,

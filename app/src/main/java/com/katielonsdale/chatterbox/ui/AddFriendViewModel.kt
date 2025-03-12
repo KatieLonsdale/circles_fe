@@ -33,6 +33,9 @@ class AddFriendViewModel : ViewModel() {
     private val _successMessage = MutableStateFlow<String?>(null)
     val successMessage: StateFlow<String?> = _successMessage.asStateFlow()
     
+    private val _hasSearched = MutableStateFlow(false)
+    val hasSearched: StateFlow<Boolean> = _hasSearched.asStateFlow()
+    
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
@@ -49,6 +52,7 @@ class AddFriendViewModel : ViewModel() {
         ApiClient.apiService.searchUsers(_searchQuery.value).enqueue(object : Callback<UsersResponse> {
             override fun onResponse(call: Call<UsersResponse>, response: Response<UsersResponse>) {
                 _isLoading.value = false
+                _hasSearched.value = true
                 if (response.isSuccessful) {
                     response.body()?.let { usersResponse ->
                         _searchResults.value = usersResponse.data
@@ -60,6 +64,7 @@ class AddFriendViewModel : ViewModel() {
             
             override fun onFailure(call: Call<UsersResponse>, t: Throwable) {
                 _isLoading.value = false
+                _hasSearched.value = true
                 _errorMessage.value = "Network error: ${t.message}"
             }
         })
