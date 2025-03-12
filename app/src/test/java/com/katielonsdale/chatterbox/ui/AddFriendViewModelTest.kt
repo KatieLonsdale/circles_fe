@@ -248,7 +248,7 @@ class AddFriendViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then
-        assertEquals("Friend request sent successfully to Friend User!", viewModel.successMessage.first())
+        assertEquals("Friend request sent successfully to this user!", viewModel.successMessage.first())
     }
 
     @Test
