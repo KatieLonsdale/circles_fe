@@ -31,8 +31,8 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
             
-            // Production URL - replace with your actual production URL
-            buildConfigField("String", "API_BASE_URL", "\"https://chatter-box-be-c1487dd4c370.herokuapp.com/\"")
+            // Production URL
+            buildConfigField("String", "API_BASE_URL", "\"https://chatter-box-be-c1487dd4c370.herokuapp.com/api/v0/\"")
         }
     }
     compileOptions {
