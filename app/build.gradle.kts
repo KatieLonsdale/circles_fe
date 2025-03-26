@@ -4,7 +4,7 @@ plugins {
     id("kotlin-parcelize")
     alias(libs.plugins.compose.compiler)
 //    Push Notifications
-    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.google.services)
 }
 
 android {

@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.Button
 import androidx.compose.ui.graphics.Color
+import com.katielonsdale.chatterbox.MainActivity
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
@@ -27,6 +28,7 @@ fun SignInScreen(
     onClickSignIn: () -> Unit,
     onTouOutdated: () -> Unit,
     onClickSignUp: () -> Unit,
+    mainActivity: MainActivity? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -61,6 +63,7 @@ fun SignInScreen(
                     email,
                     password,
                     updateUser,
+                    mainActivity,
                 ) { isSuccess, error ->
                     if (isSuccess) {
                         onClickSignIn()
@@ -102,7 +105,8 @@ private fun loginUser(
     username: String,
     password: String,
     updateUser: (Map<String, String>) -> Unit,
-    onResult: (Boolean, String?) -> Unit,
+    mainActivity: MainActivity?,
+    onResult: (Boolean, String?) -> Unit
 ) {
     val signInRequest = SignInRequest(username, password)
 
@@ -116,7 +120,8 @@ private fun loginUser(
                 if (!attributes["lastTouAcceptance"].isNullOrEmpty()) {
                     lastTouAcceptance = OffsetDateTime.parse(attributes["lastTouAcceptance"])
                 }
-                SessionManager.saveUserId(attributes["id"])
+                val userId = attributes["id"]
+                SessionManager.saveUserId(userId)
                 if (authToken != null) {
                     SessionManager.saveToken(authToken)
                     updateUser(attributes)
@@ -127,6 +132,16 @@ private fun loginUser(
                         return
                     } else {
                         SessionManager.setIsTouUpToDate(true)
+                    }
+                    
+                    // Request notification permissions after successful login
+                    mainActivity?.let {
+                        // Log the MainActivity reference
+                        android.util.Log.d("SignInScreen", "MainActivity reference is available, requesting notifications")
+                        // Ask for notification permission, passing the userId for token registration
+                        it.askNotificationPermission(userId)
+                    } ?: run {
+                        android.util.Log.e("SignInScreen", "MainActivity reference is null, cannot request notifications")
                     }
                 } else {
                     val errorMessage = "Token is null"
@@ -173,6 +188,7 @@ fun PreviewLoginScreen() {
         onClickSignIn = {},
         onTouOutdated = {},
         onClickSignUp = {},
+        mainActivity = null
     )
 }
 

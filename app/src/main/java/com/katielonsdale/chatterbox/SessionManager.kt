@@ -92,4 +92,16 @@ object SessionManager {
     fun setIsTouUpToDate(isUpToDate: Boolean) {
         _isTouUpToDate.value = isUpToDate
     }
+
+    fun saveFcmToken(fcmToken: String) {
+        checkInitialization()
+        val editor = sharedPreferences.edit()
+        editor.putString("notifications_token", fcmToken)
+        editor.apply()
+    }
+
+    fun getFcmToken(): String? {
+        checkInitialization()
+        return sharedPreferences.getString("notifications_token", null)
+    }
 }
