@@ -49,7 +49,8 @@ fun MainScreen(
     newPostViewModel: NewPostViewModel = viewModel(),
     postViewModel: PostViewModel = viewModel(),
     commentViewModel: CommentViewModel = viewModel(),
-    userViewModel: UserViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel(),
+    mainActivity: com.katielonsdale.chatterbox.MainActivity? = null
 ) {
     val isUserLoggedIn by SessionManager.isUserLoggedIn.collectAsState()
     val isTouUpToDate by SessionManager.isTouUpToDate.collectAsState()
@@ -228,7 +229,8 @@ fun MainScreen(
                     },
                     onClickSignUp = {
                         navController.navigate(InnerCirclesScreen.SignUp.name)
-                    }
+                    },
+                    mainActivity = mainActivity
                 )
             }
             composable(route = InnerCirclesScreen.SignUp.name) {
