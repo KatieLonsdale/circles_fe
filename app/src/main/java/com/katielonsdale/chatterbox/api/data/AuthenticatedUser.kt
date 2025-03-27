@@ -12,4 +12,5 @@ data class AuthenticatedUserAttributes(
     @SerializedName("display_name") val displayName: String,
     @SerializedName("notification_frequency") val notificationFrequency: String,
     @SerializedName("last_tou_acceptance") val lastTouAcceptance: String,
+    @SerializedName("notifications_token") val notificationsToken: String? = null
 )

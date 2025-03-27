@@ -6,4 +6,5 @@ data class UserUiState (
         val displayName: String = "",
         val notificationFrequency: String = "",
         val lastTouAcceptance: String = "",
+        val notificationsToken: String = "",
 )

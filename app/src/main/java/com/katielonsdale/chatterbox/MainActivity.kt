@@ -14,12 +14,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.katielonsdale.chatterbox.api.ApiClient
 import com.katielonsdale.chatterbox.api.data.UserRequest
 import com.katielonsdale.chatterbox.ui.MainScreen
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -36,6 +36,12 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "Notification permission granted")
         } else {
             Log.d(TAG, "Notification permission denied")
+            // If permission is denied, make sure we don't have any token saved
+            SessionManager.saveFcmToken("")
+            // If user ID is available, clear the token on the server as well
+            pendingUserId?.let { userId ->
+                clearTokenOnServer(userId)
+            }
         }
         // Clear the pending userId
         Log.d(TAG, "Clearing pendingUserId: $pendingUserId")
@@ -133,6 +139,29 @@ class MainActivity : AppCompatActivity() {
             })
         } catch (e: Exception) {
             Log.e(TAG, "Error sending FCM token: ${e.message}", e)
+        }
+    }
+
+    private fun clearTokenOnServer(userId: String) {
+        try {
+            // Send a blank token to clear it on the server
+            val tokenRequest = UserRequest(notificationsToken = "")
+            
+            apiService.updateUser(userId, tokenRequest).enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "Empty FCM token successfully sent to server (permissions denied)")
+                    } else {
+                        Log.e(TAG, "Failed to send empty FCM token to server: ${response.code()}")
+                    }
+                }
+                
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e(TAG, "Error sending empty FCM token to server", t)
+                }
+            })
+        } catch (e: Exception) {
+            Log.e(TAG, "Error sending empty FCM token: ${e.message}", e)
         }
     }
 

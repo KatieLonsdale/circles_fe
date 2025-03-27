@@ -137,9 +137,16 @@ private fun loginUser(
                     // Request notification permissions after successful login
                     mainActivity?.let {
                         // Log the MainActivity reference
-                        android.util.Log.d("SignInScreen", "MainActivity reference is available, requesting notifications")
-                        // Ask for notification permission, passing the userId for token registration
-                        it.askNotificationPermission(userId)
+                        android.util.Log.d("SignInScreen", "MainActivity reference is available")
+                        
+                        // Only request notification permissions if the user's notifications_token is null
+                        if (attributes["notificationsToken"].isNullOrEmpty()) {
+                            android.util.Log.d("SignInScreen", "User's notification token is null, requesting permissions")
+                            // Ask for notification permission, passing the userId for token registration
+                            it.askNotificationPermission(userId)
+                        } else {
+                            android.util.Log.d("SignInScreen", "User already has notification token: ${attributes["notificationsToken"]}, skipping permission request")
+                        }
                     } ?: run {
                         android.util.Log.e("SignInScreen", "MainActivity reference is null, cannot request notifications")
                     }
@@ -176,6 +183,7 @@ private fun extractUserAttributes(userData: AuthenticatedUser?): Map<String, Str
     attributes["displayName"] = userData?.attributes?.displayName.toString()
     attributes["notificationFrequency"] = userData?.attributes?.notificationFrequency.toString()
     attributes["lastTouAcceptance"] = userData?.attributes?.lastTouAcceptance ?: ""
+    attributes["notificationsToken"] = userData?.attributes?.notificationsToken ?: ""
 
     return attributes
 }

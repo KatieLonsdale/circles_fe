@@ -19,6 +19,7 @@ class UserViewModel : ViewModel() {
                 displayName = attributes["displayName"].toString(),
                 notificationFrequency = attributes["notificationFrequency"].toString(),
                 lastTouAcceptance = attributes["lastTouAcceptance"].toString(),
+                notificationsToken = attributes["notificationsToken"] ?: "",
             )
         }
     }
