@@ -189,12 +189,12 @@ fun DisplayPostScreen(
             Spacer(modifier = Modifier.height(15.dp))
 
             CommentInput(
+                value = comment.commentText,
                 onCommentChanged = { newComment ->   // Call setCaption on text change
                     onCommentChanged(newComment)
                 },
                 focusManager = focusManager,
-                keyboardController = keyboardController,
-                comment
+                keyboardController = keyboardController
             )
 
             Box(
@@ -250,19 +250,18 @@ fun CommentCard(comment: Comment) {
 
 @Composable
 fun CommentInput(
+    value: String,
     onCommentChanged: (String) -> Unit,
     focusManager: FocusManager,
     keyboardController: SoftwareKeyboardController?,
-    comment: CommentUiState
 ) {
-    val value = ""
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
     ) {
         TextField(
-            value = comment.commentText,
+            value = value,
             onValueChange = { newText ->   // Update the state with the new text
                 onCommentChanged(newText)
             },
@@ -274,7 +273,6 @@ fun CommentInput(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(onDone = {
-                onCommentChanged(value)
                 keyboardController?.hide()
                 focusManager.clearFocus()
             }),
