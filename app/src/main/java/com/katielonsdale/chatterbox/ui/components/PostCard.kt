@@ -43,8 +43,8 @@ fun PostCard(
     displayCircleName: Boolean = true
 ) {
     val medias = post.attributes.contents.data
-    var hasMedia = true;
-    if (medias.isEmpty()) { hasMedia = false }
+//    var hasMedia = true
+//    if (medias.isEmpty()) { hasMedia = false }
     Column(
         modifier = Modifier
             .fillMaxWidth()

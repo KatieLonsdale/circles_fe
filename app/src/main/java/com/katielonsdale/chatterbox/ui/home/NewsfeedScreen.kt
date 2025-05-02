@@ -85,7 +85,7 @@ fun CommentCard(comment: Comment) {
         Spacer(modifier = Modifier.width(10.dp))
 
         Text(
-            text = comment.attributes.commentText,
+            AnnotatedString.rememberAutoLinkText(text = comment.attributes.commentText),
             color = Color.DarkGray,
             fontSize = 15.sp,
         )

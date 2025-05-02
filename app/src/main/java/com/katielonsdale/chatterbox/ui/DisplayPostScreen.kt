@@ -249,7 +249,6 @@ fun CommentCard(comment: Comment) {
         SelectionContainer {
             Text(
                 text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-    //            text = comment.attributes.commentText,
                 color = Color.DarkGray,
                 fontSize = 15.sp,
             )
