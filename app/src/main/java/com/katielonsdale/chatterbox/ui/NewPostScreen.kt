@@ -144,6 +144,7 @@ fun MediaUploadButton(
     val context = LocalContext.current
 
     // Image Picker Launcher
+    // todo: upgrade to photo picker https://developer.android.com/training/data-storage/shared/photopicker
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
