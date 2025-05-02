@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.ui.home.CommentCard
+import sh.calvin.autolinktext.rememberAutoLinkText
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -103,7 +105,7 @@ fun PostCard(
                 .padding(start = 10.dp)
         ) {
             Text(
-                text = post.attributes.caption,
+                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
                 color = Color.DarkGray,
                 fontSize = fontSize,
             )
