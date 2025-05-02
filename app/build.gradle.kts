@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.katielonsdale.chatterbox"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.katielonsdale.chatterbox"
@@ -112,4 +112,7 @@ androidTestImplementation(libs.arch.core.testing)
     // Firebase Messaging
     implementation(libs.firebase.bom)
     implementation(libs.firebase.messaging)
+
+    // auto link text
+    implementation(libs.autolinktext)
 }

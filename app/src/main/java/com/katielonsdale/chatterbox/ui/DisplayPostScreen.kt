@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -63,7 +64,9 @@ import retrofit2.Callback
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.AnnotatedString
 import com.katielonsdale.chatterbox.api.data.CommentAttributes
+import sh.calvin.autolinktext.rememberAutoLinkText
 
 @Composable
 fun DisplayPostScreen(
@@ -100,7 +103,7 @@ fun DisplayPostScreen(
                 ),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
+                    painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "Back",
                     modifier = Modifier.align(Alignment.TopStart),
                 )
@@ -128,7 +131,7 @@ fun DisplayPostScreen(
                         focusManager.clearFocus()
                         keyboardController?.hide()
                     })
-        },
+                },
             Arrangement.Center,
         ) {
 
@@ -166,11 +169,13 @@ fun DisplayPostScreen(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
 
-                Text(
-                    text = post.caption,
-                    color = Color.DarkGray,
-                    fontSize = textSize.sp,
-                )
+                SelectionContainer {
+                    Text(
+                        text = AnnotatedString.rememberAutoLinkText(post.caption),
+                        color = Color.DarkGray,
+                        fontSize = textSize.sp,
+                    )
+                }
             }
 
             val comments = post.comments
@@ -198,7 +203,8 @@ fun DisplayPostScreen(
             )
 
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(10.dp)
             ) {
                 ElevatedButton(
@@ -240,11 +246,13 @@ fun CommentCard(comment: Comment) {
         )
         Spacer(modifier = Modifier.width(10.dp))
 
-        Text(
-            text = comment.attributes.commentText,
-            color = Color.DarkGray,
-            fontSize = 15.sp,
-        )
+        SelectionContainer {
+            Text(
+                text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+                color = Color.DarkGray,
+                fontSize = 15.sp,
+            )
+        }
     }
 }
 

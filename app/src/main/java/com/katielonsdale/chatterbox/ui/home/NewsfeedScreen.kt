@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import com.katielonsdale.chatterbox.ui.components.PostCard
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import sh.calvin.autolinktext.rememberAutoLinkText
 
 var posts by mutableStateOf(emptyList<Post>())
 @Composable
@@ -75,7 +77,7 @@ fun CommentCard(comment: Comment) {
             .fillMaxWidth()
     ){
         Text(
-            text = comment.attributes.authorDisplayName,
+            text = AnnotatedString.rememberAutoLinkText(comment.attributes.authorDisplayName),
             color = Color.DarkGray,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold
@@ -83,7 +85,7 @@ fun CommentCard(comment: Comment) {
         Spacer(modifier = Modifier.width(10.dp))
 
         Text(
-            text = comment.attributes.commentText,
+            AnnotatedString.rememberAutoLinkText(text = comment.attributes.commentText),
             color = Color.DarkGray,
             fontSize = 15.sp,
         )
