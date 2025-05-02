@@ -63,7 +63,9 @@ import retrofit2.Callback
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.AnnotatedString
 import com.katielonsdale.chatterbox.api.data.CommentAttributes
+import sh.calvin.autolinktext.rememberAutoLinkText
 
 @Composable
 fun DisplayPostScreen(
@@ -241,7 +243,8 @@ fun CommentCard(comment: Comment) {
         Spacer(modifier = Modifier.width(10.dp))
 
         Text(
-            text = comment.attributes.commentText,
+            text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+//            text = comment.attributes.commentText,
             color = Color.DarkGray,
             fontSize = 15.sp,
         )
