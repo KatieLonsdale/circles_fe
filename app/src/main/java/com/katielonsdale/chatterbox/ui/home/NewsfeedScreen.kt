@@ -24,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sh.calvin.autolinktext.rememberAutoLinkText
+import com.katielonsdale.chatterbox.ui.components.CommentCard
 
 var posts by mutableStateOf(emptyList<Post>())
 @Composable
@@ -70,28 +71,6 @@ fun Newsfeed(
     }
 }
 
-@Composable
-fun CommentCard(comment: Comment) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        Text(
-            text = AnnotatedString.rememberAutoLinkText(comment.attributes.authorDisplayName),
-            color = Color.DarkGray,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-
-        Text(
-            AnnotatedString.rememberAutoLinkText(text = comment.attributes.commentText),
-            color = Color.DarkGray,
-            fontSize = 15.sp,
-        )
-    }
-}
-
 private fun getPosts(userId: String?) {
     apiService.getNewsfeed(userId).enqueue(object : Callback<PostResponse> {
         override fun onResponse(call: Call<PostResponse>, response: Response<PostResponse>) {
@@ -108,7 +87,7 @@ private fun getPosts(userId: String?) {
     })
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewNewsfeed() {
     MaterialTheme {

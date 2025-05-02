@@ -67,6 +67,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.AnnotatedString
 import com.katielonsdale.chatterbox.api.data.CommentAttributes
 import sh.calvin.autolinktext.rememberAutoLinkText
+import com.katielonsdale.chatterbox.ui.components.CommentCard
 
 @Composable
 fun DisplayPostScreen(
@@ -172,6 +173,7 @@ fun DisplayPostScreen(
                 SelectionContainer {
                     Text(
                         text = AnnotatedString.rememberAutoLinkText(post.caption),
+//                        text = post.caption,
                         color = Color.DarkGray,
                         fontSize = textSize.sp,
                     )
@@ -228,30 +230,6 @@ fun DisplayPostScreen(
                     Text("Post")
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun CommentCard(comment: Comment) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        Text(
-            text = comment.attributes.authorDisplayName,
-            color = Color.DarkGray,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-
-        SelectionContainer {
-            Text(
-                text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-                color = Color.DarkGray,
-                fontSize = 15.sp,
-            )
         }
     }
 }
@@ -349,7 +327,7 @@ private fun createCommentRequest(comment: CommentUiState): CommentRequest {
     return commentRequest
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun DisplayPostScreenPreview() {
     val posts = SampleData.returnSamplePosts()

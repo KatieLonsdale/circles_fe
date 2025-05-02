@@ -74,7 +74,8 @@ dependencies {
     implementation(libs.kotlin.std.lib)
     implementation(libs.coil.compose)
     implementation(libs.firebase.messaging.ktx)
-    
+    implementation(libs.androidx.ui.tooling.android)
+
 // Testing
 testImplementation(libs.junit)
 testImplementation(libs.mockito.core)
