@@ -162,7 +162,7 @@ fun MediaUploadButton(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-        val byteArray = convertUriToByteArray(selectedImageUri, context)
+    val byteArray = convertUriToByteArray(selectedImageUri, context)
     if (byteArray != null) {
         val contentViewModel = ContentViewModel()
         contentViewModel.setImage(byteArray)
@@ -226,7 +226,6 @@ fun CaptionInput(
 @Composable
 private fun convertUriToByteArray(uri: Uri?, context: Context): ByteArray? {
     val contentResolver = context.contentResolver
-    val scope = rememberCoroutineScope()
     var byteArray by remember { mutableStateOf<ByteArray?>(null) }
 
     // Run the coroutine only when the `uri` changes
