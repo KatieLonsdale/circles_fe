@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.katielonsdale.chatterbox"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 13
         versionName = "1.2.3"
