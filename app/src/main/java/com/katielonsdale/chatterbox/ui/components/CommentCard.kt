@@ -1,20 +1,27 @@
 package com.katielonsdale.chatterbox.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Comment
 
@@ -22,33 +29,41 @@ import com.katielonsdale.chatterbox.api.data.Comment
 fun CommentCard(comment: Comment) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ){
-        Text(
-            text = comment.attributes.authorDisplayName,
-            color = Color.DarkGray,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-
-        SelectionContainer {
+        // Combined author name and comment text
+        Row(
+            modifier = Modifier.weight(0.9f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Author name
             Text(
-//                text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-                text = comment.attributes.commentText,
+                text = comment.attributes.authorDisplayName,
                 color = Color.DarkGray,
-                fontSize = 15.sp,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 8.dp)
             )
+            
+            // Comment text
+            SelectionContainer {
+                Text(
+                    text = comment.attributes.commentText,
+                    color = Color.DarkGray,
+                    fontSize = 20.sp,
+                )
+            }
         }
-    }
-
-    if(comment.attributes.)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp)
-    ){
-
+        
+        // Reply icon at the end
+        Icon(
+            painter = painterResource(id = R.drawable.ic_reply),
+            contentDescription = "Reply",
+            tint = Color.DarkGray,
+            modifier = Modifier
+                .minimumInteractiveComponentSize()
+        )
     }
 }
 

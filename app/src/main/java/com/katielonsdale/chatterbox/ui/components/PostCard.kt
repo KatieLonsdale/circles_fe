@@ -75,7 +75,7 @@ fun PostCard(
 
         Spacer(modifier = Modifier.height(5.dp))
 
-        val fontSize = 15.sp
+        val fontSize = 25.sp
 
         Row(
             modifier = Modifier
@@ -106,7 +106,8 @@ fun PostCard(
                 .padding(start = 10.dp)
         ) {
             Text(
-                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
+//                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
+                text = post.attributes.caption,
                 color = Color.DarkGray,
                 fontSize = fontSize,
             )
@@ -155,7 +156,7 @@ fun formatTimeStamp(originalTimestamp: String) : String{
     }
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PostCardPreview(){
     val posts = SampleData.returnSamplePosts()

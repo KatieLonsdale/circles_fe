@@ -185,7 +185,7 @@ fun DisplayPostScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 20.dp, top = 5.dp, bottom = 5.dp)
+                        .padding(start = 20.dp)
                 ) {
                     comments.forEach { comment ->
                         CommentCard(comment)
