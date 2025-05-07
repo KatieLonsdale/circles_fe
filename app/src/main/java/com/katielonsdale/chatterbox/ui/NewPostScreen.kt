@@ -42,6 +42,11 @@ import com.katielonsdale.chatterbox.api.data.NewPostUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.util.Log
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 
 @Composable
@@ -231,14 +236,49 @@ private fun convertUriToByteArray(uri: Uri?, context: Context): ByteArray? {
     // Run the coroutine only when the `uri` changes
     LaunchedEffect(uri) {
         if (uri != null) {
-            byteArray = withContext(Dispatchers.IO) {
-                val inputStream = contentResolver.openInputStream(uri)
-                inputStream?.readBytes()
-            }
+//            byteArray = withContext(Dispatchers.IO) {
+//                val inputStream = contentResolver.openInputStream(uri)
+//                inputStream?.readBytes()
+//            }
+
+            byteArray = uri.toCompressedByteArray(context)
         }
     }
     return byteArray
 }
+
+/**
+ * Decode the Uri into a Bitmap, resize it if it's wider than [maxWidth],
+ * then JPEG-compress it at [quality]%, returning the resulting bytes.
+ */
+private suspend fun Uri.toCompressedByteArray(
+    context: Context,
+    maxWidth: Int = 1024,
+    quality: Int = 50
+): ByteArray? = withContext(Dispatchers.IO) {
+    // 1) Decode
+    val source = ImageDecoder.createSource(context.contentResolver, this@toCompressedByteArray)
+    var bitmap = ImageDecoder.decodeBitmap(source)
+
+    // 2) Resize if too big
+    if (bitmap.width > maxWidth) {
+        val ratio = maxWidth.toFloat() / bitmap.width
+        val targetHeight = (bitmap.height * ratio).toInt()
+        bitmap = Bitmap.createScaledBitmap(bitmap, maxWidth, targetHeight, true)
+    }
+
+    // 3) Compress
+    val output = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, output)
+    val bytes = output.toByteArray()
+
+    // 4) Log the size
+    Log.d("NewPostScreen", "Compressed image size: ${bytes.size} bytes " +
+            "(${bytes.size / 1024f / 1024f} MB)")
+
+    bytes
+}
+
 
 @Preview(showBackground = true)
 @Composable
