@@ -37,6 +37,7 @@ coroutinesTest = "1.8.0"
 archCoreTesting = "2.2.0"
 mockitoAndroid = "5.10.0"
 autolinktext = "2.0.1"
+uiToolingAndroid = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -80,6 +81,7 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", name = "mockito
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", name = "coroutinesTest", version.ref = "coroutinesTest" }
 arch-core-testing = { module = "androidx.arch.core:core-testing", name = "archCoreTesting", version.ref = "archCoreTesting" }
 mockito-android = { module = "org.mockito:mockito-android", name = "mockitoAndroid", version.ref = "mockitoAndroid" }
+androidx-ui-tooling-android = { group = "androidx.compose.ui", name = "ui-tooling-android", version.ref = "uiToolingAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

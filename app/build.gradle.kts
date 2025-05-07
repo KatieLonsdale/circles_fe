@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.katielonsdale.chatterbox"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 14
         versionName = "1.3.0"
@@ -74,7 +74,8 @@ dependencies {
     implementation(libs.kotlin.std.lib)
     implementation(libs.coil.compose)
     implementation(libs.firebase.messaging.ktx)
-    
+    implementation(libs.androidx.ui.tooling.android)
+
 // Testing
 testImplementation(libs.junit)
 testImplementation(libs.mockito.core)

@@ -30,12 +30,13 @@ import coil.request.ImageRequest
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
-import com.katielonsdale.chatterbox.ui.home.CommentCard
+import com.katielonsdale.chatterbox.ui.components.CommentCard
 import sh.calvin.autolinktext.rememberAutoLinkText
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
+// used for Newsfeed and Circle Newsfeed, only displays 2 comments
 @Composable
 fun PostCard(
     post: Post,
@@ -74,7 +75,7 @@ fun PostCard(
 
         Spacer(modifier = Modifier.height(5.dp))
 
-        val fontSize = 15.sp
+        val fontSize = 25.sp
 
         Row(
             modifier = Modifier
@@ -105,7 +106,8 @@ fun PostCard(
                 .padding(start = 10.dp)
         ) {
             Text(
-                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
+//                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
+                text = post.attributes.caption,
                 color = Color.DarkGray,
                 fontSize = fontSize,
             )
@@ -154,7 +156,7 @@ fun formatTimeStamp(originalTimestamp: String) : String{
     }
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PostCardPreview(){
     val posts = SampleData.returnSamplePosts()
