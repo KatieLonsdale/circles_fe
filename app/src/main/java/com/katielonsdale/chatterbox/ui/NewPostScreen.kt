@@ -92,7 +92,8 @@ fun NewPostScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
                     contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier.align(Alignment.TopStart)
+                        .minimumInteractiveComponentSize(),
 
                     )
             }

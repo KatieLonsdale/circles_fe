@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.api.data.CircleUiState
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.minimumInteractiveComponentSize
 
 var circlePosts by mutableStateOf(emptyList<Post>())
 
@@ -98,7 +99,8 @@ fun DisplayPosts(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
                     contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier.align(Alignment.TopStart)
+                        .minimumInteractiveComponentSize(),
 
                     )
             }

@@ -13,6 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +64,8 @@ fun SignUpScreen(
             Icon(
                 painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
                 contentDescription = "Back",
-                modifier = Modifier.align(Alignment.Start),
+                modifier = Modifier.align(Alignment.Start)
+                    .minimumInteractiveComponentSize(),
             )
         }
     }
