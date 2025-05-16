@@ -70,6 +70,8 @@ data class CommentAttributes(
     @SerializedName("author_id") val authorId: String,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
-    @SerializedName("author_display_name") val authorDisplayName: String,
     @SerializedName("parent_comment_id") val parentCommentId: String?,
+    @SerializedName("author_display_name") val authorDisplayName: String,
+    @SerializedName("post_id") val postId: String,
+    @SerializedName("replies") val replies: List<Comment>?,
 ) : Parcelable

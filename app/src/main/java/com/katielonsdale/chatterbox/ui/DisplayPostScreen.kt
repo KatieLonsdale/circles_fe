@@ -23,8 +23,10 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -106,7 +108,9 @@ fun DisplayPostScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier.align(Alignment.TopStart)
+                        .minimumInteractiveComponentSize(),
+
                 )
             }
         }
@@ -125,7 +129,7 @@ fun DisplayPostScreen(
                     shape = RoundedCornerShape(16.dp)
                 )  // Apply shadow with rounded corners
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color.LightGray)  // Set background color (e.g., white),
+                .background(Color.White)  // Set background color (e.g., white),
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         // Remove focus and dismiss keyboard when tapping outside the TextField
@@ -153,42 +157,57 @@ fun DisplayPostScreen(
             }
 
             val textSize: Int = if (!hasContent) {
-                25
+                20
             } else {
                 15
             }
 
-            Row(
+            Surface(
+                shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
+                color = Color.LightGray,
                 modifier = Modifier
-                    .padding(start = 10.dp, top = 10.dp)
+                    .padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                        top = 10.dp,
+                    )
             ) {
-                Text(
-                    text = post.authorDisplayName,
-                    color = Color.DarkGray,
-                    fontSize = textSize.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-
-                SelectionContainer {
+                Row(
+                    modifier = Modifier
+                        .padding(all = 8.dp)
+                ) {
                     Text(
-                        text = AnnotatedString.rememberAutoLinkText(post.caption),
-//                        text = post.caption,
+                        text = post.authorDisplayName,
                         color = Color.DarkGray,
                         fontSize = textSize.sp,
+                        fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    SelectionContainer {
+                        Text(
+//                        text = AnnotatedString.rememberAutoLinkText(post.caption),
+                            text = post.caption,
+                            color = Color.DarkGray,
+                            fontSize = textSize.sp,
+                        )
+                    }
                 }
+
             }
+            Spacer(modifier = Modifier.height(10.dp))
 
             val comments = post.comments
             if (comments.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 20.dp)
+                        .padding(start = 10.dp)
                 ) {
                     comments.forEach { comment ->
-                        CommentCard(comment)
+                        CommentCard(
+                            comment = comment
+                        )
                     }
                 }
             }
@@ -293,6 +312,8 @@ private fun createComment(
                     commentResponseAttributes?.updatedAt ?: "",
                     commentResponseAttributes?.authorDisplayName ?: "",
                     commentResponseAttributes?.parentCommentId ?: "",
+                    commentResponseAttributes?.postId ?: "",
+                    commentResponseAttributes?.replies,
                 )
                 val newComment = Comment(
                     id = commentResponse?.id ?: "",

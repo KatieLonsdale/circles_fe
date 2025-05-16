@@ -120,7 +120,10 @@ fun PostCard(
                     .padding(start = 15.dp, top = 5.dp, bottom = 5.dp)
             ) {
                 comments.take(2).forEach { comment ->
-                    CommentCard(comment)
+                    CommentCard(
+                        comment = comment,
+                        circleId = post.attributes.circleId
+                    )
                 }
             }
         }
