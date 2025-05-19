@@ -30,7 +30,7 @@ import coil.request.ImageRequest
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
-import com.katielonsdale.chatterbox.ui.components.CommentCard
+import com.katielonsdale.chatterbox.ui.components.NewsfeedCommentCard
 import sh.calvin.autolinktext.rememberAutoLinkText
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -44,12 +44,9 @@ fun PostCard(
     displayCircleName: Boolean = true
 ) {
     val medias = post.attributes.contents.data
-//    var hasMedia = true
-//    if (medias.isEmpty()) { hasMedia = false }
     Column(
         modifier = Modifier
             .fillMaxWidth()
-//            .fillMaxHeight()
             .padding(10.dp)
             .clickable { onClickDisplayPost(post) }
             .shadow(
@@ -106,6 +103,7 @@ fun PostCard(
                 .padding(start = 10.dp)
         ) {
             Text(
+//                reset: annotatedstring breaks previews
 //                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
                 text = post.attributes.caption,
                 color = Color.DarkGray,
@@ -120,7 +118,7 @@ fun PostCard(
                     .padding(start = 15.dp, top = 5.dp, bottom = 5.dp)
             ) {
                 comments.take(2).forEach { comment ->
-                    CommentCard(
+                    NewsfeedCommentCard(
                         comment = comment,
                         circleId = post.attributes.circleId
                     )

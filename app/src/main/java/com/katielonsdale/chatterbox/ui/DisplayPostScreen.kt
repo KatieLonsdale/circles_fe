@@ -156,12 +156,6 @@ fun DisplayPostScreen(
                 )
             }
 
-            val textSize: Int = if (!hasContent) {
-                20
-            } else {
-                15
-            }
-
             Surface(
                 shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
                 color = Color.LightGray,
@@ -179,7 +173,7 @@ fun DisplayPostScreen(
                     Text(
                         text = post.authorDisplayName,
                         color = Color.DarkGray,
-                        fontSize = textSize.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(10.dp))
@@ -189,7 +183,7 @@ fun DisplayPostScreen(
 //                        text = AnnotatedString.rememberAutoLinkText(post.caption),
                             text = post.caption,
                             color = Color.DarkGray,
-                            fontSize = textSize.sp,
+                            fontSize = 20.sp,
                         )
                     }
                 }

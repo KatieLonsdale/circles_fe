@@ -44,15 +44,33 @@ import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import com.katielonsdale.chatterbox.ui.CommentInput
+import android.util.Log
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
-var replyInputVisible = false
+
+
 @Composable
 fun CommentCard(
     comment: Comment,
     circleId: String? = "",
     commentViewModel: CommentViewModel = viewModel(),
     ) {
-    Column() {
+
+    val replyVisibilityMap = remember { mutableStateMapOf<String, Boolean>() }
+
+    Column(
+        modifier = Modifier
+            .padding(
+                start = 5.dp,
+                end = 5.dp
+            )
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -96,9 +114,25 @@ fun CommentCard(
                     .padding(end = 10.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
-                ReplyIconButton()
+                ReplyIconButton(
+                    onClick = {
+                        replyVisibilityMap["comment ${comment.id}"] = true
+                    }
+                )
             }
 
+        }
+
+        //reset: for editing in preview
+//              if (true){
+        if (replyVisibilityMap["comment ${comment.id}"] == true){
+            val commentUiState by commentViewModel.uiState.collectAsState()
+            CommentInput(
+                value = commentUiState.commentText,
+                commentViewModel = commentViewModel,
+                startPadding = 0,
+                onDone = { replyVisibilityMap["comment ${comment.id}"] = false }
+            )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -160,8 +194,25 @@ fun CommentCard(
                             .padding(end = 10.dp),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        ReplyIconButton()
+                        ReplyIconButton(
+                            onClick = {
+                                replyVisibilityMap["reply ${reply.id}"] = true
+                            }
+                        )
                     }
+                }
+
+                //reset: for editing in preview
+//              if (true){
+                if (replyVisibilityMap["reply ${reply.id}"] == true){
+                    val commentUiState by commentViewModel.uiState.collectAsState()
+                    CommentInput(
+                        value = commentUiState.commentText,
+                        commentViewModel = commentViewModel,
+                        startPadding = 40,
+                        onDone = { replyVisibilityMap["reply ${reply.id}"] = false }
+//                        onDone = { false }
+                    )
                 }
                 val secondCommentReplies = reply.attributes.replies
                 if (!secondCommentReplies.isNullOrEmpty()) {
@@ -169,15 +220,6 @@ fun CommentCard(
                     for (subReply in sortedSubReplies) {
                         Spacer(modifier = Modifier.height(5.dp))
                         FinalCommentCard(reply = subReply)
-                    }
-                    //reset: for editing in preview
-//                    replyInputVisible = true
-                    if (replyInputVisible){
-                        val commentUiState by commentViewModel.uiState.collectAsState()
-                        CommentInput(
-                            value = commentUiState.commentText,
-                            commentViewModel = commentViewModel,
-                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -187,9 +229,11 @@ fun CommentCard(
 }
 
 @Composable
-private fun ReplyIconButton() {
+private fun ReplyIconButton(
+    onClick: () -> Unit
+) {
     IconButton(
-        onClick = { replyInputVisible = true },
+        onClick = { onClick() },
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_reply),
@@ -205,13 +249,18 @@ private fun ReplyIconButton() {
 fun CommentInput(
     value: String,
     commentViewModel: CommentViewModel,
+    startPadding: kotlin.Int,
+    onDone: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(
+                top = 10.dp,
+                start = startPadding.dp,
+            )
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_reply),
@@ -221,26 +270,30 @@ fun CommentInput(
                 .minimumInteractiveComponentSize()
         )
 
-        TextField(
-            value = value,
-            onValueChange = { newText ->   // Update the state with the new text
-                commentViewModel.setCommentText(newText)
-            },
-            //todo: "reply to {username}"
-            placeholder = { Text("Reply to comment...") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(onDone = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-                replyInputVisible = false
-            }),
-            textStyle = TextStyle(color = Color.DarkGray)
-        )
+        Surface(
+            shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
+        ) {
+            TextField(
+                value = value,
+                onValueChange = { newText ->   // Update the state with the new text
+                    commentViewModel.setCommentText(newText)
+                },
+                //todo: "reply to {username}"
+                placeholder = { Text("Reply to comment...") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(onDone = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    onDone()
+                }),
+                textStyle = TextStyle(color = Color.DarkGray)
+            )
+        }
     }
 }
 
