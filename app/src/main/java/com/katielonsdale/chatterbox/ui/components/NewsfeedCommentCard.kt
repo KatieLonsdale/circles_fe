@@ -108,7 +108,7 @@ fun NewsfeedCommentCard(
 
         Spacer(modifier = Modifier.height(10.dp))
         // Reply icon at the end
-        val commentReplies = comment.attributes.replies
+        val commentReplies = comment.attributes.replies?.data
         if (!commentReplies.isNullOrEmpty()) {
             val sortedReplies = commentReplies.sortedBy { it.attributes.createdAt }
             for (reply in sortedReplies) {

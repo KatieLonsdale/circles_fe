@@ -67,9 +67,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.AnnotatedString
-import com.katielonsdale.chatterbox.api.data.CommentAttributes
 import sh.calvin.autolinktext.rememberAutoLinkText
 import com.katielonsdale.chatterbox.ui.components.CommentCard
+import com.katielonsdale.chatterbox.utils.CommentCreator
 
 @Composable
 fun DisplayPostScreen(
@@ -200,7 +200,10 @@ fun DisplayPostScreen(
                 ) {
                     comments.forEach { comment ->
                         CommentCard(
-                            comment = comment
+                            comment = comment,
+                            postId = post.id,
+                            circleId = post.circleId,
+                            addCommentToPost = addCommentToPost
                         )
                     }
                 }
@@ -224,10 +227,11 @@ fun DisplayPostScreen(
             ) {
                 ElevatedButton(
                     onClick = {
-                        createComment(
-                            comment,
-                            post,
-                            addCommentToPost
+                        CommentCreator.createComment(
+                            comment = comment,
+                            postId = post.id,
+                            circleId = post.circleId,
+                            addCommentToPost = addCommentToPost,
                         )
                         counter++
                         clearComment()
@@ -280,67 +284,67 @@ fun CommentInput(
     }
 }
 
-private fun createComment(
-    comment: CommentUiState,
-    post: PostUiState,
-    addCommentToPost: (Comment) -> Unit,
-    ){
-    val userId = SessionManager.getUserId()
-    val circleId = post.circleId
-    val postId = post.id
-    val commentRequest = createCommentRequest(comment)
-
-    apiService.createComment(userId, circleId, postId, commentRequest).enqueue(object : Callback<CommentResponse>{
-        override fun onResponse(
-            call: Call<CommentResponse>,
-            response: Response<CommentResponse>
-        ) {
-            if (response.isSuccessful) {
-                val commentResponse = response.body()?.data
-                val commentResponseAttributes = commentResponse?.attributes
-                val commentAttributes = CommentAttributes(
-                    commentResponse?.id ?: "",
-                    commentResponseAttributes?.commentText ?: "",
-                    commentResponseAttributes?.authorId ?: "",
-                    commentResponseAttributes?.createdAt ?: "",
-                    commentResponseAttributes?.updatedAt ?: "",
-                    commentResponseAttributes?.authorDisplayName ?: "",
-                    commentResponseAttributes?.parentCommentId ?: "",
-                    commentResponseAttributes?.postId ?: "",
-                    commentResponseAttributes?.replies,
-                )
-                val newComment = Comment(
-                    id = commentResponse?.id ?: "",
-                    attributes = commentAttributes
-                )
-                addCommentToPost(newComment)
-                Log.e(
-                    "DisplayPostScreen",
-                    "Comment created successfully: ${response.body()}"
-                )
-            } else {
-                Log.e(
-                    "DisplayPostScreen",
-                    "Failed to create comment: ${response.body()} status: ${response.code()}"
-                )
-            }
-        }
-
-        override fun onFailure(call: Call<CommentResponse>, t: Throwable) {
-            Log.e("SelectCirclesScreen", "Error creating comment", t)
-        }
-    })
-}
-
-private fun createCommentRequest(comment: CommentUiState): CommentRequest {
-    val commentText = comment.commentText
-    val parentCommentId = comment.parentCommentId
-    val commentRequest = CommentRequest(
-        commentText,
-        parentCommentId
-    )
-    return commentRequest
-}
+//private fun createComment(
+//    comment: CommentUiState,
+//    post: PostUiState,
+//    addCommentToPost: (Comment) -> Unit,
+//    ){
+//    val userId = SessionManager.getUserId()
+//    val circleId = post.circleId
+//    val postId = post.id
+//    val commentRequest = createCommentRequest(comment)
+//
+//    apiService.createComment(userId, circleId, postId, commentRequest).enqueue(object : Callback<CommentResponse>{
+//        override fun onResponse(
+//            call: Call<CommentResponse>,
+//            response: Response<CommentResponse>
+//        ) {
+//            if (response.isSuccessful) {
+//                val commentResponse = response.body()?.data
+//                val commentResponseAttributes = commentResponse?.attributes
+//                val commentAttributes = CommentAttributes(
+//                    commentResponse?.id ?: "",
+//                    commentResponseAttributes?.commentText ?: "",
+//                    commentResponseAttributes?.authorId ?: "",
+//                    commentResponseAttributes?.createdAt ?: "",
+//                    commentResponseAttributes?.updatedAt ?: "",
+//                    commentResponseAttributes?.authorDisplayName ?: "",
+//                    commentResponseAttributes?.parentCommentId ?: "",
+//                    commentResponseAttributes?.postId ?: "",
+//                    commentResponseAttributes?.replies,
+//                )
+//                val newComment = Comment(
+//                    id = commentResponse?.id ?: "",
+//                    attributes = commentAttributes
+//                )
+//                addCommentToPost(newComment)
+//                Log.e(
+//                    "DisplayPostScreen",
+//                    "Comment created successfully: ${response.body()}"
+//                )
+//            } else {
+//                Log.e(
+//                    "DisplayPostScreen",
+//                    "Failed to create comment: ${response.body()} status: ${response.code()}"
+//                )
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<CommentResponse>, t: Throwable) {
+//            Log.e("SelectCirclesScreen", "Error creating comment", t)
+//        }
+//    })
+//}
+//
+//private fun createCommentRequest(comment: CommentUiState): CommentRequest {
+//    val commentText = comment.commentText
+//    val parentCommentId = comment.parentCommentId
+//    val commentRequest = CommentRequest(
+//        commentText,
+//        parentCommentId
+//    )
+//    return commentRequest
+//}
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable

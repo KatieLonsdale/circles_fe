@@ -24,11 +24,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,25 +38,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Comment
-import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
-import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.api.data.CommentViewModel
-import com.katielonsdale.chatterbox.ui.CommentInput
-import android.util.Log
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-
+import com.katielonsdale.chatterbox.api.data.CommentUiState
+import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
 
 
 @Composable
 fun CommentCard(
     comment: Comment,
-    circleId: String? = "",
+    postId: String,
+    circleId: String,
+    addCommentToPost: (Comment) -> Unit,
     commentViewModel: CommentViewModel = viewModel(),
     ) {
 
@@ -131,13 +123,23 @@ fun CommentCard(
                 value = commentUiState.commentText,
                 commentViewModel = commentViewModel,
                 startPadding = 0,
-                onDone = { replyVisibilityMap["comment ${comment.id}"] = false }
+                parentCommentId = comment.id,
+                onDone = {
+                    replyVisibilityMap["comment ${comment.id}"] = false
+                    createComment(
+                        comment = commentUiState,
+                        postId = postId,
+                        circleId = circleId,
+                        addCommentToPost = addCommentToPost,
+                    )
+                    commentViewModel.resetComment()
+                }
             )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
         // Reply icon at the end
-        val commentReplies = comment.attributes.replies
+        val commentReplies = comment.attributes.replies?.data
         if (!commentReplies.isNullOrEmpty()) {
             val sortedReplies = commentReplies.sortedBy { it.attributes.createdAt }
             for (reply in sortedReplies) {
@@ -152,7 +154,6 @@ fun CommentCard(
                         tint = Color.DarkGray,
                         modifier = Modifier
                             .minimumInteractiveComponentSize()
-                            .padding(start = 25.dp),
                     )
 
                     Surface(
@@ -210,11 +211,20 @@ fun CommentCard(
                         value = commentUiState.commentText,
                         commentViewModel = commentViewModel,
                         startPadding = 40,
-                        onDone = { replyVisibilityMap["reply ${reply.id}"] = false }
-//                        onDone = { false }
+                        parentCommentId = reply.id,
+                        onDone = {
+                            replyVisibilityMap["reply ${reply.id}"] = false
+                            createComment(
+                                comment = commentUiState,
+                                postId = postId,
+                                circleId = circleId,
+                                addCommentToPost = addCommentToPost,
+                            )
+                            commentViewModel.resetComment()
+                        }
                     )
                 }
-                val secondCommentReplies = reply.attributes.replies
+                val secondCommentReplies = reply.attributes.replies?.data
                 if (!secondCommentReplies.isNullOrEmpty()) {
                     val sortedSubReplies = secondCommentReplies.sortedBy { it.attributes.createdAt }
                     for (subReply in sortedSubReplies) {
@@ -250,6 +260,7 @@ fun CommentInput(
     value: String,
     commentViewModel: CommentViewModel,
     startPadding: kotlin.Int,
+    parentCommentId: String,
     onDone: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -277,6 +288,7 @@ fun CommentInput(
                 value = value,
                 onValueChange = { newText ->   // Update the state with the new text
                     commentViewModel.setCommentText(newText)
+                    commentViewModel.setParentCommentId(parentCommentId)
                 },
                 //todo: "reply to {username}"
                 placeholder = { Text("Reply to comment...") },
@@ -350,11 +362,6 @@ fun FinalCommentCard(
     }
 }
 
-@Composable
-fun ReplyButton(){
-
-}
-
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCommentCard() {
@@ -363,6 +370,8 @@ fun PreviewCommentCard() {
     val comments = post.attributes.comments.data
     CommentCard(
         comment = comments[0],
-        post.attributes.circleId
+        postId = post.id,
+        circleId = post.attributes.circleId,
+        addCommentToPost = {},
     )
 }

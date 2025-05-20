@@ -19,6 +19,7 @@ object SampleData {
                 "created_at": "2024-07-20T00:34:51.898Z",
                 "updated_at": "2024-07-20T00:34:51.898Z",
                 "author_display_name": "KT",
+                "circle_id": 1,
                 "circle_name": "High school friends",
                 "contents": {
                     "data": []
@@ -37,49 +38,53 @@ object SampleData {
                                 "created_at": "2024-08-10T20:04:17.534Z",
                                 "updated_at": "2024-08-10T20:04:17.534Z",
                                 "author_display_name": "KT",
-                                "replies": [
-                                    {
-                                        "id": "7",
-                                        "attributes": {
-                                            "id": 7,
-                                            "author_id": 1,
-                                            "parent_comment_id": 1,
-                                            "post_id": 1,
-                                            "comment_text": "I agree",
-                                            "created_at": "2024-08-10T20:39:58.186Z",
-                                            "updated_at": "2024-08-10T20:39:58.186Z",
-                                            "author_display_name": "maxwell",
-                                            "replies": [
-                                                {
-                                                    "id": "10",
-                                                    "attributes": {
-                                                        "id": 10,
-                                                        "author_id": 3,
-                                                        "parent_comment_id": 7,
-                                                        "post_id": 1,
-                                                        "comment_text": "Why do you agree?",
-                                                        "created_at": "2024-08-10T21:52:58.186Z",
-                                                        "updated_at": "2024-08-10T21:52:58.186Z",
-                                                        "author_display_name": "chagurlll"
-                                                    }
+                                "replies": {
+                                    "data": [
+                                        {
+                                            "id": "7",
+                                            "attributes": {
+                                                "id": 7,
+                                                "author_id": 1,
+                                                "parent_comment_id": 1,
+                                                "post_id": 1,
+                                                "comment_text": "I agree",
+                                                "created_at": "2024-08-10T20:39:58.186Z",
+                                                "updated_at": "2024-08-10T20:39:58.186Z",
+                                                "author_display_name": "maxwell",
+                                                "replies": {
+                                                    "data": [
+                                                        {
+                                                            "id": "10",
+                                                            "attributes": {
+                                                                "id": 10,
+                                                                "author_id": 3,
+                                                                "parent_comment_id": 7,
+                                                                "post_id": 1,
+                                                                "comment_text": "Why do you agree?",
+                                                                "created_at": "2024-08-10T21:52:58.186Z",
+                                                                "updated_at": "2024-08-10T21:52:58.186Z",
+                                                                "author_display_name": "chagurlll"
+                                                            }
+                                                        }
+                                                    ]
                                                 }
-                                            ]
+                                            }
+                                        },
+                                        {
+                                            "id": "2",
+                                            "attributes": {
+                                                "id": 2,
+                                                "author_id": 3,
+                                                "parent_comment_id": 1,
+                                                "post_id": 1,
+                                                "comment_text": "I disagree",
+                                                "created_at": "2024-08-10T20:52:58.186Z",
+                                                "updated_at": "2024-08-10T20:52:58.186Z",
+                                                "author_display_name": "chagurlll"
+                                            }
                                         }
-                                    },
-                                    {
-                                        "id": "2",
-                                        "attributes": {
-                                            "id": 2,
-                                            "author_id": 3,
-                                            "parent_comment_id": 1,
-                                            "post_id": 1,
-                                            "comment_text": "I disagree",
-                                            "created_at": "2024-08-10T20:52:58.186Z",
-                                            "updated_at": "2024-08-10T20:52:58.186Z",
-                                            "author_display_name": "chagurlll"
-                                        }
-                                    }
-                                ]
+                                    ]
+                                }
                             }
                         },
                         {
