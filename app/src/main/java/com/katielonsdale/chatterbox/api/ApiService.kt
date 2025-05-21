@@ -7,7 +7,7 @@ import com.katielonsdale.chatterbox.api.data.CommentResponse
 import com.katielonsdale.chatterbox.api.data.NewCircleRequest
 import com.katielonsdale.chatterbox.api.data.NewPostResponse
 import com.katielonsdale.chatterbox.api.data.PostRequest
-import com.katielonsdale.chatterbox.api.data.PostResponse
+import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
 import com.katielonsdale.chatterbox.api.data.SignUpRequest
@@ -18,6 +18,7 @@ import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
 import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
 import com.katielonsdale.chatterbox.api.data.FriendshipRequest
 import com.katielonsdale.chatterbox.api.data.FriendshipResponse
+import com.katielonsdale.chatterbox.api.data.PostResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -78,11 +79,18 @@ interface ApiService {
     fun getPostsForCircle(
         @Path("userId") userId: String?,
         @Path("circleId") circleId: String
-    ): Call<PostResponse>
+    ): Call<PostsResponse>
 
     @GET("/api/v0/users/{userId}/newsfeed")
     fun getNewsfeed(
         @Path("userId") userId: String?
+    ): Call<PostsResponse>
+
+    @GET("/api/v0/users/{userId}/circles/{circleId}/posts/{postId}")
+    fun getPost(
+        @Path("userId") userId: String,
+        @Path("circleId") circleId: String,
+        @Path("postId") postId: String,
     ): Call<PostResponse>
 
     @POST("users/{authorId}/circles/{circleId}/posts")
@@ -93,6 +101,7 @@ interface ApiService {
     ): Call<NewPostResponse>
 //    TODO: these should not be nullable
 
+    // COMMENTS
     @POST("users/{userId}/circles/{circleId}/posts/{postsId}/comments")
     fun createComment(
         @Path("userId") userId: String?,

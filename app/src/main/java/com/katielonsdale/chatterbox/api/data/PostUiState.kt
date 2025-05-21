@@ -9,4 +9,6 @@ data class PostUiState(
     val createdAt: String = "",
     val updatedAt: String = "",
     val circleId: String = "",
+    val parentCommentId: String = "",
+    val replies: List<Comment> = emptyList(),
 )

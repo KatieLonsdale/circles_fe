@@ -9,6 +9,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -246,11 +247,13 @@ fun BackButton(onClickBack: () -> Unit) {
         Icon(
             painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
             contentDescription = "Back",
+            modifier = Modifier
+                .minimumInteractiveComponentSize(),
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun CompleteTermsOfUseScreenPreview() {
     CompleteTermsOfUseScreen(

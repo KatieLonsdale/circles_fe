@@ -15,6 +15,12 @@ class CommentViewModel : ViewModel() {
         )
     }
 
+    fun setParentCommentId(id: String) {
+        _uiState.value = _uiState.value.copy(
+            parentCommentId = id
+        )
+    }
+
     fun resetComment(){
         _uiState.value = CommentUiState()
     }
