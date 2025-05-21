@@ -104,8 +104,8 @@ fun PostCard(
         ) {
             Text(
 //                reset: annotatedstring breaks previews
-//                AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
-                text = post.attributes.caption,
+                text = AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
+//                text = post.attributes.caption,
                 color = Color.DarkGray,
                 fontSize = fontSize,
             )

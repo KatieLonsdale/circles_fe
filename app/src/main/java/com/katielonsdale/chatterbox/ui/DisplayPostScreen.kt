@@ -180,8 +180,9 @@ fun DisplayPostScreen(
 
                     SelectionContainer {
                         Text(
-//                        text = AnnotatedString.rememberAutoLinkText(post.caption),
-                            text = post.caption,
+                            // reset: annotatedString breaks previews
+                            text = AnnotatedString.rememberAutoLinkText(post.caption),
+//                            text = post.caption,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
                         )
