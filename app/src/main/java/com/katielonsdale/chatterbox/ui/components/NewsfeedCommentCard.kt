@@ -52,6 +52,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.AnnotatedString
 
 
 // for home and circle newsfeeds, does not allow replies
@@ -97,7 +98,9 @@ fun NewsfeedCommentCard(
                     // Comment text
                     SelectionContainer {
                         Text(
-                            text = comment.attributes.commentText,
+                            //reset: AnnotatedString breaks preview
+                            text = AnnotatedString(comment.attributes.commentText),
+//                            text = comment.attributes.commentText,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
                         )
@@ -150,7 +153,9 @@ fun NewsfeedCommentCard(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = reply.attributes.commentText,
+                                // reset: AnnotatedString breaks preview
+                                text = AnnotatedString(reply.attributes.commentText),
+//                                text = reply.attributes.commentText,
                                 color = Color.DarkGray,
                                 fontSize = 20.sp,
                                 modifier = Modifier
