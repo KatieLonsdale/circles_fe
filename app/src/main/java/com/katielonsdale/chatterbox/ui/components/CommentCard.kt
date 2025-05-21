@@ -57,6 +57,8 @@ fun CommentCard(
     ) {
 
     val replyVisibilityMap = remember { mutableStateMapOf<String, Boolean>() }
+    // todo: update map when button is clicked again so more than one reply input is not open at once
+    // todo: hide comment input when reply input is open
 
     Column(
         modifier = Modifier
@@ -116,6 +118,8 @@ fun CommentCard(
             }
 
         }
+
+        //todo: reply icon gets cut off if comment is too long
 
         //reset: for editing in preview
 //              if (true){

@@ -56,6 +56,7 @@ fun SignInScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
+        //todo: cut off trailing whitespace from password
         Button(
             onClick = {
                 errorMessage = ""

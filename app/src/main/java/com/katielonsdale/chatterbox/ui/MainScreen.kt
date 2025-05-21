@@ -98,6 +98,7 @@ fun MainScreen(
                 }
             }
         },
+        //todo: hide FAB when not on main screens
         floatingActionButton = {
             if (isUserLoggedIn && isTouUpToDate) {
                 FloatingActionButton(
