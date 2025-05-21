@@ -1,7 +1,7 @@
 package com.katielonsdale.chatterbox
 
 import com.katielonsdale.chatterbox.api.data.Post
-import com.katielonsdale.chatterbox.api.data.PostResponse
+import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.google.gson.Gson
 
 object SampleData {
@@ -239,9 +239,9 @@ object SampleData {
 """
 
     val gson = Gson()
-    val postResponse: PostResponse = gson.fromJson(jsonResponse, PostResponse::class.java)
+    val postsResponse: PostsResponse = gson.fromJson(jsonResponse, PostsResponse::class.java)
 
-    private val samplePosts: List<Post> = gson.fromJson(jsonResponse, PostResponse::class.java).data
+    private val samplePosts: List<Post> = gson.fromJson(jsonResponse, PostsResponse::class.java).data
 
     fun returnSamplePosts(): List<Post> {
         return samplePosts

@@ -53,9 +53,9 @@ object SessionManager {
         }
     }
 
-    fun getUserId(): String? {
+    fun getUserId(): String {
         checkInitialization()
-        return sharedPreferences.getString("userId", null)
+        return sharedPreferences.getString("userId", null) ?: ""
     }
 
     fun isUserLoggedIn(): Boolean {

@@ -32,7 +32,7 @@ import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.Post
-import com.katielonsdale.chatterbox.api.data.PostResponse
+import com.katielonsdale.chatterbox.api.data.PostsResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -132,8 +132,8 @@ fun DisplayPosts(
 }
 
 private fun getPostsForCircle(circleId: String, userId: String?) {
-    apiService.getPostsForCircle(userId, circleId).enqueue(object : Callback<PostResponse> {
-        override fun onResponse(call: Call<PostResponse>, response: Response<PostResponse>) {
+    apiService.getPostsForCircle(userId, circleId).enqueue(object : Callback<PostsResponse> {
+        override fun onResponse(call: Call<PostsResponse>, response: Response<PostsResponse>) {
             if (response.isSuccessful) {
                 circlePosts = response.body()?.data ?: emptyList()
                 for (post in circlePosts) {
@@ -144,7 +144,7 @@ private fun getPostsForCircle(circleId: String, userId: String?) {
             }
         }
 
-        override fun onFailure(call: Call<PostResponse>, t: Throwable) {
+        override fun onFailure(call: Call<PostsResponse>, t: Throwable) {
             Log.e("CircleScreen", "Error fetching posts", t)
         }
     })

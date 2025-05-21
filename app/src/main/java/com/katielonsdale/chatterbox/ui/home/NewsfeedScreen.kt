@@ -7,24 +7,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
-import com.katielonsdale.chatterbox.api.data.Comment
 import com.katielonsdale.chatterbox.api.data.Post
-import com.katielonsdale.chatterbox.api.data.PostResponse
+import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.katielonsdale.chatterbox.ui.components.PostCard
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import sh.calvin.autolinktext.rememberAutoLinkText
-import com.katielonsdale.chatterbox.ui.components.CommentCard
 
 var posts by mutableStateOf(emptyList<Post>())
 @Composable
@@ -72,8 +65,8 @@ fun Newsfeed(
 }
 
 private fun getPosts(userId: String?) {
-    apiService.getNewsfeed(userId).enqueue(object : Callback<PostResponse> {
-        override fun onResponse(call: Call<PostResponse>, response: Response<PostResponse>) {
+    apiService.getNewsfeed(userId).enqueue(object : Callback<PostsResponse> {
+        override fun onResponse(call: Call<PostsResponse>, response: Response<PostsResponse>) {
             if (response.isSuccessful) {
                 posts = response.body()?.data ?: emptyList()
             } else {
@@ -81,7 +74,7 @@ private fun getPosts(userId: String?) {
             }
         }
 
-        override fun onFailure(call: Call<PostResponse>, t: Throwable) {
+        override fun onFailure(call: Call<PostsResponse>, t: Throwable) {
             Log.e("NewsfeedScreen", "Error fetching posts", t)
         }
     })

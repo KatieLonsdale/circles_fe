@@ -1,5 +1,6 @@
 package com.katielonsdale.chatterbox.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Comment
 import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
@@ -139,8 +141,8 @@ fun CommentCard(
 
         Spacer(modifier = Modifier.height(10.dp))
         // Reply icon at the end
-        val commentReplies = comment.attributes.replies?.data
-        if (!commentReplies.isNullOrEmpty()) {
+        val commentReplies = comment.attributes.replies.data
+        if (commentReplies.isNotEmpty()) {
             val sortedReplies = commentReplies.sortedBy { it.attributes.createdAt }
             for (reply in sortedReplies) {
                 Row(
@@ -259,7 +261,7 @@ private fun ReplyIconButton(
 fun CommentInput(
     value: String,
     commentViewModel: CommentViewModel,
-    startPadding: kotlin.Int,
+    startPadding: Int,
     parentCommentId: String,
     onDone: () -> Unit,
 ) {

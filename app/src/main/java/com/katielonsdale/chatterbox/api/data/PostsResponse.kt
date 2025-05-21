@@ -4,8 +4,12 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
-data class PostResponse (
+data class PostsResponse (
     @SerializedName("data") val data: List<Post>
+)
+
+data class PostResponse (
+    @SerializedName("data") val data: Post
 )
 
 data class NewPostResponse (
@@ -73,10 +77,10 @@ data class CommentAttributes(
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
     @SerializedName("author_display_name") val authorDisplayName: String,
-    @SerializedName("replies") val replies: Replies?,
+    @SerializedName("replies") val replies: Replies,
 ) : Parcelable
 
 @Parcelize
 data class Replies(
-    @SerializedName("data") val data: List<Comment>
+    @SerializedName("data") var data: List<Comment>
 ) : Parcelable
