@@ -6,7 +6,7 @@ import com.google.gson.Gson
 
 object SampleData {
 
-    val jsonResponse = """
+    private val jsonResponse = """
 {
     "data": [
         {
@@ -60,7 +60,7 @@ object SampleData {
                                                                 "author_id": 3,
                                                                 "parent_comment_id": 7,
                                                                 "post_id": 1,
-                                                                "comment_text": "Why do you agree?",
+                                                                "comment_text": "Here is a very long comment that should wrap properly and not cover the reply button",
                                                                 "created_at": "2024-08-10T21:52:58.186Z",
                                                                 "updated_at": "2024-08-10T21:52:58.186Z",
                                                                 "author_display_name": "chagurlll"

@@ -74,19 +74,23 @@ fun CommentCard(
 
             // Combined author name and comment text
             Surface(
+                modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
                 color = Color.LightGray,
             ) {
-                Row(
+                Column(
                     modifier = Modifier
-                        .weight(0.9f)
-                        .padding(all = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .padding(
+                            start = 10.dp,
+                            end = 10.dp,
+                            top = 5.dp,
+                            bottom = 5.dp
+                        )
                 ) {
                     Text(
                         text = comment.attributes.authorDisplayName,
                         color = Color.DarkGray,
-                        fontSize = 20.sp,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(end = 8.dp)
                     )
@@ -104,8 +108,8 @@ fun CommentCard(
 
             Box(
                 modifier = Modifier
-                    .weight(0.1f)
-                    .padding(end = 10.dp),
+//                    .weight(0.1f)
+                    .align(Alignment.CenterVertically),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 ReplyIconButton(
@@ -116,11 +120,110 @@ fun CommentCard(
                     }
                 )
             }
-
         }
 
-        //todo: reply icon gets cut off if comment is too long
+        Spacer(modifier = Modifier.height(5.dp))
 
+        val commentReplies = comment.attributes.replies?.data
+        if (!commentReplies.isNullOrEmpty()) {
+            val sortedReplies = commentReplies.sortedBy { it.attributes.createdAt }
+            for (reply in sortedReplies) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Box() {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_reply),
+                            contentDescription = "Reply",
+                            tint = Color.DarkGray,
+                            modifier = Modifier
+                                .minimumInteractiveComponentSize()
+                        )
+                    }
+
+                    Surface(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
+                        color = Color.LightGray,
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(
+                                    start = 10.dp,
+                                    end = 10.dp,
+                                    top = 5.dp,
+                                    bottom = 5.dp
+                                )
+                        ) {
+                            Text(
+                                text = reply.attributes.authorDisplayName,
+                                color = Color.DarkGray,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text(
+                                // reset: AnnotatedString breaks preview
+                                text = AnnotatedString(reply.attributes.commentText),
+//                                text = reply.attributes.commentText,
+                                color = Color.DarkGray,
+                                fontSize = 20.sp,
+                            )
+                        }
+                    }
+
+                    Box(
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        ReplyIconButton(
+                            onClick = {
+                                val id = "reply ${reply.id}"
+                                replyVisibilityId.value =
+                                    if (replyVisibilityId.value == id) "" else id
+                            }
+                        )
+                    }
+                }
+
+                val secondCommentReplies = reply.attributes.replies?.data
+                if (!secondCommentReplies.isNullOrEmpty()) {
+                    val sortedSubReplies = secondCommentReplies.sortedBy { it.attributes.createdAt }
+                    for (subReply in sortedSubReplies) {
+                        Spacer(modifier = Modifier.height(5.dp))
+                        FinalCommentCard(
+                            reply = subReply,
+                            replyVisibilityId = replyVisibilityId,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                //reset: for editing in preview
+//              if (true){
+                if (replyVisibilityId.value == "reply ${reply.id}") {
+                    val commentUiState by commentViewModel.uiState.collectAsState()
+                    CommentInput(
+                        value = commentUiState.commentText,
+                        commentViewModel = commentViewModel,
+                        startPadding = 30,
+                        parentCommentId = reply.id,
+                        onDone = {
+                            replyVisibilityId.value = ""
+                            createComment(
+                                comment = commentUiState,
+                                postId = postId,
+                                circleId = circleId,
+                                addCommentToPost = addCommentToPost,
+                            )
+                            commentViewModel.resetComment()
+                        }
+                    )
+                }
+            }
+        }
         //reset: for editing in preview
 //              if (true){
         if (replyVisibilityId.value == "comment ${comment.id}"){
@@ -141,108 +244,6 @@ fun CommentCard(
                     commentViewModel.resetComment()
                 }
             )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-        // Reply icon at the end
-        val commentReplies = comment.attributes.replies?.data
-        if (!commentReplies.isNullOrEmpty()) {
-            val sortedReplies = commentReplies.sortedBy { it.attributes.createdAt }
-            for (reply in sortedReplies) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_reply),
-                        contentDescription = "Reply",
-                        tint = Color.DarkGray,
-                        modifier = Modifier
-                            .minimumInteractiveComponentSize()
-                    )
-
-                    Surface(
-                        shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
-                        color = Color.LightGray,
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(
-                                top = 10.dp,
-                                bottom = 10.dp
-                            ),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = reply.attributes.authorDisplayName,
-                                color = Color.DarkGray,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(start = 10.dp)
-                            )
-
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Text(
-                                // reset: AnnotatedString breaks preview
-                                text = AnnotatedString(reply.attributes.commentText),
-//                                text = reply.attributes.commentText,
-                                color = Color.DarkGray,
-                                fontSize = 20.sp,
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                            )
-                        }
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .weight(0.1f)
-                            .padding(end = 10.dp),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        ReplyIconButton(
-                            onClick = {
-                                val id = "reply ${reply.id}"
-                                replyVisibilityId.value = if (replyVisibilityId.value == id) "" else id
-                            }
-                        )
-                    }
-                }
-
-                //reset: for editing in preview
-//              if (true){
-                if (replyVisibilityId.value == "reply ${reply.id}"){
-                    val commentUiState by commentViewModel.uiState.collectAsState()
-                    CommentInput(
-                        value = commentUiState.commentText,
-                        commentViewModel = commentViewModel,
-                        startPadding = 40,
-                        parentCommentId = reply.id,
-                        onDone = {
-                            replyVisibilityId.value = ""
-                            createComment(
-                                comment = commentUiState,
-                                postId = postId,
-                                circleId = circleId,
-                                addCommentToPost = addCommentToPost,
-                            )
-                            commentViewModel.resetComment()
-                        }
-                    )
-                }
-                val secondCommentReplies = reply.attributes.replies?.data
-                if (!secondCommentReplies.isNullOrEmpty()) {
-                    val sortedSubReplies = secondCommentReplies.sortedBy { it.attributes.createdAt }
-                    for (subReply in sortedSubReplies) {
-                        Spacer(modifier = Modifier.height(5.dp))
-                        FinalCommentCard(reply = subReply)
-                    }
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-            }
         }
     }
 }
@@ -320,58 +321,76 @@ fun CommentInput(
 
 @Composable
 fun FinalCommentCard(
-    reply: Comment
+    reply: Comment,
+    replyVisibilityId: MutableState<String> = remember { mutableStateOf("") },
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_reply),
-            contentDescription = "Reply",
-            tint = Color.DarkGray,
+        Box(
             modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .padding(start = 50.dp),
-        )
+                .padding(top = 8.dp, start = 30.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_reply),
+                contentDescription = "Reply",
+                tint = Color.DarkGray,
+                modifier = Modifier
+                    .minimumInteractiveComponentSize()
+            )
+        }
 
         Surface(
-            shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(8.dp),
             color = Color.LightGray,
         ) {
-            Row(
-                modifier = Modifier.padding(
-                    top = 10.dp,
-                    bottom = 10.dp
-                ),
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
+                modifier = Modifier
+                    .padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                        top = 5.dp,
+                        bottom = 5.dp
+                    )
             ) {
                 Text(
                     text = reply.attributes.authorDisplayName,
                     color = Color.DarkGray,
-                    fontSize = 20.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(start = 10.dp)
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    // reset: AnnotatedString breaks preview
                     text = AnnotatedString(reply.attributes.commentText),
-//                    text = reply.attributes.commentText,
                     color = Color.DarkGray,
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
+                    fontSize = 18.sp,
                 )
             }
         }
+
+        Box(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .align(Alignment.CenterVertically),
+
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            ReplyIconButton(
+                onClick = {
+                    val id = "reply ${reply.attributes.parentCommentId}"
+                    replyVisibilityId.value = if (replyVisibilityId.value == id) "" else id
+                }
+            )
+        }
     }
 }
+
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable

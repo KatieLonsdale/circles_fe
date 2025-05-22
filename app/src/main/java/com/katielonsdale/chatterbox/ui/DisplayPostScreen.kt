@@ -200,7 +200,12 @@ fun DisplayPostScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                        top = 5.dp,
+                        bottom = 5.dp
+                    )
             ) {
                 ElevatedButton(
                     onClick = {
