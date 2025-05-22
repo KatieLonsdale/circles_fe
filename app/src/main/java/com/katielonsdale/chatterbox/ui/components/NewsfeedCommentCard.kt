@@ -34,8 +34,6 @@ import androidx.compose.ui.text.AnnotatedString
 @Composable
 fun NewsfeedCommentCard(
     comment: Comment,
-    circleId: String? = "",
-    commentViewModel: CommentViewModel = viewModel(),
     ) {
     Column(
         modifier = Modifier
@@ -98,20 +96,16 @@ fun NewsfeedCommentCard(
                             .padding(start = 25.dp),
                     )
 
-                    Row(
-                        modifier = Modifier.padding(
-                            top = 10.dp,
-                            bottom = 10.dp
-                        ),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                    ) {
                         Text(
                             text = reply.attributes.authorDisplayName,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .align(Alignment.CenterVertically)
+//                                .align(Alignment.CenterVertically)
                                 .padding(start = 10.dp)
                         )
 
@@ -125,8 +119,9 @@ fun NewsfeedCommentCard(
                             fontSize = 20.sp,
                             modifier = Modifier
                                 .padding(end = 10.dp)
+//                                .align(Alignment.CenterVertically)
                         )
-                    }
+//                    }
                 }
             }
         }
@@ -141,6 +136,5 @@ fun PreviewNewsfeedCommentCard() {
     val comments = post.attributes.comments.data
     NewsfeedCommentCard(
         comment = comments[0],
-        post.attributes.circleId
     )
 }

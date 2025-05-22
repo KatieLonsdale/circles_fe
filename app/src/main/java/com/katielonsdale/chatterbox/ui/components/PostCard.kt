@@ -120,7 +120,7 @@ fun PostCard(
                 comments.take(2).forEach { comment ->
                     NewsfeedCommentCard(
                         comment = comment,
-                        circleId = post.attributes.circleId
+
                     )
                 }
             }
