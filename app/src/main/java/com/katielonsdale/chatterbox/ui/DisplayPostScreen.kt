@@ -166,6 +166,9 @@ fun DisplayPostScreen(
 
             val comments = post.comments
             if (comments.isNotEmpty()) {
+
+                val replyVisibilityId = remember { mutableStateOf("") }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -177,6 +180,7 @@ fun DisplayPostScreen(
                             postId = post.id,
                             circleId = post.circleId,
                             addCommentToPost = addCommentToPost,
+                            replyVisibilityId = replyVisibilityId,
                         )
                     }
                 }

@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,11 +56,8 @@ fun CommentCard(
     circleId: String,
     addCommentToPost: (Comment) -> Unit,
     commentViewModel: CommentViewModel = viewModel(),
+    replyVisibilityId: MutableState<String> = remember { mutableStateOf("") },
     ) {
-
-    val replyVisibilityMap = remember { mutableStateMapOf<String, Boolean>() }
-    // todo: update map when button is clicked again so more than one reply input is not open at once
-    // todo: hide comment input when reply input is open
 
     Column(
         modifier = Modifier
@@ -85,7 +83,6 @@ fun CommentCard(
                         .padding(all = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    // Author name
                     Text(
                         text = comment.attributes.authorDisplayName,
                         color = Color.DarkGray,
@@ -93,8 +90,6 @@ fun CommentCard(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(end = 8.dp)
                     )
-
-                    // Comment text
                     SelectionContainer {
                         Text(
                         // reset: AnnotatedString breaks preview
@@ -115,8 +110,8 @@ fun CommentCard(
             ) {
                 ReplyIconButton(
                     onClick = {
-                        val key = "comment ${comment.id}"
-                        replyVisibilityMap[key] = !(replyVisibilityMap[key] ?: false)
+                        val id = "comment ${comment.id}"
+                        replyVisibilityId.value = if (replyVisibilityId.value == id) "" else id
 
                     }
                 )
@@ -128,7 +123,7 @@ fun CommentCard(
 
         //reset: for editing in preview
 //              if (true){
-        if (replyVisibilityMap["comment ${comment.id}"] == true){
+        if (replyVisibilityId.value == "comment ${comment.id}"){
             val commentUiState by commentViewModel.uiState.collectAsState()
             CommentInput(
                 value = commentUiState.commentText,
@@ -136,7 +131,7 @@ fun CommentCard(
                 startPadding = 0,
                 parentCommentId = comment.id,
                 onDone = {
-                    replyVisibilityMap["comment ${comment.id}"] = false
+                    replyVisibilityId.value = ""
                     createComment(
                         comment = commentUiState,
                         postId = postId,
@@ -210,9 +205,8 @@ fun CommentCard(
                     ) {
                         ReplyIconButton(
                             onClick = {
-                                val key = "reply ${reply.id}"
-                                replyVisibilityMap[key] = !(replyVisibilityMap[key] ?: false)
-
+                                val id = "reply ${reply.id}"
+                                replyVisibilityId.value = if (replyVisibilityId.value == id) "" else id
                             }
                         )
                     }
@@ -220,7 +214,7 @@ fun CommentCard(
 
                 //reset: for editing in preview
 //              if (true){
-                if (replyVisibilityMap["reply ${reply.id}"] == true){
+                if (replyVisibilityId.value == "reply ${reply.id}"){
                     val commentUiState by commentViewModel.uiState.collectAsState()
                     CommentInput(
                         value = commentUiState.commentText,
@@ -228,7 +222,7 @@ fun CommentCard(
                         startPadding = 40,
                         parentCommentId = reply.id,
                         onDone = {
-                            replyVisibilityMap["reply ${reply.id}"] = false
+                            replyVisibilityId.value = ""
                             createComment(
                                 comment = commentUiState,
                                 postId = postId,
