@@ -93,20 +93,13 @@ fun NewsfeedCommentCard(
                         tint = Color.DarkGray,
                         modifier = Modifier
                             .minimumInteractiveComponentSize()
-                            .padding(start = 25.dp),
+                            .padding(start = 15.dp),
                     )
-
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                    ) {
                         Text(
                             text = reply.attributes.authorDisplayName,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-//                                .align(Alignment.CenterVertically)
-                                .padding(start = 10.dp)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
