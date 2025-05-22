@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.ui.components.BackButton
 
 @Composable
 fun CreateNewScreen(
@@ -39,37 +41,27 @@ fun CreateNewScreen(
         "Friend" to onClickNewFriend,
     )
     Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
-        // Box for back arrow
-        Box() {
-            IconButton(
-                onClick = {
-                    onClickBack()
-                },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.White
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
-                    contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart)
-                        .minimumInteractiveComponentSize(),
-                )
-            }
-        }
+        BackButton(onClickBack = onClickBack)
         Text(
             text = "Select New...",
             color = Color.DarkGray,
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(
+                start = 10.dp,
+                top = 10.dp,
+            )
         )
         options.forEach { option ->
             Row(
                 modifier = Modifier.clickable { option.second() }
                     .fillMaxWidth()
                     .padding(
-                        start = 5.dp,
+                        start = 15.dp,
                         top = 5.dp,
                     )
             ) {
@@ -86,13 +78,15 @@ fun CreateNewScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCreateNewScreen(){
-    CreateNewScreen(
-        onClickBack = {},
-        onClickNewPost = {},
-        onClickNewCircle = {},
-        onClickNewFriend = {},
-    )
+    MaterialTheme {
+        CreateNewScreen(
+            onClickBack = {},
+            onClickNewPost = {},
+            onClickNewCircle = {},
+            onClickNewFriend = {},
+        )
+    }
 }

@@ -45,6 +45,7 @@ import kotlinx.coroutines.withContext
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.util.Log
+import com.katielonsdale.chatterbox.ui.components.BackButton
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
@@ -78,26 +79,7 @@ fun NewPostScreen(
         verticalArrangement = Arrangement.Top,
 
     ){
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(
-                onClick = {
-                    onClickBack()
-                },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.White
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
-                    contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart)
-                        .minimumInteractiveComponentSize(),
-
-                    )
-            }
-        }
+        BackButton(onClickBack = onClickBack)
 
         Text(
             text = "New Post",
@@ -281,7 +263,7 @@ private suspend fun Uri.toCompressedByteArray(
 }
 
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NewPostScreenPreview(){
     val newPostUiState = NewPostUiState()
