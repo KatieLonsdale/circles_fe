@@ -115,7 +115,9 @@ fun CommentCard(
             ) {
                 ReplyIconButton(
                     onClick = {
-                        replyVisibilityMap["comment ${comment.id}"] = true
+                        val key = "comment ${comment.id}"
+                        replyVisibilityMap[key] = !(replyVisibilityMap[key] ?: false)
+
                     }
                 )
             }
@@ -208,7 +210,9 @@ fun CommentCard(
                     ) {
                         ReplyIconButton(
                             onClick = {
-                                replyVisibilityMap["reply ${reply.id}"] = true
+                                val key = "reply ${reply.id}"
+                                replyVisibilityMap[key] = !(replyVisibilityMap[key] ?: false)
+
                             }
                         )
                     }
