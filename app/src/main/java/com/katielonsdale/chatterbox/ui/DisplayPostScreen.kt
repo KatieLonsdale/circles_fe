@@ -20,13 +20,9 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -53,20 +49,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
-import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.Comment
-import com.katielonsdale.chatterbox.api.data.CommentRequest
-import com.katielonsdale.chatterbox.api.data.CommentResponse
 import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.api.data.PostUiState
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.Callback
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.AnnotatedString
+import com.katielonsdale.chatterbox.ui.components.BackButton
 import sh.calvin.autolinktext.rememberAutoLinkText
 import com.katielonsdale.chatterbox.ui.components.CommentCard
 import com.katielonsdale.chatterbox.utils.CommentCreator
@@ -95,25 +85,7 @@ fun DisplayPostScreen(
             .padding(top = 10.dp)
             .verticalScroll(rememberScrollState()) // Enable vertical scrolling
     ) {
-        // Box for back arrow
-        Box() {
-            IconButton(
-                onClick = {
-                    onClickBack()
-                },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.White
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart)
-                        .minimumInteractiveComponentSize(),
-
-                )
-            }
-        }
+        BackButton(onClickBack = onClickBack)
 
         Column(
             modifier = Modifier
@@ -194,6 +166,9 @@ fun DisplayPostScreen(
 
             val comments = post.comments
             if (comments.isNotEmpty()) {
+
+                val replyVisibilityId = remember { mutableStateOf("") }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -205,6 +180,7 @@ fun DisplayPostScreen(
                             postId = post.id,
                             circleId = post.circleId,
                             addCommentToPost = addCommentToPost,
+                            replyVisibilityId = replyVisibilityId,
                         )
                     }
                 }
@@ -224,7 +200,12 @@ fun DisplayPostScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                        top = 5.dp,
+                        bottom = 5.dp
+                    )
             ) {
                 ElevatedButton(
                     onClick = {

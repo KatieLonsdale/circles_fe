@@ -45,6 +45,7 @@ import kotlinx.coroutines.withContext
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.util.Log
+import com.katielonsdale.chatterbox.ui.components.BackButton
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
@@ -61,6 +62,7 @@ fun NewPostScreen(
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    var showError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -76,28 +78,8 @@ fun NewPostScreen(
             },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
-
     ){
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(
-                onClick = {
-                    onClickBack()
-                },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.White
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
-                    contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart)
-                        .minimumInteractiveComponentSize(),
-
-                    )
-            }
-        }
+        BackButton(onClickBack = onClickBack)
 
         Text(
             text = "New Post",
@@ -114,31 +96,45 @@ fun NewPostScreen(
             value = newPostUiState.caption,
             onCaptionChanged = { newCaption ->   // Call setCaption on text change
                 onCaptionChanged(newCaption)
+                showError = false // Clear error when user types
             },
             focusManager,
             keyboardController
         )
+
+        if (showError) {
+            Text(
+                text = "Please add either an image or a caption",
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
     Box(
         modifier = Modifier
             .fillMaxSize() // Make the Box fill the entire screen
     ) {
         ElevatedButton(
-            onClick = onClickNext,
+            onClick = {
+                if (newPostUiState.caption.isBlank() && newPostUiState.contents == null) {
+                    showError = true
+                } else {
+                    onClickNext()
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.LightGray, // Background color
                 contentColor = Color.DarkGray,  // Text color
             ),
             modifier = Modifier
-                    .align(Alignment.BottomEnd) // Align to the bottom-right
+                .align(Alignment.BottomEnd) // Align to the bottom-right
                 .padding(16.dp) // Padding to prevent the button from touching the screen edge
         ) {
             Text("Next")
         }
-
     }
 }
 
@@ -237,11 +233,6 @@ private fun convertUriToByteArray(uri: Uri?, context: Context): ByteArray? {
     // Run the coroutine only when the `uri` changes
     LaunchedEffect(uri) {
         if (uri != null) {
-//            byteArray = withContext(Dispatchers.IO) {
-//                val inputStream = contentResolver.openInputStream(uri)
-//                inputStream?.readBytes()
-//            }
-
             byteArray = uri.toCompressedByteArray(context)
         }
     }
@@ -281,7 +272,7 @@ private suspend fun Uri.toCompressedByteArray(
 }
 
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NewPostScreenPreview(){
     val newPostUiState = NewPostUiState()
@@ -293,5 +284,3 @@ fun NewPostScreenPreview(){
         onClickNext = {}
     )
 }
-
-//todo: add error handling if image and caption are blank

@@ -30,7 +30,6 @@ import coil.request.ImageRequest
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
-import com.katielonsdale.chatterbox.ui.components.NewsfeedCommentCard
 import sh.calvin.autolinktext.rememberAutoLinkText
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -72,12 +71,16 @@ fun PostCard(
 
         Spacer(modifier = Modifier.height(5.dp))
 
-        val fontSize = 25.sp
 
         Row(
             modifier = Modifier
-                .padding(start = 10.dp)
+                .padding(
+                    start = 10.dp,
+                    top = 5.dp,
+                )
         ) {
+            val fontSize = 15.sp
+
             Text(
                 text = post.attributes.authorDisplayName,
                 color = Color.DarkGray,
@@ -102,8 +105,9 @@ fun PostCard(
             modifier = Modifier
                 .padding(start = 10.dp)
         ) {
+            val fontSize = 20.sp
             Text(
-//                reset: annotatedstring breaks previews
+//                reset: annotated string breaks previews
                 text = AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
 //                text = post.attributes.caption,
                 color = Color.DarkGray,
@@ -120,7 +124,7 @@ fun PostCard(
                 comments.take(2).forEach { comment ->
                     NewsfeedCommentCard(
                         comment = comment,
-                        circleId = post.attributes.circleId
+
                     )
                 }
             }
@@ -138,7 +142,7 @@ fun PostCard(
                 Text(
                     text = post.attributes.circleName,
                     color = Color.DarkGray,
-                    fontSize = fontSize,
+                    fontSize = 20.sp,
                     fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
                 )
             }

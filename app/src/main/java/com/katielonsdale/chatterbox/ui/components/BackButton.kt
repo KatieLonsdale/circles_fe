@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.katielonsdale.chatterbox.R
 
 // Box for back arrow
@@ -22,9 +23,10 @@ fun BackButton(
             onClick = {
                 onClickBack()
             },
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.White
-            ),
+//            colors = IconButtonDefaults.iconButtonColors(
+//                containerColor = Color.LightGray
+//            ),
+            modifier = Modifier
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
@@ -34,4 +36,10 @@ fun BackButton(
             )
         }
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun BackButtonPreview(){
+    BackButton(onClickBack = {})
 }

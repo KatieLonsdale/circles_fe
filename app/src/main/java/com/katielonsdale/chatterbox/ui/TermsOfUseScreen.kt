@@ -10,14 +10,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.UserRequest
+import com.katielonsdale.chatterbox.ui.components.BackButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,22 +32,7 @@ fun TermsOfUseScreen(
             .fillMaxSize()
             .padding(top = 10.dp, start = 2.dp)
     ){
-        // Box for back arrow
-        IconButton(
-            onClick = {
-                onClickBack()
-            },
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.White
-            ),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
-                contentDescription = "Back",
-                modifier = Modifier.align(Alignment.Start)
-                    .minimumInteractiveComponentSize(),
-            )
-        }
+        BackButton(onClickBack = onClickBack)
     }
 
     var isChecked by remember { mutableStateOf(false) }
@@ -127,7 +110,7 @@ private fun updateUserTou() {
     })
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun TermsOfUseScreenPreview() {
     MaterialTheme {

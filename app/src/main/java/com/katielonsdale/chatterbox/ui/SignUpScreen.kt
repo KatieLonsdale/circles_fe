@@ -8,12 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,7 +17,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -32,7 +27,7 @@ import com.katielonsdale.chatterbox.api.data.SignUpResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.ui.components.BackButton
 
 @Composable
 fun SignUpScreen(
@@ -46,28 +41,11 @@ fun SignUpScreen(
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-//    todo: create reusable component for back arrow
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(top = 10.dp, start = 2.dp)
     ){
-        // Box for back arrow
-        IconButton(
-            onClick = {
-                onClickBack()
-            },
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Color.White
-            ),
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
-                contentDescription = "Back",
-                modifier = Modifier.align(Alignment.Start)
-                    .minimumInteractiveComponentSize(),
-            )
-        }
+        BackButton(onClickBack = onClickBack)
     }
 
     Column(
@@ -179,7 +157,7 @@ fun signUpUser(
     })
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun SignUpScreenPreview(){
     SignUpScreen(

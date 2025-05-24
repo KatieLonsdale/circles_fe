@@ -56,13 +56,12 @@ fun SignInScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        //todo: cut off trailing whitespace from password
         Button(
             onClick = {
                 errorMessage = ""
                 loginUser(
                     email,
-                    password,
+                    password.trimEnd(),
                     updateUser,
                     mainActivity,
                 ) { isSuccess, error ->
@@ -189,7 +188,7 @@ private fun extractUserAttributes(userData: AuthenticatedUser?): Map<String, Str
     return attributes
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
     SignInScreen(

@@ -5,13 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Circle
@@ -21,7 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -33,17 +30,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import com.katielonsdale.chatterbox.api.data.PostRequest
 import com.katielonsdale.chatterbox.api.data.PostRequestContent
 import com.katielonsdale.chatterbox.api.data.NewPostResponse
-import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.ui.components.BackButton
 
 var circles by mutableStateOf(emptyList<Circle>())
 
 @Composable
 fun SelectCirclesScreen(
-    newPostUiState: NewPostUiState,
+    newPostUiState: NewPostUiState = NewPostUiState(),
     onClickPost: () -> Unit = {},
     onClickBack: () -> Unit = {}
 ){
@@ -64,45 +60,27 @@ fun SelectCirclesScreen(
 
 @Composable
 fun SelectCircles(
-    newPostUiState: NewPostUiState,
-    onClickPost: () -> Unit,
-    onClickBack: () -> Unit,
+    newPostUiState: NewPostUiState = NewPostUiState(),
+    onClickPost: () -> Unit = {},
+    onClickBack: () -> Unit = {},
 ){
     var showError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(16.dp)
     ) {
         val selectedCircleIds = remember { mutableStateListOf<String>() }
 
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(
-                onClick = {
-                    onClickBack()
-                },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.White
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back), // Use your back arrow drawable
-                    contentDescription = "Back",
-                    modifier = Modifier.align(Alignment.TopStart)
-                        .minimumInteractiveComponentSize(),
-
-                )
-            }
-        }
+        BackButton(onClickBack = onClickBack)
 
         Text(
             text = "Select Chatters",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(
+                start = 20.dp,
+                bottom = 16.dp
+            )
         )
         circles.forEach { circle ->
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -216,30 +194,18 @@ private fun createPostRequest(newPostUiState: NewPostUiState): PostRequest {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SelectCirclesScreenPreview(){
-    val newPostViewModel: NewPostViewModel = viewModel()
-    val newPostUiState by newPostViewModel.uiState.collectAsState()
+//@Preview(apiLevel = 34, showBackground = true)
+//@Composable
+//fun SelectCirclesScreenPreview(){
+//    MaterialTheme {
+//        SelectCirclesScreen()
+//    }
+//}
 
-    MaterialTheme {
-        SelectCirclesScreen(
-            newPostUiState
-        )
-    }
-}
-
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun SelectCirclesPreview() {
-    val newPostViewModel: NewPostViewModel = viewModel()
-    val newPostUiState by newPostViewModel.uiState.collectAsState()
-
     MaterialTheme {
-        SelectCircles(
-            newPostUiState,
-            onClickPost = {},
-            onClickBack = {}
-        )
+        SelectCircles()
     }
 }
