@@ -98,9 +98,11 @@ fun MainScreen(
                 }
             }
         },
-        //todo: hide FAB when not on main screens
         floatingActionButton = {
-            if (isUserLoggedIn && isTouUpToDate) {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+
+            if (currentDestination?.route == Screen.Newsfeed.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(InnerCirclesScreen.CreateNew.name)
@@ -111,7 +113,7 @@ fun MainScreen(
                     Icon(
                         Icons.Filled.Add,
                         contentDescription = "Add"
-                    ) // Replace with your preferred icon
+                    )
                 }
             }
         },

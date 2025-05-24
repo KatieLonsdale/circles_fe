@@ -74,7 +74,6 @@ fun DisplayPosts(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-//            .fillMaxHeight()
             .padding(16.dp)
     ) {
             BackButton(onClickBack = onClickBack)
