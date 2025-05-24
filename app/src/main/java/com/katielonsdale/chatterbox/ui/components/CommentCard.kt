@@ -47,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
 import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
+import sh.calvin.autolinktext.rememberAutoLinkText
 
 
 @Composable
@@ -97,7 +98,7 @@ fun CommentCard(
                     SelectionContainer {
                         Text(
                         // reset: AnnotatedString breaks preview
-                            text = AnnotatedString(comment.attributes.commentText),
+                            text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
 //                            text = comment.attributes.commentText,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
@@ -168,7 +169,7 @@ fun CommentCard(
 
                             Text(
                                 // reset: AnnotatedString breaks preview
-                                text = AnnotatedString(reply.attributes.commentText),
+                                text = AnnotatedString.rememberAutoLinkText(reply.attributes.commentText),
 //                                text = reply.attributes.commentText,
                                 color = Color.DarkGray,
                                 fontSize = 20.sp,
@@ -367,7 +368,7 @@ fun FinalCommentCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = AnnotatedString(reply.attributes.commentText),
+                    text = AnnotatedString.rememberAutoLinkText(reply.attributes.commentText),
                     color = Color.DarkGray,
                     fontSize = 18.sp,
                 )

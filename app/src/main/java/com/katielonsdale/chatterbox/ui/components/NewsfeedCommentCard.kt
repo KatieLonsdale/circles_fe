@@ -28,6 +28,7 @@ import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Comment
 import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import androidx.compose.ui.text.AnnotatedString
+import sh.calvin.autolinktext.rememberAutoLinkText
 
 
 // for home and circle newsfeeds, does not allow replies
@@ -67,8 +68,8 @@ fun NewsfeedCommentCard(
                     SelectionContainer {
                         Text(
                             //reset: AnnotatedString breaks preview
-//                            text = AnnotatedString(comment.attributes.commentText),
-                            text = comment.attributes.commentText,
+                            text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+//                            text = comment.attributes.commentText,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
                         )
@@ -106,8 +107,8 @@ fun NewsfeedCommentCard(
 
                         Text(
                             // reset: AnnotatedString breaks preview
-//                                text = AnnotatedString(reply.attributes.commentText),
-                            text = reply.attributes.commentText,
+                                text = AnnotatedString.rememberAutoLinkText(reply.attributes.commentText),
+//                            text = reply.attributes.commentText,
                             color = Color.DarkGray,
                             fontSize = 20.sp,
                             modifier = Modifier

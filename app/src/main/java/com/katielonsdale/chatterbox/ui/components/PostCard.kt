@@ -107,9 +107,9 @@ fun PostCard(
         ) {
             val fontSize = 20.sp
             Text(
-//                reset: annotatedstring breaks previews
-//                text = AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
-                text = post.attributes.caption,
+//                reset: annotated string breaks previews
+                text = AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
+//                text = post.attributes.caption,
                 color = Color.DarkGray,
                 fontSize = fontSize,
             )
