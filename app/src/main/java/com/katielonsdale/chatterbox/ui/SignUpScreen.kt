@@ -21,7 +21,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.SessionManager
+import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
+import com.katielonsdale.chatterbox.api.data.SignUpFields
 import com.katielonsdale.chatterbox.api.data.SignUpRequest
 import com.katielonsdale.chatterbox.api.data.SignUpResponse
 import retrofit2.Call
@@ -94,10 +96,10 @@ fun SignUpScreen(
                     if (password == confirmPassword) {
                         isLoading = true
                         signUpUser(
-                            email,
-                            password,
-                            confirmPassword,
-                            displayName) { isSuccess, error ->
+                            email.trim(),
+                            password.trim(),
+                            confirmPassword.trim(),
+                            displayName.trim()) { isSuccess, error ->
                             isLoading = false
                             if (isSuccess) {
                                 onClickSignUp()
@@ -126,13 +128,13 @@ fun signUpUser(
     displayName: String,
     onResult: (Boolean, String?) -> Unit
 ){
-    val signUpRequest = SignUpRequest(
+    val signUpRequest = SignUpFields(
         email,
         displayName,
         password,
         confirmPassword,
     )
-    apiService.signUpUser(signUpRequest).enqueue(object : Callback<SignUpResponse> {
+    apiService.signUpUser(SignUpRequest(signUpRequest)).enqueue(object : Callback<SignUpResponse> {
         override fun onResponse(call: Call<SignUpResponse>, response: Response<SignUpResponse>) {
             if (response.isSuccessful) {
                 // HTTP 200: Success
