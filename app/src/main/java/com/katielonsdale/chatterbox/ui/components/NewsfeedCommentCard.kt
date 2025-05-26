@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
@@ -22,11 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Comment
-import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import androidx.compose.ui.text.AnnotatedString
 import sh.calvin.autolinktext.rememberAutoLinkText
 
@@ -53,7 +49,6 @@ fun NewsfeedCommentCard(
                 Row(
                     modifier = Modifier
                         .weight(0.9f)
-//                        .padding(all = 10.dp),
                 ) {
                     // Author name
                     Text(
