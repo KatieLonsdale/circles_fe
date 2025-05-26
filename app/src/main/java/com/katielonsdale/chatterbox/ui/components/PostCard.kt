@@ -33,6 +33,8 @@ import com.katielonsdale.chatterbox.api.data.Post
 import sh.calvin.autolinktext.rememberAutoLinkText
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.ZoneId
+import java.util.Locale
 
 
 // used for Newsfeed and Circle Newsfeed, only displays 2 comments
@@ -95,7 +97,6 @@ fun PostCard(
                 text = formatTimeStamp(post.attributes.updatedAt),
                 color = Color.DarkGray,
                 fontSize = fontSize,
-                fontWeight = FontWeight.Bold
             )
         }
 
@@ -151,15 +152,37 @@ fun PostCard(
     }
 }
 
-fun formatTimeStamp(originalTimestamp: String) : String{
-    try {
-        // Parse the ISO-8601 timestamp and format it
+fun formatTimeStamp(originalTimestamp: String): String {
+    return try {
+        val deviceZone = ZoneId.systemDefault()
         val zonedDateTime = ZonedDateTime.parse(originalTimestamp)
-        return zonedDateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy hh:mm a"))
+            .withZoneSameInstant(deviceZone)
+
+        val now = ZonedDateTime.now(deviceZone)
+        val date = zonedDateTime.toLocalDate()
+        val today = now.toLocalDate()
+        val yesterday = today.minusDays(1)
+
+        val timePart = zonedDateTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+
+        return when (date) {
+            today -> "Today $timePart"
+            yesterday -> "Yesterday $timePart"
+            else -> {
+                val dateFormatter = if (date.year == today.year) {
+                    DateTimeFormatter.ofPattern("MMM dd", Locale.getDefault())
+                } else {
+                    DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.getDefault())
+                }
+                "${zonedDateTime.format(dateFormatter)} $timePart"
+            }
+        }
+
     } catch (e: Exception) {
-        return "Invalid date" // Fallback if parsing fails
+        "Invalid date"
     }
 }
+
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
