@@ -92,7 +92,8 @@ fun DisplayPosts(
         }
 
         LazyColumn {
-            items(posts) { post ->
+            val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
+            items(sortedPosts) { post ->
                 PostCard(
                     post,
                     onClickDisplayPost,
