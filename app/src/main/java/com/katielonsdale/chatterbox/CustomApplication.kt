@@ -25,17 +25,15 @@ class CustomApplication : Application() {
     }
     
     private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "default_channel",
-                "Default Notifications",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "This is the default notification channel for all app notifications"
-            }
-            
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            "default_channel",
+            "Default Notifications",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "This is the default notification channel for all app notifications"
         }
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 }

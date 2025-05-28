@@ -22,7 +22,16 @@ object SampleData {
                 "circle_id": 1,
                 "circle_name": "High school friends",
                 "contents": {
-                    "data": []
+                    "data": [
+                    {
+                        "id": "1",
+                        "type": "content",
+                        "attributes": {
+                            "id": 1,
+                            "presigned_image_url": "https://inner-circles-app.s3.amazonaws.com/36_1_images/c462a314d8341b9ef679.jpg"
+                        }
+                    }
+                    ]
                 },
                 "comments": {
                     "data": [
