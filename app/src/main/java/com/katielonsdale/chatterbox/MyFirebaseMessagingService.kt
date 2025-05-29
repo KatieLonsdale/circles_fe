@@ -90,7 +90,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title)
             .setContentText(body)
-            .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+            .setSmallIcon(R.drawable.notifications)
             .build()
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notification)

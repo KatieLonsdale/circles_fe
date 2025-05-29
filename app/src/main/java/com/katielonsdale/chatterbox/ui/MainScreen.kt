@@ -26,6 +26,7 @@ import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
 
 
 enum class InnerCirclesScreen {
@@ -50,6 +51,7 @@ fun MainScreen(
     postViewModel: PostViewModel = viewModel(),
     commentViewModel: CommentViewModel = viewModel(),
     userViewModel: UserViewModel = viewModel(),
+    notificationViewModel: NotificationViewModel = viewModel(),
     mainActivity: com.katielonsdale.chatterbox.MainActivity? = null
 ) {
     val isUserLoggedIn by SessionManager.isUserLoggedIn.collectAsState()
@@ -151,7 +153,17 @@ fun MainScreen(
                     logOutUser = {
                         SessionManager.clearSession()
                         navController.navigate(InnerCirclesScreen.SignIn.name)
-                    }
+                    },
+                    onClickPostNotification = {
+                        notificationViewModel.resetNotification()
+                        notificationViewModel.setCurrentNotification(it)
+                        postViewModel.getPost(
+                            postId = it.notifiableId,
+                            circleId = it.circleId ?: "",
+                        )
+                        val route = notificationViewModel.getNavigationScreen(it)
+                        navController.navigate(route)
+                    },
                 )
             }
             // Routes without icons (not in nav bar)
@@ -264,6 +276,6 @@ fun MainScreen(
 sealed class Screen(val route: String, val iconResourceId: Int) {
     object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
     object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
-    object Notifications : Screen("Notifications", R.drawable.ic_notifications_black_24dp)
+    object Notifications : Screen("Notifications", R.drawable.notifications)
 }
 

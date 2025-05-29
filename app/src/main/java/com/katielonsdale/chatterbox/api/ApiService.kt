@@ -18,6 +18,9 @@ import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
 import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
 import com.katielonsdale.chatterbox.api.data.FriendshipRequest
 import com.katielonsdale.chatterbox.api.data.FriendshipResponse
+import com.katielonsdale.chatterbox.api.data.NotificationRequest
+import com.katielonsdale.chatterbox.api.data.NotificationResponse
+import com.katielonsdale.chatterbox.api.data.NotificationsResponse
 import com.katielonsdale.chatterbox.api.data.PostResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -159,4 +162,17 @@ interface ApiService {
         @Path("userId") userId: String?,
         @Path("friendshipId") friendshipId: String
     ): Call<Void>
+
+    // NOTIFICATIONS
+    @GET("users/{userId}/notifications")
+    fun getUserNotifications(
+        @Path("userId") userId: String
+    ): Call<NotificationsResponse>
+
+    @PATCH("users/{userId}/notifications/{notificationId}")
+    fun updateNotification(
+        @Path("userId") userId: String,
+        @Path("notificationId") notificationId: String,
+        @Body notificationRequest: NotificationRequest
+    ): Call<NotificationResponse>
 }

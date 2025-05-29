@@ -3,6 +3,8 @@ package com.katielonsdale.chatterbox
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.google.gson.Gson
+import com.katielonsdale.chatterbox.api.data.Notification
+import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 
 object SampleData {
 
@@ -255,4 +257,106 @@ object SampleData {
     fun returnSamplePosts(): List<Post> {
         return samplePosts
     }
+
+    val notifications = listOf(
+        Notification(
+            id = "123",
+            type = "notification",
+            attributes = NotificationAttributes(
+                id = "123",
+                message = "Max commented: what a great idea!",
+                read = false,
+                action = "comment_created",
+                createdAt = "2025-03-27 19:20:43.598264",
+                updatedAt = "2025-03-27 19:20:43.598264",
+                circleId = "1",
+                circleName = "Circle Name",
+                notifiableType = "comment",
+                notifiableId = "13",
+            )
+        ),
+        Notification(
+            id = "124",
+            type = "notification",
+            attributes = NotificationAttributes(
+                id = "124",
+                message = "Lena replied: Totally agree with you!",
+                read = false,
+                action = "reply_created",
+                createdAt = "2025-04-01 10:05:12.123456",
+                updatedAt = "2025-04-01 10:05:12.123456",
+                circleId = "1",
+                circleName = "Circle Name",
+                notifiableType = "comment",
+                notifiableId = "14"
+            )
+        ),
+        Notification(
+            id = "125",
+            type = "notification",
+            attributes = NotificationAttributes(
+                id = "125",
+                message = "Your post was liked by Alex",
+                read = false,
+                action = "like_created",
+                createdAt = "2025-04-03 08:30:00.000000",
+                updatedAt = "2025-04-03 08:30:00.000000",
+                circleId = "1",
+                circleName = "Circle Name",
+                notifiableType = "like",
+                notifiableId = "15"
+            )
+        ),
+        Notification(
+            id = "126",
+            type = "notification",
+            attributes = NotificationAttributes(
+                id = "126",
+                message = "Nora mentioned you in a comment",
+                read = true,
+                action = "mention_created",
+                createdAt = "2025-04-05 15:45:22.987654",
+                updatedAt = "2025-04-05 15:45:22.987654",
+                circleId = "1",
+                circleName = "Circle Name",
+                notifiableType = "mention",
+                notifiableId = "16"
+            )
+        ),
+        Notification(
+            id = "127",
+            type = "notification",
+            attributes = NotificationAttributes(
+                id = "127",
+                message = "Event Reminder: Dinner tonight at 6:00 PM with Circle Name",
+                read = true,
+                action = "event_reminder",
+                createdAt = "2025-04-10 09:00:00.000000",
+                updatedAt = "2025-04-10 09:00:00.000000",
+                circleId = "1",
+                circleName = "Circle Name",
+                notifiableType = "event",
+                notifiableId = "17"
+            )
+        ),
+        Notification(
+            id = "128",
+            type = "notification",
+            attributes = NotificationAttributes(
+                id = "128",
+                message = "A new member, Sarah, joined your circle!",
+                read = true,
+                action = "member_joined",
+                createdAt = "2025-04-12 13:22:10.654321",
+                updatedAt = "2025-04-12 13:22:10.654321",
+                circleId = "1",
+                circleName = "Circle Name",
+                notifiableType = "user",
+                notifiableId = "18"
+            )
+        )
+    )
+
+    val returnSampleNotifications: List<Notification> = notifications
+
 }
