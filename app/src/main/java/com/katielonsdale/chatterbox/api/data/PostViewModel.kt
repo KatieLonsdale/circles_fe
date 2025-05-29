@@ -80,6 +80,7 @@ class PostViewModel : ViewModel() {
         postId: String,
         circleId: String,
     ) {
+        resetPost()
         val userId = SessionManager.getUserId()
         RetrofitClient.apiService.getPost(userId, circleId, postId).enqueue(object : Callback<PostResponse> {
             override fun onResponse(call: Call<PostResponse>, response: Response<PostResponse>) {
@@ -87,7 +88,6 @@ class PostViewModel : ViewModel() {
                     val post = response.body()?.data
                     if (post != null) {
                         // we assume if we are getting a singular post, it is so it can be the current post
-                        resetPost()
                         setCurrentPost(post)
                     } else {
                         Log.e(TAG, "Post is null")

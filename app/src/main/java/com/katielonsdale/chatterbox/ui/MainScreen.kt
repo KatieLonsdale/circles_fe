@@ -158,7 +158,7 @@ fun MainScreen(
                         notificationViewModel.resetNotification()
                         notificationViewModel.setCurrentNotification(it)
                         postViewModel.getPost(
-                            postId = it.notifiableId,
+                            postId = it.postId ?: "",
                             circleId = it.circleId ?: "",
                         )
                         val route = notificationViewModel.getNavigationScreen(it)

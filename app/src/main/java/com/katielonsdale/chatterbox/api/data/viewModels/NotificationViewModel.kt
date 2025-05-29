@@ -36,6 +36,7 @@ class NotificationViewModel : ViewModel() {
             notification.circleName,
             notification.notifiableType,
             notification.notifiableId,
+            notification.postId
         )
         _uiState.value = notificationUiState
 
@@ -48,7 +49,7 @@ class NotificationViewModel : ViewModel() {
     fun getNavigationScreen(
         notification: NotificationAttributes,
     ): String {
-        if (notification.notifiableType == "post" || notification.notifiableType == "comment") {
+        if (notification.postId != null) {
             return InnerCirclesScreen.DisplayPost.name
         } else {
             //todo: add friendship type of notification

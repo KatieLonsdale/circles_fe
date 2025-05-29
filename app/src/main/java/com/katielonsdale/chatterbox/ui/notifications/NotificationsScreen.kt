@@ -128,12 +128,11 @@ fun NotificationCard(
     notification: Notification,
     onClickPostNotification: (NotificationAttributes) -> Unit = {}
 ){
-    val postNotifiableTypes = arrayOf("post", "comment", "reply")
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (postNotifiableTypes.contains(notification.attributes.notifiableType)) {
+                if (notification.attributes.postId != null) {
                     onClickPostNotification(notification.attributes)
                 } else {
                     Log.e(TAG, "Notification type not supported: ${notification.attributes.notifiableType}")
