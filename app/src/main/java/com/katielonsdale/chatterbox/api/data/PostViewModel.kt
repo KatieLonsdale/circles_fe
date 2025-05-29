@@ -13,6 +13,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class PostViewModel : ViewModel() {
+    val TAG = "PostViewModel"
+
     private val _uiState = MutableStateFlow(PostUiState())
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
 
@@ -72,5 +74,32 @@ class PostViewModel : ViewModel() {
                 }
             })
         }
+    }
+
+    fun getPost(
+        postId: String,
+        circleId: String,
+    ) {
+        val userId = SessionManager.getUserId()
+        RetrofitClient.apiService.getPost(userId, circleId, postId).enqueue(object : Callback<PostResponse> {
+            override fun onResponse(call: Call<PostResponse>, response: Response<PostResponse>) {
+                if (response.isSuccessful) {
+                    val post = response.body()?.data
+                    if (post != null) {
+                        // we assume if we are getting a singular post, it is so it can be the current post
+                        resetPost()
+                        setCurrentPost(post)
+                    } else {
+                        Log.e(TAG, "Post is null")
+                    }
+                } else {
+                    Log.e(TAG, "Failed to fetch post: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<PostResponse>, t: Throwable) {
+                Log.e(TAG, "Error fetching post", t)
+            }
+        })
     }
 }
