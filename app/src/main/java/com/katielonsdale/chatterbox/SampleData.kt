@@ -273,6 +273,7 @@ object SampleData {
                 circleName = "Circle Name",
                 notifiableType = "comment",
                 notifiableId = "13",
+                postId = "1"
             )
         ),
         Notification(
@@ -288,7 +289,8 @@ object SampleData {
                 circleId = "1",
                 circleName = "Circle Name",
                 notifiableType = "comment",
-                notifiableId = "14"
+                notifiableId = "14",
+                postId = "1"
             )
         ),
         Notification(
@@ -304,7 +306,8 @@ object SampleData {
                 circleId = "1",
                 circleName = "Circle Name",
                 notifiableType = "like",
-                notifiableId = "15"
+                notifiableId = "15",
+                postId = "1"
             )
         ),
         Notification(
@@ -320,7 +323,8 @@ object SampleData {
                 circleId = "1",
                 circleName = "Circle Name",
                 notifiableType = "mention",
-                notifiableId = "16"
+                notifiableId = "16",
+                postId = "1"
             )
         ),
         Notification(
@@ -336,7 +340,8 @@ object SampleData {
                 circleId = "1",
                 circleName = "Circle Name",
                 notifiableType = "event",
-                notifiableId = "17"
+                notifiableId = "17",
+                postId = null
             )
         ),
         Notification(
@@ -352,7 +357,8 @@ object SampleData {
                 circleId = "1",
                 circleName = "Circle Name",
                 notifiableType = "user",
-                notifiableId = "18"
+                notifiableId = "18",
+                postId = null
             )
         )
     )

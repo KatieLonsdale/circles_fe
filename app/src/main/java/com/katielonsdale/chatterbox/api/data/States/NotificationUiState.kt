@@ -13,4 +13,5 @@ data class NotificationUiState(
     val circleName: String? = null,
     val notifiableType: String = "",
     val notifiableId: String = "",
+    val postId: String? = null,
 )

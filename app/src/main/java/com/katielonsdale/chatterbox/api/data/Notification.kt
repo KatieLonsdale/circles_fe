@@ -20,4 +20,5 @@ data class NotificationAttributes(
     @SerializedName("circle_name") val circleName: String?,
     @SerializedName("notifiable_type") val notifiableType: String,
     @SerializedName("notifiable_id") val notifiableId: String,
+    @SerializedName("post_id") val postId: String?,
 )

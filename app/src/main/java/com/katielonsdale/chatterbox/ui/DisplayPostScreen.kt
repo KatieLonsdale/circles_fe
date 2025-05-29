@@ -166,15 +166,15 @@ fun DisplayPostScreen(
 
             val comments = post.comments
             if (comments.isNotEmpty()) {
-
                 val replyVisibilityId = remember { mutableStateOf("") }
+                val sortedComments = comments.sortedBy { it.attributes.createdAt }
 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp)
                 ) {
-                    comments.forEach { comment ->
+                    sortedComments.forEach { comment ->
                         CommentCard(
                             comment = comment,
                             postId = post.id,
