@@ -56,13 +56,18 @@ class MainActivity : AppCompatActivity() {
         // Log the device SDK version
         Log.d(TAG, "Device SDK version: ${Build.VERSION.SDK_INT} (Android 13 is 33)")
         
-        createNotificationChannels()
+//        createNotificationChannels()
         // Initialize the SessionManager
         SessionManager.init(this)
         
         setContent {
             MaterialTheme {
-                MainScreen(mainActivity = this)
+                MainScreen(
+                    mainActivity = this,
+                    route = intent?.getStringExtra("route"),
+                    circleId = intent?.getStringExtra("circleId"),
+                    postId = intent?.getStringExtra("postId"),
+                )
             }
         }
     }

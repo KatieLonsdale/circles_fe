@@ -45,23 +45,34 @@ enum class InnerCirclesScreen {
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController(),
-    circleViewModel: CircleViewModel = viewModel(),
-    newPostViewModel: NewPostViewModel = viewModel(),
-    postViewModel: PostViewModel = viewModel(),
-    commentViewModel: CommentViewModel = viewModel(),
-    userViewModel: UserViewModel = viewModel(),
-    notificationViewModel: NotificationViewModel = viewModel(),
-    mainActivity: com.katielonsdale.chatterbox.MainActivity? = null
+    mainActivity: com.katielonsdale.chatterbox.MainActivity? = null,
+    route: String?,
+    circleId: String?,
+    postId: String?,
 ) {
     val isUserLoggedIn by SessionManager.isUserLoggedIn.collectAsState()
     val isTouUpToDate by SessionManager.isTouUpToDate.collectAsState()
+    val navController: NavHostController = rememberNavController()
+    val circleViewModel: CircleViewModel = viewModel()
+    val newPostViewModel: NewPostViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel()
+    val commentViewModel: CommentViewModel = viewModel()
+    val userViewModel: UserViewModel = viewModel()
+    val notificationViewModel: NotificationViewModel = viewModel()
 
-    LaunchedEffect(isUserLoggedIn) {
+    LaunchedEffect(
+        isUserLoggedIn
+    ){
         if (!isUserLoggedIn) {
             navController.navigate(InnerCirclesScreen.SignIn.name) {
                 popUpTo(0) // Clear the back stack
             }
+        } else if (route == "display_post" && postId != null && circleId != null) {
+            postViewModel.getPost(
+                postId = postId,
+                circleId = circleId,
+            )
+            navController.navigate(InnerCirclesScreen.DisplayPost.name)
         }
     }
 

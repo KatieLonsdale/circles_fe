@@ -2,7 +2,9 @@ package com.katielonsdale.chatterbox
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -18,9 +20,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val TAG = "MyFirebaseMessagingService"
     
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // Handle FCM messages
-        remoteMessage.notification?.let {
-            showNotification(it.title, it.body)
+        Log.d(TAG, "Message received: ${remoteMessage.data}")
+
+        val notification = remoteMessage.notification
+        val data = remoteMessage.data
+
+        if (notification != null) {
+            showNotification(notification.title, notification.body, data)
+        } else {
+            // If no notification payload, still show a custom one from data
+            showNotification(
+                title = data["title"] ?: "New Notification",
+                body = data["body"] ?: "",
+                data = data
+            )
         }
     }
 
@@ -74,9 +87,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun showNotification(title: String?, body: String?) {
+    private fun showNotification(title: String?, body: String?, data: Map<String, String>) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "default_channel"
+
+        // Build intent for MainActivity with route and optional parameters
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("route", data["route"])
+            putExtra("circleId", data["circle_id"])
+            putExtra("postId", data["post_id"]) // you can pass anything you need
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -88,9 +114,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle(title)
-            .setContentText(body)
-            .setSmallIcon(R.drawable.notifications)
+            .setContentTitle(title ?: "Notification")
+            .setContentText(body ?: "")
+            .setSmallIcon(R.drawable.chatter_box_logo_with_background)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
             .build()
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notification)
