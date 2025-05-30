@@ -23,9 +23,6 @@ fun BackButton(
             onClick = {
                 onClickBack()
             },
-//            colors = IconButtonDefaults.iconButtonColors(
-//                containerColor = Color.LightGray
-//            ),
             modifier = Modifier
         ) {
             Icon(
