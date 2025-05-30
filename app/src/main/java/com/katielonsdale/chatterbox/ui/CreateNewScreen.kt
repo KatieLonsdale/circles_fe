@@ -37,7 +37,7 @@ fun CreateNewScreen(
 ){
     val options: Array<Pair<String, () -> Unit>> = arrayOf(
         "Post" to onClickNewPost,
-        "Circle" to onClickNewCircle,
+        "Chatter" to onClickNewCircle,
         "Friend" to onClickNewFriend,
     )
     Column(
@@ -47,7 +47,7 @@ fun CreateNewScreen(
     ) {
         BackButton(onClickBack = onClickBack)
         Text(
-            text = "Select New...",
+            text = "Create New...",
             color = Color.DarkGray,
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
@@ -61,15 +61,14 @@ fun CreateNewScreen(
                 modifier = Modifier.clickable { option.second() }
                     .fillMaxWidth()
                     .padding(
-                        start = 15.dp,
+                        start = 25.dp,
                         top = 5.dp,
                     )
             ) {
                 Text(
                     text = option.first,
                     color = Color.DarkGray,
-                    fontSize = 20.sp,
-//                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp,
                     modifier = Modifier.align(Alignment.Bottom)
                 )
                 Spacer(modifier = Modifier.height(40.dp))
