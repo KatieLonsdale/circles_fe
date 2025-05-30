@@ -2,7 +2,7 @@ package com.katielonsdale.chatterbox.api.data
 
 import com.google.gson.annotations.SerializedName
 
-data class Attribute(
+data class CircleAttributes(
     @SerializedName("id") val id: Int,
     @SerializedName("user_id") val userId: String,
     @SerializedName("name") val name: String,

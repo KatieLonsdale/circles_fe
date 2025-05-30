@@ -30,12 +30,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.compose.material3.*
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.katielonsdale.chatterbox.api.data.Attribute
-
-var circles by mutableStateOf(emptyList<Circle>())
+import com.katielonsdale.chatterbox.api.data.CircleAttributes
 
 @Composable
 fun MyCirclesScreen(
@@ -43,9 +42,14 @@ fun MyCirclesScreen(
 ) {
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
+    val userChatters = remember { mutableStateListOf<Circle>() }
+
 
     LaunchedEffect(Unit) {
-        getCircles(userId)  // Await the result of getPosts
+        getCircles(
+            userId = userId,
+            userChatters = userChatters
+        )  // Await the result of getPosts
         isLoading = false    // Set loading to false after fetching the posts
     }
 
@@ -53,27 +57,33 @@ fun MyCirclesScreen(
         // Show loading indicator while posts are being fetched
         CircularProgressIndicator()
     } else {
-        MyCirclesList(circles, onCircleClick)
+        MyCirclesList(userChatters, onCircleClick)
     }
 }
 
 @Composable
-fun MyCirclesList(circles: List<Circle>, onCircleClick: (Circle) -> Unit) {
+fun MyCirclesList(
+    chatters: MutableList<Circle>,
+    onCircleClick: (Circle) -> Unit
+) {
     LazyColumn {
-        items(circles) { circle ->
-            CircleCard(circle, onCircleClick)
+        items(chatters) { chatter ->
+            CircleCard(chatter, onCircleClick)
         }
     }
 }
 
 @Composable
-fun CircleCard(circle: Circle, onCircleClick: (Circle) -> Unit = {}) {
-    val circleAttributes = circle.attributes
+fun CircleCard(
+    chatter: Circle,
+    onCircleClick: (Circle) -> Unit = {}
+) {
+    val chatterAttributes = chatter.attributes
     Column(
         modifier = Modifier.clickable(
-            //todo: when setting circle, add its attributes as well
+            //todo: when setting chatter, add its attributes as well
             onClick = {
-                onCircleClick(circle)
+                onCircleClick(chatter)
             })
             .fillMaxWidth()
             .padding(
@@ -83,7 +93,7 @@ fun CircleCard(circle: Circle, onCircleClick: (Circle) -> Unit = {}) {
     ) {
         Row() {
             Text(
-                text = circleAttributes.name,
+                text = chatterAttributes.name,
                 color = Color.DarkGray,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -95,7 +105,7 @@ fun CircleCard(circle: Circle, onCircleClick: (Circle) -> Unit = {}) {
 
         Row() {
             Text(
-                text = circleAttributes.description,
+                text = chatterAttributes.description,
                 color = Color.DarkGray,
                 fontSize = 15.sp,
                 modifier = Modifier.align(Alignment.Bottom)
@@ -106,11 +116,15 @@ fun CircleCard(circle: Circle, onCircleClick: (Circle) -> Unit = {}) {
     }
 }
 
-private fun getCircles(userId: String?) {
+private fun getCircles(
+    userId: String?,
+    userChatters: MutableList<Circle>
+) {
     RetrofitClient.apiService.getCircles(userId).enqueue(object : Callback<CirclesResponse> {
         override fun onResponse(call: Call<CirclesResponse>, response: Response<CirclesResponse>) {
             if (response.isSuccessful) {
-                circles = response.body()?.data ?: emptyList()
+                val chatters = response.body()?.data ?: emptyList()
+                if (chatters.isNotEmpty()) { userChatters.addAll(chatters) }
             } else {
                 Log.e("MainActivity", "Failed to fetch newsfeed: ${response.errorBody()?.string()}")
             }
@@ -122,13 +136,13 @@ private fun getCircles(userId: String?) {
     })
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewMyCirclesList() {
     val circle1 = Circle(
         id = "1",
         type = "circle",
-        attributes = Attribute(
+        attributes = CircleAttributes(
             id = 1,
             userId = "1",
             name = "College",
@@ -138,7 +152,7 @@ fun PreviewMyCirclesList() {
     val circle2 = Circle(
         id = "2",
         type = "circle",
-        attributes = Attribute(
+        attributes = CircleAttributes(
             id = 2,
             userId = "1",
             name = "High School",
@@ -147,7 +161,7 @@ fun PreviewMyCirclesList() {
     )
     MaterialTheme {
         MyCirclesList(
-            listOf(circle1, circle2),
+            mutableStateListOf(circle1, circle2),
             onCircleClick = {}
         )
     }

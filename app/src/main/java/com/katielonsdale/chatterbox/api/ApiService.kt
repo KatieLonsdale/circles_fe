@@ -18,6 +18,7 @@ import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
 import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
 import com.katielonsdale.chatterbox.api.data.FriendshipRequest
 import com.katielonsdale.chatterbox.api.data.FriendshipResponse
+import com.katielonsdale.chatterbox.api.data.NewCircleResponse
 import com.katielonsdale.chatterbox.api.data.NotificationRequest
 import com.katielonsdale.chatterbox.api.data.NotificationResponse
 import com.katielonsdale.chatterbox.api.data.NotificationsResponse
@@ -118,7 +119,7 @@ interface ApiService {
     fun createCircle(
         @Path("userId") userId: String?,
         @Body circleRequest: NewCircleRequest
-    ): Call<Circle>
+    ): Call<NewCircleResponse>
     
     // CIRCLE MEMBERS
     @POST("users/{userId}/circles/{circleId}/circle_members")

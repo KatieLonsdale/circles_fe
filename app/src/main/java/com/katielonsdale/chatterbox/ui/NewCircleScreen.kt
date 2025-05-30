@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -29,24 +30,27 @@ import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.api.data.NewCircleAttributes
 import com.katielonsdale.chatterbox.api.data.NewCircleRequest
+import com.katielonsdale.chatterbox.api.data.NewCircleResponse
 import com.katielonsdale.chatterbox.api.data.NewPostResponse
 import com.katielonsdale.chatterbox.ui.components.BackButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+val TAG = "NewCircleScreen"
 @Composable
 fun NewCircleScreen(
     onClickBack: () -> Unit,
     onClickCreate: () -> Unit
 ){
-    var circleName by remember { mutableStateOf("Circle Name") }
-    var circleDescription by remember { mutableStateOf("Circle Description") }
+    var circleName by remember { mutableStateOf("") }
+    var circleDescription by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ){
@@ -54,16 +58,15 @@ fun NewCircleScreen(
             onClickBack = onClickBack
         )
         Text(
-            text = stringResource(id = R.string.create_circle_title),
+            text = "Create Chatter",
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             modifier = Modifier.padding(bottom = 16.dp)
         )
         TextField(
             value = circleName,
             onValueChange = { circleName = it },
-            label = { Text(
-                stringResource(id = R.string.new_circle_name_label)
-            ) }
+            label = { Text(text ="Name") },
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -71,9 +74,8 @@ fun NewCircleScreen(
         TextField(
             value = circleDescription,
             onValueChange = { circleDescription = it },
-            label = { Text(
-                stringResource(id = R.string.new_circle_description_label)
-            ) }
+            label = { Text(text = "A brief description of your new chatter")},
+            modifier = Modifier.fillMaxWidth(),
         )
     }
     Box(
@@ -102,40 +104,39 @@ fun NewCircleScreen(
 }
 
 private fun createCircle(
-    circleName: String = "Circle Name",
-    circleDescription: String = "Circle Description",
+    circleName: String,
+    circleDescription: String,
 ) {
     val userId = SessionManager.getUserId()
     val newCircleRequest = NewCircleRequest(
-        name = circleName,
-        description = circleDescription,
+        circle = NewCircleAttributes(
+            userId = userId,
+            name = circleName,
+            description = circleDescription,
+        )
     )
     RetrofitClient.apiService.createCircle(userId, newCircleRequest).enqueue(object :
-        Callback<Circle> {
+        Callback<NewCircleResponse> {
         override fun onResponse(
-            call: Call<Circle>,
-            response: Response<Circle>
+            call: Call<NewCircleResponse>,
+            response: Response<NewCircleResponse>
         ) {
             if (response.isSuccessful) {
-                Log.e(
-                    "NewCircleScreen",
-                    "Circle created successfully: ${response.body()}"
+                Log.e(TAG, "Circle created successfully: ${response.body()}"
                 )
             } else {
-                Log.e(
-                    "NewCircleScreen",
-                    "Failed to createCircle: ${response.body()} status: ${response.code()}"
+                Log.e(TAG, "Failed to createCircle: ${response.body()} status: ${response.code()}"
                 )
             }
         }
 
-        override fun onFailure(call: Call<Circle>, t: Throwable) {
-            Log.e("NewCircleScreen", "Error creating circle", t)
+        override fun onFailure(call: Call<NewCircleResponse>, t: Throwable) {
+            Log.e(TAG, "Error creating circle", t)
         }
     })
 }
 
-@Preview(showBackground = true)
+@Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NewCircleScreenPreview() {
     NewCircleScreen(
