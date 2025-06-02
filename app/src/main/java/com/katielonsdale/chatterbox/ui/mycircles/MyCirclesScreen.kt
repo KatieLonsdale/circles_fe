@@ -126,12 +126,12 @@ private fun getCircles(
                 val chatters = response.body()?.data ?: emptyList()
                 if (chatters.isNotEmpty()) { userChatters.addAll(chatters) }
             } else {
-                Log.e("MainActivity", "Failed to fetch newsfeed: ${response.errorBody()?.string()}")
+                Log.e("MyCirclesScreen", "Failed to fetch chatters: ${response.errorBody()?.string()}")
             }
         }
 
         override fun onFailure(call: Call<CirclesResponse>, t: Throwable) {
-            Log.e("NewsfeedScreen", "Error fetching posts", t)
+            Log.e("MyCirclesScreen", "Error fetching chatters ${t.message}", t)
         }
     })
 }

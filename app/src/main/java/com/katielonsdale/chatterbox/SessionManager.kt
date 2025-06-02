@@ -7,6 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.json.JSONObject
 import java.time.OffsetDateTime
 
 object SessionManager {
@@ -60,6 +61,7 @@ object SessionManager {
 
     fun isUserLoggedIn(): Boolean {
         checkInitialization()
+        isJwtTokenUpToDate()
         return _isUserLoggedIn.value
     }
 
@@ -103,5 +105,31 @@ object SessionManager {
     fun getFcmToken(): String? {
         checkInitialization()
         return sharedPreferences.getString("notifications_token", null)
+    }
+
+    private fun isJwtTokenUpToDate() {
+        val token = getToken()
+        if (!token.isNullOrEmpty()) {
+            // Optionally decode JWT and check exp
+            val isValid = isJwtStillValid(token)
+            if (isValid) {
+                // Proceed to main screen without login
+                _isUserLoggedIn.value = true
+            } else {
+                clearSession()
+            }
+        }
+    }
+
+    private fun isJwtStillValid(token: String): Boolean {
+        return try {
+            val parts = token.split(".")
+            val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE))
+            val exp = JSONObject(payload).getLong("exp")
+            val now = System.currentTimeMillis() / 1000
+            now < exp
+        } catch (e: Exception) {
+            false
+        }
     }
 }
