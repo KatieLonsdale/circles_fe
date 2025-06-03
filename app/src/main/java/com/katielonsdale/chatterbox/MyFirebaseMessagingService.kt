@@ -48,7 +48,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             // Only update the token if all of these are true:
             // 1. We already had a token (user already granted permission)
             // 2. The user is logged in (userId is not null)
-            if (!currentToken.isNullOrEmpty()) {
+            if (!currentToken.isNullOrEmpty() && !userId.isNullOrEmpty()) {
                 Log.d(TAG, "User previously granted notification permission, updating token")
                 // Save the token locally
                 SessionManager.saveFcmToken(token)

@@ -1,5 +1,7 @@
 package com.katielonsdale.chatterbox.ui
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,17 +20,18 @@ import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.AuthenticatedUser
-import java.time.OffsetDateTime
+import com.katielonsdale.chatterbox.utils.NotificationsManager
+import com.katielonsdale.chatterbox.utils.TouAcceptanceValidator
 
 @Composable
 fun SignInScreen(
-    updateUser: (Map<String, String>) -> Unit,
+    updateUser: (AuthenticatedUser) -> Unit,
     onClickSignIn: () -> Unit,
     onTouOutdated: () -> Unit,
     onClickSignUp: () -> Unit,
-    mainActivity: MainActivity? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -63,7 +66,6 @@ fun SignInScreen(
                     email,
                     password.trimEnd(),
                     updateUser,
-                    mainActivity,
                 ) { isSuccess, error ->
                     if (isSuccess) {
                         onClickSignIn()
@@ -104,9 +106,8 @@ fun SignInScreen(
 private fun loginUser(
     username: String,
     password: String,
-    updateUser: (Map<String, String>) -> Unit,
-    mainActivity: MainActivity?,
-    onResult: (Boolean, String?) -> Unit
+    updateUser: (AuthenticatedUser) -> Unit,
+    onResult: (Boolean, String?) -> Unit,
 ) {
     val signInRequest = SignInRequest(username, password)
 
@@ -116,42 +117,32 @@ private fun loginUser(
                 // HTTP 200: Success
                 val authToken = response.body()?.token
                 val attributes = extractUserAttributes(response.body()?.user?.data)
-                var lastTouAcceptance: OffsetDateTime? = null
-                if (!attributes["lastTouAcceptance"].isNullOrEmpty()) {
-                    lastTouAcceptance = OffsetDateTime.parse(attributes["lastTouAcceptance"])
+                if (attributes.isEmpty()) {
+                    Log.e(TAG, "Authenticate User response is successful but empty")
                 }
                 val userId = attributes["id"]
-                SessionManager.saveUserId(userId)
-                if (authToken != null) {
-                    SessionManager.saveToken(authToken)
-                    updateUser(attributes)
-                    if (lastTouAcceptance == null || SessionManager.latestTouDate.isAfter(lastTouAcceptance)) {
-                        SessionManager.setIsTouUpToDate(false)
+                if (authToken != null && userId != null) {
+                    SessionManager.saveSession(
+                        userId = userId,
+                        jwtToken = authToken,
+                    )
+                    TouAcceptanceValidator.validate(attributes["lastTouAcceptance"].toString())
+                    if (SessionManager.isTouUpToDate()) {
                         val error = "TOU NOT UP TO DATE"
                         onResult(false, error)
                         return
-                    } else {
-                        SessionManager.setIsTouUpToDate(true)
                     }
-                    
+                    // if all is good, the user is signed in and we can set the current user
+                    updateUser(response.body()!!.user.data)
+
                     // Request notification permissions after successful login
-                    mainActivity?.let {
-                        // Log the MainActivity reference
-                        android.util.Log.d("SignInScreen", "MainActivity reference is available")
-                        
-                        // Only request notification permissions if the user's notifications_token is null
-                        if (attributes["notificationsToken"].isNullOrEmpty()) {
-                            android.util.Log.d("SignInScreen", "User's notification token is null, requesting permissions")
-                            // Ask for notification permission, passing the userId for token registration
-                            it.askNotificationPermission(userId)
-                        } else {
-                            android.util.Log.d("SignInScreen", "User already has notification token: ${attributes["notificationsToken"]}, skipping permission request")
-                        }
-                    } ?: run {
-                        android.util.Log.e("SignInScreen", "MainActivity reference is null, cannot request notifications")
+                    // Only request notification permissions if the user's notifications_token is null
+                    if (attributes["notificationsToken"].isNullOrEmpty()) {
+                        // Ask for notification permission, passing the userId for token registration
+                        NotificationsManager.askNotificationPermission(userId)
                     }
                 } else {
-                    val errorMessage = "Token is null"
+                    val errorMessage = "Token or userId is null. Response: ${response.body()}"
                     onResult(false, errorMessage)
                     return
                 }
@@ -196,7 +187,6 @@ fun PreviewLoginScreen() {
         onClickSignIn = {},
         onTouOutdated = {},
         onClickSignUp = {},
-        mainActivity = null
     )
 }
 

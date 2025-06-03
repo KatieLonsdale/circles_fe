@@ -78,17 +78,21 @@ object SessionManager {
         _isUserLoggedIn.value = false
     }
 
-    fun saveToken(token: String) {
+    fun saveSession(
+        userId: String,
+        jwtToken: String
+    ) {
         checkInitialization()
         val editor = sharedPreferences.edit()
-        editor.putString("token", token)
-        editor.apply()
+        editor.putString("JWT_TOKEN", jwtToken)
+            .putString("USER_ID", userId)
+            .apply()
         _isUserLoggedIn.value = true
     }
 
-    fun getToken(): String? {
+    fun getJwtToken(): String? {
         checkInitialization()
-        return sharedPreferences.getString("token", null)
+        return sharedPreferences.getString("JWT_TOKEN", null)
     }
 
     fun setIsTouUpToDate(isUpToDate: Boolean) {
@@ -108,20 +112,20 @@ object SessionManager {
     }
 
     private fun isJwtTokenUpToDate() {
-        val token = getToken()
-        if (!token.isNullOrEmpty()) {
-            // Optionally decode JWT and check exp
-            val isValid = isJwtStillValid(token)
-            if (isValid) {
-                // Proceed to main screen without login
-                _isUserLoggedIn.value = true
-            } else {
-                clearSession()
-            }
+        val token = getJwtToken()
+        val isValid = isJwtStillValid(token)
+        if (isValid) {
+            // Proceed to main screen without login
+            _isUserLoggedIn.value = true
+        } else {
+            clearSession()
         }
     }
 
-    private fun isJwtStillValid(token: String): Boolean {
+    private fun isJwtStillValid(token: String?): Boolean {
+        if (token == null) {
+            return false
+        }
         return try {
             val parts = token.split(".")
             val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE))

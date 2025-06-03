@@ -1,5 +1,6 @@
 package com.katielonsdale.chatterbox.ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,6 +28,7 @@ import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
+import com.katielonsdale.chatterbox.utils.NotificationsManager
 
 
 enum class InnerCirclesScreen {
@@ -45,7 +47,6 @@ enum class InnerCirclesScreen {
 
 @Composable
 fun MainScreen(
-    mainActivity: com.katielonsdale.chatterbox.MainActivity? = null,
     route: String?,
     circleId: String?,
     postId: String?,
@@ -247,7 +248,7 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.SignIn.name) {
                 SignInScreen(
                     updateUser = {
-                        userViewModel.setAttributes(it)
+                        userViewModel.setCurrentUser(it)
                     },
                     onClickSignIn = { navController.navigate(Screen.Newsfeed.route) },
                     onTouOutdated = {
@@ -256,7 +257,6 @@ fun MainScreen(
                     onClickSignUp = {
                         navController.navigate(InnerCirclesScreen.SignUp.name)
                     },
-                    mainActivity = mainActivity
                 )
             }
             composable(route = InnerCirclesScreen.SignUp.name) {
