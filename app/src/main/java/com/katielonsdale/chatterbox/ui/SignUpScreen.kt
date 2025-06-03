@@ -137,14 +137,7 @@ fun signUpUser(
     apiService.signUpUser(SignUpRequest(signUpRequest)).enqueue(object : Callback<SignUpResponse> {
         override fun onResponse(call: Call<SignUpResponse>, response: Response<SignUpResponse>) {
             if (response.isSuccessful) {
-                // HTTP 200: Success
-                val userId = response.body()?.data?.id
-                if (userId != null) {
-                    SessionManager.saveUserId(userId)
-                    onResult(true, null)
-                } else {
-                    onResult(false, response.message())
-                }
+                onResult(true, null)
             } else if (response.code() == 404) {
                 onResult(false, response.message())
             } else {
