@@ -21,13 +21,12 @@ import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 
 object NotificationsManager {
     const val TAG = "NotificationsManager"
-    private lateinit var context: Context
+    var permissionGranted = false
 
     fun init(
-        appContext: Context,
-    ) {
-        context = appContext
-        createNotificationChannels()
+        notificationPermissionGranted: Boolean,
+    ){
+        permissionGranted = notificationPermissionGranted
     }
 
     fun askNotificationPermission(
@@ -39,12 +38,7 @@ object NotificationsManager {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= 33) { // Use the literal value in case TIRAMISU is not defined
             Log.d(TAG, "Device is Android 13+ (TIRAMISU), checking permission status")
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
+            if (permissionGranted) {
                 // Permission already granted, get token
                 getFcmToken(userId)
             } else {
@@ -110,20 +104,6 @@ object NotificationsManager {
             })
         } catch (e: Exception) {
             Log.e(TAG, "Error clearing FCM token: ${e.message}", e)
-        }
-    }
-
-    private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "default_channel",
-                "Default Notifications",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            channel.description = "This is the default notification channel."
-
-            val notificationManager = getSystemService(context, NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(channel)
         }
     }
 }
