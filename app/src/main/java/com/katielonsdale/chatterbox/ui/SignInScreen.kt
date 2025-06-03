@@ -127,7 +127,7 @@ private fun loginUser(
                         jwtToken = authToken,
                     )
                     TouAcceptanceValidator.validate(attributes["lastTouAcceptance"].toString())
-                    if (SessionManager.isTouUpToDate()) {
+                    if (!SessionManager.isTouUpToDate()) {
                         val error = "TOU NOT UP TO DATE"
                         onResult(false, error)
                         return
