@@ -34,6 +34,7 @@ object SessionManager {
             )
             isInitialized = true
         }
+        checkUserLogInStatus()
     }
 
     private fun checkInitialization() {
@@ -42,27 +43,17 @@ object SessionManager {
         }
     }
 
-    fun saveUserId(userId: String?) {
-        if (userId != null) {
-            checkInitialization()
-            val editor = sharedPreferences.edit()
-            editor.putString("userId", userId)
-            editor.apply()
-            _isUserLoggedIn.value = true
-        } else {
-             Log.d("Session Manager.saveUserId()", "userId null")
-        }
-    }
-
     fun getUserId(): String {
         checkInitialization()
-        return sharedPreferences.getString("userId", null) ?: ""
+        return sharedPreferences.getString("USER_ID", null) ?: ""
     }
 
-    fun isUserLoggedIn(): Boolean {
+    private fun checkUserLogInStatus(){
         checkInitialization()
         isJwtTokenUpToDate()
-        return _isUserLoggedIn.value
+        if (_isUserLoggedIn.value) {
+            setIsTouUpToDate(true)
+        }
     }
 
     fun isTouUpToDate(): Boolean {
