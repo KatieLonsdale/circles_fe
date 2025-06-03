@@ -1,11 +1,16 @@
 package com.katielonsdale.chatterbox
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
+import androidx.core.content.ContextCompat
 import com.katielonsdale.chatterbox.ui.MainScreen
 import com.katielonsdale.chatterbox.utils.NotificationsManager
 
@@ -21,8 +26,13 @@ class MainActivity : AppCompatActivity() {
         // Initialize the SessionManager
         SessionManager.init(this)
 
-        //Initialize Notifications Manager
-        NotificationsManager.init(this)
+        //set up for notifications
+        val notificationPermissionGranted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+        NotificationsManager.init(notificationPermissionGranted)
+        createNotificationChannels()
 
             setContent {
                 MaterialTheme {
@@ -33,5 +43,18 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
+    }
+
+    private fun createNotificationChannels() {
+        val channel = NotificationChannel(
+            "default_channel",
+            "Default Notifications",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "This is the default notification channel."
+
+        val notificationManager =
+            ContextCompat.getSystemService(this, NotificationManager::class.java)
+        notificationManager?.createNotificationChannel(channel)
     }
 }
