@@ -17,7 +17,7 @@ class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor 
                     .addHeader("Content-Type", "application/json")
                     .build())
         }
-        val token = sessionManager.getToken()
+        val token = sessionManager.getJwtToken()
         val newRequest = chain.request().newBuilder()
             .addHeader("Content-Type", "application/json")
             .addHeader("Authorization", "Bearer $token")

@@ -17,23 +17,23 @@ class CustomApplication : Application() {
         FirebaseMessaging.getInstance().isAutoInitEnabled = false
         Log.d("CustomApplication", "Firebase auto-initialization disabled")
         
-        // Initialize the SessionManager
-        SessionManager.init(this)
-        
-        // Create notification channels
-        createNotificationChannels()
+//        // Initialize the SessionManager
+//        SessionManager.init(this)
+//
+//        // Create notification channels
+//        createNotificationChannels()
     }
-    
-    private fun createNotificationChannels() {
-        val channel = NotificationChannel(
-            "default_channel",
-            "Default Notifications",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "This is the default notification channel for all app notifications"
-        }
-
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
+//
+//    private fun createNotificationChannels() {
+//        val channel = NotificationChannel(
+//            "default_channel",
+//            "Default Notifications",
+//            NotificationManager.IMPORTANCE_DEFAULT
+//        ).apply {
+//            description = "This is the default notification channel for all app notifications"
+//        }
+//
+//        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//        notificationManager.createNotificationChannel(channel)
+//    }
 }

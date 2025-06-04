@@ -1,6 +1,8 @@
 package com.katielonsdale.chatterbox.ui
 
+import android.provider.Settings.Global.getString
 import androidx.lifecycle.ViewModel
+import com.katielonsdale.chatterbox.api.data.AuthenticatedUser
 import com.katielonsdale.chatterbox.api.data.UserUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,17 +13,16 @@ class UserViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UserUiState())
     val uiState: StateFlow<UserUiState> = _uiState.asStateFlow()
 
-    fun setAttributes(attributes: Map<String, String>) {
+    fun setCurrentUser(user: AuthenticatedUser) {
         _uiState.update { currentState ->
             currentState.copy(
-                id = attributes["id"].toString(),
-                email = attributes["email"].toString(),
-                displayName = attributes["displayName"].toString(),
-                notificationFrequency = attributes["notificationFrequency"].toString(),
-                lastTouAcceptance = attributes["lastTouAcceptance"].toString(),
-                notificationsToken = attributes["notificationsToken"] ?: "",
+                id = user.id,
+                email = user.attributes.email,
+                displayName = user.attributes.displayName,
+                notificationFrequency = user.attributes.notificationFrequency,
+                lastTouAcceptance = user.attributes.lastTouAcceptance,
+                notificationsToken = user.attributes.notificationsToken,
             )
         }
     }
-
 }
