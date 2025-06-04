@@ -67,6 +67,8 @@ object SessionManager {
         editor.clear()
         editor.apply()
         _isUserLoggedIn.value = false
+        _isTouUpToDate.value = false
+
     }
 
     fun saveSession(
