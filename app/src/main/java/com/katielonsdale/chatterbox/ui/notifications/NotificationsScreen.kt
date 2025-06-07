@@ -51,7 +51,6 @@ val TAG = "NotificationsScreen"
 
 @Composable
 fun NotificationsScreen(
-    logOutUser: () -> Unit,
     onClickPostNotification: (NotificationAttributes) -> Unit = {},
 ){
     val userNotifications = remember { mutableStateListOf<Notification>() }
@@ -72,20 +71,6 @@ fun NotificationsScreen(
                 userNotifications,
                 onClickPostNotification
             )
-        }
-// todo: move logout button
-        Box() {
-            ElevatedButton(
-                onClick = logOutUser,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.LightGray,
-                    contentColor = Color.DarkGray,
-                ),
-                modifier = Modifier
-                    .padding(16.dp)
-            ) {
-                Text("Log Out")
-            }
         }
     }
 }
@@ -208,9 +193,7 @@ private fun getNotifications(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NotificationsScreenPreview(){
-    NotificationsScreen (
-        logOutUser = {}
-    )
+    NotificationsScreen ()
 }
 
 @Preview(apiLevel = 34, showBackground = true)

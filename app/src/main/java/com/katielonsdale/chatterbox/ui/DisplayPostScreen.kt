@@ -55,6 +55,7 @@ import com.katielonsdale.chatterbox.api.data.PostUiState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.text.AnnotatedString
 import com.katielonsdale.chatterbox.ui.components.BackButton
 import sh.calvin.autolinktext.rememberAutoLinkText
@@ -78,7 +79,7 @@ fun DisplayPostScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var counter by remember { mutableStateOf(0) }
+    var counter by remember { mutableIntStateOf(0) }
 
     Column(
         Modifier
