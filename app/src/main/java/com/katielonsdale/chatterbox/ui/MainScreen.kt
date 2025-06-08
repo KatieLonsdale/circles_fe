@@ -18,7 +18,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.katielonsdale.chatterbox.ui.home.NewsfeedScreen
 import com.katielonsdale.chatterbox.ui.mycircles.MyCirclesScreen
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,8 +27,6 @@ import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
-import com.katielonsdale.chatterbox.utils.NotificationsManager
-
 
 enum class InnerCirclesScreen {
     Circle,
@@ -43,6 +40,7 @@ enum class InnerCirclesScreen {
     SignUp,
     TermsOfUseScreen,
     CompleteTermsOfUseScreen,
+    EditUser
 }
 
 @Composable
@@ -85,9 +83,10 @@ fun MainScreen(
                     val currentDestination = navBackStackEntry?.destination
 
                     listOf(
-                        Screen.Newsfeed,
+//                        Screen.Newsfeed,
                         Screen.MyCircles,
-                        Screen.Notifications
+                        Screen.Notifications,
+                        Screen.Me,
                     ).forEach { screen ->
                         NavigationBarItem(
                             icon = {
@@ -116,7 +115,7 @@ fun MainScreen(
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            if (currentDestination?.route == Screen.Newsfeed.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
+            if (currentDestination?.route == Screen.MyCircles.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(InnerCirclesScreen.CreateNew.name)
@@ -140,18 +139,18 @@ fun MainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = Screen.Newsfeed.route,
+            startDestination = Screen.MyCircles.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Newsfeed.route) {
-                NewsfeedScreen(
-                    onClickDisplayPost = {
-                        postViewModel.resetPost()
-                        postViewModel.setCurrentPost(it)
-                        navController.navigate(InnerCirclesScreen.DisplayPost.name)
-                    }
-                )
-            }
+//            composable(Screen.Newsfeed.route) {
+//                NewsfeedScreen(
+//                    onClickDisplayPost = {
+//                        postViewModel.resetPost()
+//                        postViewModel.setCurrentPost(it)
+//                        navController.navigate(InnerCirclesScreen.DisplayPost.name)
+//                    }
+//                )
+//            }
             composable(Screen.MyCircles.route) {
                 MyCirclesScreen(
                     onCircleClick = {
@@ -162,10 +161,6 @@ fun MainScreen(
             }
             composable(Screen.Notifications.route) {
                 NotificationsScreen(
-                    logOutUser = {
-                        SessionManager.clearSession()
-                        navController.navigate(InnerCirclesScreen.SignIn.name)
-                    },
                     onClickPostNotification = {
                         notificationViewModel.resetNotification()
                         notificationViewModel.setCurrentNotification(it)
@@ -175,6 +170,18 @@ fun MainScreen(
                         )
                         val route = notificationViewModel.getNavigationScreen(it)
                         navController.navigate(route)
+                    },
+                )
+            }
+            composable(Screen.Me.route) {
+                MeScreen(
+                    currentUser = userViewModel.getCurrentUser(),
+                    onClickEdit = {
+                        navController.navigate(InnerCirclesScreen.EditUser.name)
+                    },
+                    onClickLogOut = {
+                        SessionManager.clearSession()
+                        navController.navigate(InnerCirclesScreen.SignIn.name)
                     },
                 )
             }
@@ -195,7 +202,7 @@ fun MainScreen(
                     newPostUiState = newPostUiState,
                     onClickPost = {
                         newPostViewModel.resetNewPost()
-                        navController.navigate(Screen.Newsfeed.route)
+                        navController.navigate(Screen.MyCircles.route)
                     },
                     onClickBack = { navController.popBackStack() }
                 )
@@ -238,19 +245,25 @@ fun MainScreen(
                 )
             }
 
-            composable(route = InnerCirclesScreen.AddFriend.name) {
-                AddFriendScreen(
-                    onClickBack = { navController.popBackStack() },
-                    onNavigateToNewsfeed = { navController.navigate(Screen.Newsfeed.route) }
+            composable(route = InnerCirclesScreen.EditUser.name) {
+                EditUserScreen(
+                    onClickBack = { navController.popBackStack() }
                 )
             }
+            //todo: add adding friend functionality
+//            composable(route = InnerCirclesScreen.AddFriend.name) {
+//                AddFriendScreen(
+//                    onClickBack = { navController.popBackStack() },
+//                    onNavigateToNewsfeed = { navController.navigate(Screen.Newsfeed.route) }
+//                )
+//            }
 
             composable(route = InnerCirclesScreen.SignIn.name) {
                 SignInScreen(
                     updateUser = {
                         userViewModel.setCurrentUser(it)
                     },
-                    onClickSignIn = { navController.navigate(Screen.Newsfeed.route) },
+                    onClickSignIn = { navController.navigate(Screen.MyCircles.route) },
                     onTouOutdated = {
                         navController.navigate(InnerCirclesScreen.TermsOfUseScreen.name)
                     },
@@ -270,7 +283,7 @@ fun MainScreen(
                 TermsOfUseScreen(
                     onClickBack = { navController.popBackStack() },
                     onReadFullTermsOfUse = { navController.navigate(InnerCirclesScreen.CompleteTermsOfUseScreen.name) },
-                    onClickAccept = { navController.navigate(Screen.Newsfeed.route) }
+                    onClickAccept = { navController.navigate(Screen.MyCircles.route) }
                 )
             }
 
@@ -285,8 +298,9 @@ fun MainScreen(
 
 
 sealed class Screen(val route: String, val iconResourceId: Int) {
-    object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
+//    object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
     object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
     object Notifications : Screen("Notifications", R.drawable.notifications)
+    object Me : Screen("Me", R.drawable.account_circle_24dp)
 }
 

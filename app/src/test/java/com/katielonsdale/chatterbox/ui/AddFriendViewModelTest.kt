@@ -126,7 +126,8 @@ class AddFriendViewModelTest {
                 attributes = UserAttributes(
                     id = 1,
                     email = "test@example.com",
-                    displayName = "Test User"
+                    displayName = "Test User",
+                    notificationFrequency = "live",
                 )
             )
             
@@ -315,7 +316,8 @@ class AddFriendViewModelTest {
             attributes = UserAttributes(
                 id = userId,
                 email = "friend@example.com",
-                displayName = displayName
+                displayName = displayName,
+                notificationFrequency = "live"
             )
         )
         viewModel.updateSearchResults(listOf(userData))

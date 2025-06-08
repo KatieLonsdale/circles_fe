@@ -25,4 +25,8 @@ class UserViewModel : ViewModel() {
             )
         }
     }
+
+    fun getCurrentUser(): UserUiState {
+        return _uiState.value
+    }
 }

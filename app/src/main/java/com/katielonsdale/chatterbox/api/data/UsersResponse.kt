@@ -15,5 +15,6 @@ data class UserData(
 data class UserAttributes(
     @SerializedName("id") val id: Int,
     @SerializedName("email") val email: String,
-    @SerializedName("display_name") val displayName: String
+    @SerializedName("display_name") val displayName: String,
+    @SerializedName("notification_frequency") val notificationFrequency: String,
 ) 
