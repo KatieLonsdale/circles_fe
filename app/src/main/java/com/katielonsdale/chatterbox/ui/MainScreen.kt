@@ -66,12 +66,18 @@ fun MainScreen(
             navController.navigate(InnerCirclesScreen.SignIn.name) {
                 popUpTo(0) // Clear the back stack
             }
-        } else if (route == "display_post" && postId != null && circleId != null) {
-            postViewModel.getPost(
-                postId = postId,
-                circleId = circleId,
-            )
-            navController.navigate(InnerCirclesScreen.DisplayPost.name)
+        } else {
+            val userId = SessionManager.getUserId()
+            if (route == "display_post" && postId != null && circleId != null) {
+                userViewModel.getUser(userId)
+                postViewModel.getPost(
+                    postId = postId,
+                    circleId = circleId,
+                )
+                navController.navigate(InnerCirclesScreen.DisplayPost.name)
+            } else {
+                userViewModel.getUser(userId)
+            }
         }
     }
 

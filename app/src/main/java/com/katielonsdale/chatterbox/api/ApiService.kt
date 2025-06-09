@@ -23,6 +23,7 @@ import com.katielonsdale.chatterbox.api.data.NotificationRequest
 import com.katielonsdale.chatterbox.api.data.NotificationResponse
 import com.katielonsdale.chatterbox.api.data.NotificationsResponse
 import com.katielonsdale.chatterbox.api.data.PostResponse
+import com.katielonsdale.chatterbox.api.data.UserResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -54,6 +55,11 @@ interface ApiService {
     ): Call<Circle>
 
 //    USERS
+
+    @GET("users/{userId}")
+    fun getUser(
+        @Path("userId") userId: String?
+    ): Call<UserResponse>
 
     @POST("sessions")
     fun authenticateUser(
