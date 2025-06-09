@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,36 +53,33 @@ fun MeScreen(
         CircleWithText(
             text = displayedUser.value.displayName
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(
-                    top = 20.dp,
-                    bottom = 20.dp
-                )
-                .fillMaxWidth()
-        ){
-            Text(
-                text = "Edit",
-                fontSize = 30.sp,
-            )
-            IconButton(
-                onClick = { onClickEdit }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.edit_icon_24dp),
-                    contentDescription = "edit profile icon",
-                    modifier = Modifier.size(35.dp),
-                    tint = Color.DarkGray
-                )
-            }
-        }
-//        Text(
-//            text = displayedUser.value.displayName,
-//            fontSize = 20.sp,
-//            modifier = Modifier.padding(bottom = 10.dp)
-//        )
+        Spacer(modifier = Modifier.padding(10.dp))
+        //todo: enable user to edit profile
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.Center,
+//            modifier = Modifier
+//                .padding(
+//                    top = 20.dp,
+//                    bottom = 20.dp
+//                )
+//                .fillMaxWidth()
+//        ){
+//            Text(
+//                text = "Edit",
+//                fontSize = 30.sp,
+//            )
+//            IconButton(
+//                onClick = { onClickEdit }
+//            ) {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.edit_icon_24dp),
+//                    contentDescription = "edit profile icon",
+//                    modifier = Modifier.size(35.dp),
+//                    tint = Color.DarkGray
+//                )
+//            }
+//        }
         Text(
             text = displayedUser.value.email,
             fontSize = 15.sp,
