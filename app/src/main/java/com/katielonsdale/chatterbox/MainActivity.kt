@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
@@ -16,7 +17,7 @@ import com.katielonsdale.chatterbox.utils.NotificationsManager
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

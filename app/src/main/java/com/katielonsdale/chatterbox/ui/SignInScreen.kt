@@ -22,13 +22,14 @@ import com.katielonsdale.chatterbox.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.data.AuthenticatedUser
+import com.katielonsdale.chatterbox.api.data.UserAttributes
+import com.katielonsdale.chatterbox.api.data.UserData
 import com.katielonsdale.chatterbox.utils.NotificationsManager
 import com.katielonsdale.chatterbox.utils.TouAcceptanceValidator
 
 @Composable
 fun SignInScreen(
-    updateUser: (AuthenticatedUser) -> Unit,
+    updateUser: (UserAttributes) -> Unit,
     onClickSignIn: () -> Unit,
     onTouOutdated: () -> Unit,
     onClickSignUp: () -> Unit,
@@ -106,7 +107,7 @@ fun SignInScreen(
 private fun loginUser(
     username: String,
     password: String,
-    updateUser: (AuthenticatedUser) -> Unit,
+    updateUser: (UserAttributes) -> Unit,
     onResult: (Boolean, String?) -> Unit,
 ) {
     val signInRequest = SignInRequest(username, password)
@@ -116,7 +117,7 @@ private fun loginUser(
             if (response.isSuccessful) {
                 // HTTP 200: Success
                 val authToken = response.body()?.token
-                val attributes = extractUserAttributes(response.body()?.user?.data)
+                val attributes = extractUserAttributes(response.body()?.user?.data?.attributes)
                 if (attributes.isEmpty()) {
                     Log.e(TAG, "Authenticate User response is successful but empty")
                 }
@@ -133,7 +134,7 @@ private fun loginUser(
                         return
                     }
                     // if all is good, the user is signed in and we can set the current user
-                    updateUser(response.body()!!.user.data)
+                    updateUser(response.body()!!.user.data.attributes)
 
                     // Request notification permissions after successful login
                     // Only request notification permissions if the user's notifications_token is null
@@ -167,14 +168,14 @@ private fun loginUser(
     })
 }
 
-private fun extractUserAttributes(userData: AuthenticatedUser?): Map<String, String> {
+private fun extractUserAttributes(userData: UserAttributes?): Map<String, String> {
     val attributes = mutableMapOf<String, String>()
     attributes["id"] = userData?.id.toString()
-    attributes["email"] = userData?.attributes?.email.toString()
-    attributes["displayName"] = userData?.attributes?.displayName.toString()
-    attributes["notificationFrequency"] = userData?.attributes?.notificationFrequency.toString()
-    attributes["lastTouAcceptance"] = userData?.attributes?.lastTouAcceptance ?: ""
-    attributes["notificationsToken"] = userData?.attributes?.notificationsToken ?: ""
+    attributes["email"] = userData?.email.toString()
+    attributes["displayName"] = userData?.displayName.toString()
+    attributes["notificationFrequency"] = userData?.notificationFrequency.toString()
+    attributes["lastTouAcceptance"] = userData?.lastTouAcceptance ?: ""
+    attributes["notificationsToken"] = userData?.notificationsToken ?: ""
 
     return attributes
 }
