@@ -1,6 +1,5 @@
 package com.katielonsdale.chatterbox.ui
 
-import android.content.Context
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -58,6 +57,7 @@ fun MainScreen(
     val commentViewModel: CommentViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
     val notificationViewModel: NotificationViewModel = viewModel()
+    var startDestination = Screen.MyCircles.route
 
     LaunchedEffect(
         isUserLoggedIn
@@ -74,7 +74,8 @@ fun MainScreen(
                     postId = postId,
                     circleId = circleId,
                 )
-                navController.navigate(InnerCirclesScreen.DisplayPost.name)
+//                navController.navigate(InnerCirclesScreen.DisplayPost.name)
+                startDestination = InnerCirclesScreen.DisplayPost.name
             } else {
                 userViewModel.getUser(userId)
             }
@@ -145,7 +146,7 @@ fun MainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = Screen.MyCircles.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
 //            composable(Screen.Newsfeed.route) {
