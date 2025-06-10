@@ -21,7 +21,7 @@ import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 
 object NotificationsManager {
     const val TAG = "NotificationsManager"
-    var permissionGranted = false
+    private var permissionGranted = false
 
     fun init(
         notificationPermissionGranted: Boolean,

@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
             this,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
-        NotificationsManager.init(notificationPermissionGranted)
         createNotificationChannels()
+        NotificationsManager.init(notificationPermissionGranted)
 
             setContent {
                 MaterialTheme {

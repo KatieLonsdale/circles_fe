@@ -96,22 +96,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("route", data["route"])
             putExtra("circleId", data["circle_id"])
-            putExtra("postId", data["post_id"]) // you can pass anything you need
+            putExtra("postId", data["post_id"])
         }
 
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Default Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title ?: "Notification")
