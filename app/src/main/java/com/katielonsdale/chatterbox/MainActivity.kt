@@ -27,18 +27,18 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannels()
         val notificationsPermissionManager = NotificationsManager(this)
 
-            setContent {
-                MaterialTheme {
-                    MainScreen(
-                        route = intent?.getStringExtra("route"),
-                        circleId = intent?.getStringExtra("circleId"),
-                        postId = intent?.getStringExtra("postId"),
-                        onRequestNotificationPermission = {
-                            notificationsPermissionManager.requestNotificationPermissionIfNeeded()
-                        }
-                    )
-                }
+        setContent {
+            MaterialTheme {
+                MainScreen(
+                    route = intent?.getStringExtra("route"),
+                    circleId = intent?.getStringExtra("circleId"),
+                    postId = intent?.getStringExtra("postId"),
+                    onRequestNotificationPermission = {
+                        notificationsPermissionManager.requestNotificationPermissionIfNeeded()
+                    }
+                )
             }
+        }
     }
 
     private fun createNotificationChannels() {
