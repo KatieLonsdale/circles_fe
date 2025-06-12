@@ -47,6 +47,7 @@ fun MainScreen(
     route: String?,
     circleId: String?,
     postId: String?,
+    onRequestNotificationPermission: () -> Unit
 ) {
     val isUserLoggedIn by SessionManager.isUserLoggedIn.collectAsState()
     val isTouUpToDate by SessionManager.isTouUpToDate.collectAsState()
@@ -178,6 +179,7 @@ fun MainScreen(
                         val route = notificationViewModel.getNavigationScreen(it)
                         navController.navigate(route)
                     },
+                    onRequestNotificationPermission = onRequestNotificationPermission
                 )
             }
             composable(Screen.Me.route) {

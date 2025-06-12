@@ -1,16 +1,13 @@
 package com.katielonsdale.chatterbox
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.katielonsdale.chatterbox.api.ApiClient
 import com.katielonsdale.chatterbox.api.data.UserRequest
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,7 +60,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
     
-    private fun sendTokenToServer(token: String, userId: String) {
+    fun sendTokenToServer(token: String, userId: String) {
         try {
             // Use RetrofitClient which has already initialized the API service
             val apiService = com.katielonsdale.chatterbox.api.RetrofitClient.apiService

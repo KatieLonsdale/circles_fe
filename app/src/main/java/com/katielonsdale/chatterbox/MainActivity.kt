@@ -1,14 +1,11 @@
 package com.katielonsdale.chatterbox
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.core.content.ContextCompat
@@ -27,13 +24,8 @@ class MainActivity : AppCompatActivity() {
         // Initialize the SessionManager
         SessionManager.init(this)
 
-        //set up for notifications
-        val notificationPermissionGranted = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
         createNotificationChannels()
-        NotificationsManager.init(notificationPermissionGranted)
+        val notificationsPermissionManager = NotificationsManager(this)
 
             setContent {
                 MaterialTheme {
@@ -41,6 +33,9 @@ class MainActivity : AppCompatActivity() {
                         route = intent?.getStringExtra("route"),
                         circleId = intent?.getStringExtra("circleId"),
                         postId = intent?.getStringExtra("postId"),
+                        onRequestNotificationPermission = {
+                            notificationsPermissionManager.requestNotificationPermissionIfNeeded()
+                        }
                     )
                 }
             }

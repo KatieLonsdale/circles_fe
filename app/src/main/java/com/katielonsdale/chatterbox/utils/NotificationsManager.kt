@@ -1,109 +1,98 @@
 package com.katielonsdale.chatterbox.utils
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.data.UserRequest
-import com.katielonsdale.chatterbox.ui.notifications.NotificationsFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
+import android.net.Uri
+import com.katielonsdale.chatterbox.MyFirebaseMessagingService
 
-object NotificationsManager {
-    const val TAG = "NotificationsManager"
-    private var permissionGranted = false
+class NotificationsManager(
+    private val activity: ComponentActivity
+) {
+    val TAG = "Notifications Manager"
 
-    fun init(
-        notificationPermissionGranted: Boolean,
-    ){
-        permissionGranted = notificationPermissionGranted
-    }
+    private var retryRequested = false
 
-    fun askNotificationPermission(
-        userId: String
-    ) {
-        Log.d(TAG, "askNotificationPermission called with userId: $userId")
-        val fragment = NotificationsFragment()
-
-        // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= 33) { // Use the literal value in case TIRAMISU is not defined
-            Log.d(TAG, "Device is Android 13+ (TIRAMISU), checking permission status")
-            if (permissionGranted) {
-                // Permission already granted, get token
-                getFcmToken(userId)
+    private val permissionLauncher =
+        activity.registerForActivityResult(ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            val pendingUserId = SessionManager.getUserId()
+            if (isGranted) {
+                Log.d(TAG, "Notification permission granted, getting FCM token with userId: $pendingUserId")
+                getFcmToken(pendingUserId)
+                val token = SessionManager.getFcmToken()
+                if (token != null) {
+                    val service = MyFirebaseMessagingService()
+                    service.sendTokenToServer(token, pendingUserId)
+                } else {
+                    Log.e(TAG, "FCM token is null")
+                }
             } else {
-                Log.d(
-                    TAG,
-                    "POST_NOTIFICATIONS permission NOT granted, launching permission request"
-                )
-                // Request permission and handle result
-                fragment.requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                if (!retryRequested) {
+                    showRetryDialog()
+                } else {
+                    showSettingsDialog()
+                }
             }
-        } else {
-            // For devices below API level 33, no runtime permission is needed
-            Log.d(TAG, "Device is below Android 13, no permission needed")
-            getFcmToken(userId)
+        }
+
+    fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
     fun getFcmToken(userId: String) {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.e(TAG, "Fetching FCM registration token failed", task.exception)
+                Log.e(com.katielonsdale.chatterbox.ui.notifications.TAG, "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
             val token = task.result
             SessionManager.saveFcmToken(token)
-            sendTokenToServer(token, userId)
         })
     }
 
-    private fun sendTokenToServer(token: String, userId: String) {
-        try {
-            val tokenRequest = UserRequest(notificationsToken = token)
-
-            apiService.updateUser(userId, tokenRequest).enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (!response.isSuccessful) {
-                        Log.e(TAG, "Failed to send FCM token to server: ${response.code()}")
-                    }
-                }
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Log.e(TAG, "Error sending FCM token to server", t)
-                }
-            })
-        } catch (e: Exception) {
-            Log.e(TAG, "Error sending FCM token: ${e.message}", e)
-        }
+    private fun showRetryDialog() {
+        AlertDialog.Builder(activity)
+            .setTitle("Are you sure?")
+            .setMessage("You won't be notified when your friends post or comment if push notifications are not enabled.")
+            .setPositiveButton("OK") { _, _ ->
+                retryRequested = true
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                // ignore this warning, this is a part of a flow that has excluded
+                // users on versions lower than 33
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
-    fun clearTokenOnServer(userId: String) {
-        try {
-            val tokenRequest = UserRequest(notificationsToken = "")
-
-            apiService.updateUser(userId, tokenRequest).enqueue(object :
-                Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (!response.isSuccessful) {
-                        Log.e(TAG, "Failed to clear FCM token on server: ${response.code()}")
-                    }
+    private fun showSettingsDialog() {
+        AlertDialog.Builder(activity)
+            .setTitle("Notifications Disabled")
+            .setMessage("You’ve disabled push notifications. You can re-enable them in Settings.")
+            .setPositiveButton("Open Settings") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", activity.packageName, null)
                 }
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Log.e(TAG, "Error clearing FCM token to server", t)
-                }
-            })
-        } catch (e: Exception) {
-            Log.e(TAG, "Error clearing FCM token: ${e.message}", e)
-        }
+                activity.startActivity(intent)
+            }
+            .setNegativeButton("Dismiss", null)
+            .show()
     }
 }

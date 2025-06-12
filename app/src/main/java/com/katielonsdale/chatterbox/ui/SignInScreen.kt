@@ -1,6 +1,5 @@
 package com.katielonsdale.chatterbox.ui
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -15,16 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.Button
 import androidx.compose.ui.graphics.Color
-import com.katielonsdale.chatterbox.MainActivity
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.UserAttributes
-import com.katielonsdale.chatterbox.api.data.UserData
-import com.katielonsdale.chatterbox.utils.NotificationsManager
 import com.katielonsdale.chatterbox.utils.TouAcceptanceValidator
 
 @Composable
@@ -135,13 +130,6 @@ private fun loginUser(
                     }
                     // if all is good, the user is signed in and we can set the current user
                     updateUser(response.body()!!.user.data.attributes)
-
-                    // Request notification permissions after successful login
-                    // Only request notification permissions if the user's notifications_token is null
-                    if (attributes["notificationsToken"].isNullOrEmpty()) {
-                        // Ask for notification permission, passing the userId for token registration
-                        NotificationsManager.askNotificationPermission(userId)
-                    }
                 } else {
                     val errorMessage = "Token or userId is null. Response: ${response.body()}"
                     onResult(false, errorMessage)
