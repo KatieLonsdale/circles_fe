@@ -1,6 +1,6 @@
 [versions]
 activityKtx = "1.10.1"
-agp = "8.4.1"
+agp = "8.10.1"
 kotlin = "2.0.0"
 coreKtx = "1.10.1"
 fragmentKtx = "1.8.6"
@@ -38,6 +38,7 @@ archCoreTesting = "2.2.0"
 mockitoAndroid = "5.10.0"
 autolinktext = "2.0.1"
 uiToolingAndroid = "1.8.0"
+playServicesTasks = "18.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,6 +75,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", name = "firebaseBo
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", name = "firebaseMessaging" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 autolinktext = { module = "sh.calvin.autolinktext:autolinktext", name = "autolinktext", version.ref = "autolinktext" }
+coreLibraryDesugaring = { module = "com.android.tools:desugar_jdk_libs", name = "core-library-desugaring", version = "2.1.5" }
 
 # Testing dependencies
 mockito-core = { module = "org.mockito:mockito-core", name = "mockitoCore", version.ref = "mockitoCore" }
@@ -82,6 +84,7 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", na
 arch-core-testing = { module = "androidx.arch.core:core-testing", name = "archCoreTesting", version.ref = "archCoreTesting" }
 mockito-android = { module = "org.mockito:mockito-android", name = "mockitoAndroid", version.ref = "mockitoAndroid" }
 androidx-ui-tooling-android = { group = "androidx.compose.ui", name = "ui-tooling-android", version.ref = "uiToolingAndroid" }
+play-services-tasks = { group = "com.google.android.gms", name = "play-services-tasks", version.ref = "playServicesTasks" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
