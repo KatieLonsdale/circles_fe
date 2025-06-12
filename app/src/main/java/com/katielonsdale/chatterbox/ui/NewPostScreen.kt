@@ -147,6 +147,7 @@ fun MediaUploadButton(
 
     // Image Picker Launcher
     // todo: upgrade to photo picker https://developer.android.com/training/data-storage/shared/photopicker
+    // todo: permission to access photos?
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
