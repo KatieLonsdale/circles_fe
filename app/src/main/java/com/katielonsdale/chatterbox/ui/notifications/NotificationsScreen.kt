@@ -53,15 +53,16 @@ fun NotificationsScreen(
 ){
     val userNotifications = remember { mutableStateListOf<Notification>() }
     var isLoading by remember { mutableStateOf(true) }
-    val userId = SessionManager.getUserId()
-    var requested by rememberSaveable { mutableStateOf(false) }
+    val sessionManager = SessionManager
+    val userId = sessionManager.getUserId()
 
     LaunchedEffect(Unit) {
         getNotifications(userId, userNotifications)  // Await the result of getPosts
         isLoading = false    // Set loading to false after fetching the posts
+        val requested = sessionManager.getNotificationsPermissionRequested()
         if (!requested) {
             onRequestNotificationPermission()
-            requested = true
+            sessionManager.setNotificationsPermissionRequested(true)
         }
     }
 
