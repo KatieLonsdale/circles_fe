@@ -106,6 +106,7 @@ private fun loginUser(
     onResult: (Boolean, String?) -> Unit,
 ) {
     val signInRequest = SignInRequest(username, password)
+    val sessionManager = SessionManager
 
     apiService.authenticateUser(signInRequest).enqueue(object : Callback<SignInResponse> {
         override fun onResponse(call: Call<SignInResponse>, response: Response<SignInResponse>) {
@@ -118,7 +119,8 @@ private fun loginUser(
                 }
                 val userId = attributes["id"]
                 if (authToken != null && userId != null) {
-                    SessionManager.saveSession(
+                    sessionManager.clearSession()
+                    sessionManager.saveSession(
                         userId = userId,
                         jwtToken = authToken,
                     )
