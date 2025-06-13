@@ -1,6 +1,7 @@
 package com.katielonsdale.chatterbox.utils
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,19 +15,21 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.katielonsdale.chatterbox.SessionManager
 import android.net.Uri
+import android.se.omapi.Session
+import androidx.core.app.ActivityCompat
 import com.katielonsdale.chatterbox.MyFirebaseMessagingService
 
 class NotificationsManager(
     private val activity: ComponentActivity
 ) {
-    val TAG = "Notifications Manager"
-
-    private var retryRequested = false
+    private val TAG = "Notifications Manager"
+    private var requestsDenied = 0
 
     private val permissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()
         ) { isGranted ->
-            val pendingUserId = SessionManager.getUserId()
+            val sessionManager = SessionManager
+            val pendingUserId = sessionManager.getUserId()
             if (isGranted) {
                 Log.d(TAG, "Notification permission granted, getting FCM token with userId: $pendingUserId")
                 getFcmToken(pendingUserId)
@@ -38,10 +41,19 @@ class NotificationsManager(
                     Log.e(TAG, "FCM token is null")
                 }
             } else {
-                if (!retryRequested) {
+                requestsDenied ++
+                // Check if we should show retries
+                val requestsAllowed = activity.let {
+                    ActivityCompat.shouldShowRequestPermissionRationale(
+                        it,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
+                }
+                if (requestsAllowed && requestsDenied < 2) {
                     showRetryDialog()
-                } else {
+                } else if (requestsAllowed || requestsDenied == 2) {
                     showSettingsDialog()
+                    //todo: clear token
                 }
             }
         }
@@ -52,9 +64,7 @@ class NotificationsManager(
                 activity,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
+        ) { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
     }
 
     fun getFcmToken(userId: String) {
@@ -73,7 +83,6 @@ class NotificationsManager(
             .setTitle("Are you sure?")
             .setMessage("You won't be notified when your friends post or comment if push notifications are not enabled.")
             .setPositiveButton("OK") { _, _ ->
-                retryRequested = true
                 permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 // ignore this warning, this is a part of a flow that has excluded
                 // users on versions lower than 33

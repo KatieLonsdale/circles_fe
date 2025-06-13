@@ -104,14 +104,22 @@ object SessionManager {
         return sharedPreferences.getString("notifications_token", null)
     }
 
-    fun setNotificationsPermissionRequested(requested: Boolean){
+    private fun startNotificationsPermissionRequests(){
         val editor = sharedPreferences.edit()
-        editor.putBoolean("pushNotificationsPermissionRequested", requested)
+        editor.putInt("pushNotificationsPermissionRequests", 0)
         editor.apply()
     }
 
-    fun getNotificationsPermissionRequested(): Boolean {
-        return sharedPreferences.getBoolean("pushNotificationsPermissionRequested", false)
+    fun getNotificationsPermissionRequests(): Int {
+        val requests = sharedPreferences.getInt("pushNotificationsPermissionRequests", 0)
+        if (requests == 0) { startNotificationsPermissionRequests() }
+        return requests
+    }
+
+    fun setNotificationsPermissionRequests(requests: Int) {
+        val editor = sharedPreferences.edit()
+        editor.putInt("pushNotificationsPermissionRequests", requests)
+        editor.apply()
     }
 
     private fun isJwtTokenUpToDate() {
