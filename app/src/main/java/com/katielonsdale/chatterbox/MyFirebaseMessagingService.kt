@@ -41,19 +41,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             // Check if we have permission to send notifications and a valid userId
             val currentToken = SessionManager.getFcmToken()
             val userId = SessionManager.getUserId()
-            
-            // Only update the token if all of these are true:
-            // 1. We already had a token (user already granted permission)
-            // 2. The user is logged in (userId is not null)
             if (!currentToken.isNullOrEmpty()) {
                 Log.d(TAG, "User previously granted notification permission, updating token")
                 // Save the token locally
                 SessionManager.saveFcmToken(token)
                 // Send to backend
                 sendTokenToServer(token, userId)
-            } else {
-                // Do not save the token locally if no permission or not logged in
-                Log.d(TAG, "Token refresh ignored: User hasn't granted notification permission or isn't logged in")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error handling token refresh: ${e.message}", e)
