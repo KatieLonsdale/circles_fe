@@ -32,7 +32,7 @@ class NotificationsManager(
             val pendingUserId = sessionManager.getUserId()
             if (isGranted) {
                 Log.d(TAG, "Notification permission granted, getting FCM token with userId: $pendingUserId")
-                getFcmToken(pendingUserId)
+                getFcmToken()
                 val token = SessionManager.getFcmToken()
                 if (token != null) {
                     val service = MyFirebaseMessagingService()
@@ -67,7 +67,7 @@ class NotificationsManager(
         ) { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
     }
 
-    fun getFcmToken(userId: String) {
+    private fun getFcmToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.e(com.katielonsdale.chatterbox.ui.notifications.TAG, "Fetching FCM registration token failed", task.exception)
