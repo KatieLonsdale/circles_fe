@@ -12,6 +12,7 @@ import com.katielonsdale.chatterbox.api.data.UserRequest
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val TAG = "MyFirebaseMessagingService"
@@ -55,8 +56,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     
     fun sendTokenToServer(token: String, userId: String) {
         try {
-            // Use RetrofitClient which has already initialized the API service
-            val apiService = com.katielonsdale.chatterbox.api.RetrofitClient.apiService
             val tokenRequest = UserRequest(notificationsToken = token)
             
             apiService.updateUser(userId, tokenRequest).enqueue(object : Callback<Void> {
@@ -75,6 +74,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         } catch (e: Exception) {
             Log.e(TAG, "Error sending FCM token: ${e.message}", e)
         }
+    }
+
+    fun clearToken(userId: String) {
+        val updatedUserRequest = UserRequest(notificationsToken = null)
+
+        apiService.updateUser(userId,updatedUserRequest).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "FCM token successfully cleared from server,")
+                } else {
+                    Log.e(TAG, "Failed to send FCM token to server: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e(TAG, "Error clearing FCM token from server", t)
+            }
+        })
     }
 
     private fun showNotification(title: String?, body: String?, data: Map<String, String>) {

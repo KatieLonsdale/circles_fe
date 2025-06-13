@@ -104,21 +104,9 @@ object SessionManager {
         return sharedPreferences.getString("notifications_token", null)
     }
 
-    private fun startNotificationsPermissionRequests(){
+    fun clearFcmToken() {
         val editor = sharedPreferences.edit()
-        editor.putInt("pushNotificationsPermissionRequests", 0)
-        editor.apply()
-    }
-
-    fun getNotificationsPermissionRequests(): Int {
-        val requests = sharedPreferences.getInt("pushNotificationsPermissionRequests", 0)
-        if (requests == 0) { startNotificationsPermissionRequests() }
-        return requests
-    }
-
-    fun setNotificationsPermissionRequests(requests: Int) {
-        val editor = sharedPreferences.edit()
-        editor.putInt("pushNotificationsPermissionRequests", requests)
+        editor.putString("notifications_token", null)
         editor.apply()
     }
 

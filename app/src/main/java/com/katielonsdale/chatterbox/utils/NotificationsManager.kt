@@ -15,7 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.katielonsdale.chatterbox.SessionManager
 import android.net.Uri
-import android.se.omapi.Session
 import androidx.core.app.ActivityCompat
 import com.katielonsdale.chatterbox.MyFirebaseMessagingService
 
@@ -30,16 +29,14 @@ class NotificationsManager(
         ) { isGranted ->
             val sessionManager = SessionManager
             val pendingUserId = sessionManager.getUserId()
+            val service = MyFirebaseMessagingService()
+
             if (isGranted) {
                 Log.d(TAG, "Notification permission granted, getting FCM token with userId: $pendingUserId")
-                getFcmToken()
-                val token = SessionManager.getFcmToken()
-                if (token != null) {
-                    val service = MyFirebaseMessagingService()
-                    service.sendTokenToServer(token, pendingUserId)
-                } else {
-                    Log.e(TAG, "FCM token is null")
-                }
+                createFcmToken(
+                    service = service,
+                    pendingUserId = pendingUserId
+                )
             } else {
                 requestsDenied ++
                 // Check if we should show retries
@@ -55,16 +52,36 @@ class NotificationsManager(
                     showSettingsDialog()
                     //todo: clear token
                 }
+                if (sessionManager.getFcmToken() != null) {
+                    service.clearToken(pendingUserId)
+                    sessionManager.clearFcmToken()
+                }
             }
         }
 
     fun requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permissionGranted = ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
-        ) { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            if (!permissionGranted) {
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    fun createFcmToken(
+        service: MyFirebaseMessagingService = MyFirebaseMessagingService(),
+        pendingUserId: String = SessionManager.getUserId()
+    ) {
+        getFcmToken()
+        val token = SessionManager.getFcmToken()
+        if (token != null) {
+            service.sendTokenToServer(token, pendingUserId)
+        } else {
+            Log.e(TAG, "FCM token is null")
+        }
     }
 
     private fun getFcmToken() {
