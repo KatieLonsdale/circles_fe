@@ -36,6 +36,11 @@ class NotificationsManager(
                 )
             } else {
                 requestsDenied ++
+                if (SessionManager.getFcmToken() != null) {
+                    //todo: clear token for all users with this token (shared device)
+                    service.clearToken(pendingUserId)
+                    SessionManager.clearFcmToken()
+                }
                 // Check if we should show retries
                 val requestsAllowed = activity.let {
                     ActivityCompat.shouldShowRequestPermissionRationale(
@@ -47,10 +52,6 @@ class NotificationsManager(
                     showRetryDialog()
                 } else if (requestsAllowed || requestsDenied == 2) {
                     showSettingsDialog()
-                    if (SessionManager.getFcmToken() != null) {
-                        service.clearToken(pendingUserId)
-                        SessionManager.clearFcmToken()
-                    }
                 }
             }
         }
@@ -65,9 +66,6 @@ class NotificationsManager(
                 permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
-        // we want to catch if a user has enabled permission outside the app
-        // because we won't have created an FCM token for them yet
-        checkPushNotificationPermissions()
         SessionManager.setPushNotificationsPermissionChecked(true)
     }
 
@@ -87,7 +85,7 @@ class NotificationsManager(
         }
     }
 
-    private fun checkPushNotificationPermissions(){
+    fun checkPushNotificationPermissions(){
         //for older versions
         val manager = NotificationManagerCompat.from(activity)
         var permissionGranted = manager.areNotificationsEnabled()
@@ -98,13 +96,19 @@ class NotificationsManager(
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         }
+        // we want to catch if a user has enabled permission outside the app
+        // because we won't have created an FCM token for them yet
+        // we will also make sure it's the correct token
         if (permissionGranted) {
-            val fcmToken = SessionManager.getFcmToken()
-            Log.d(TAG, "Permission granted.")
-            if (fcmToken == null) {
-                Log.d(TAG, "permission granted, but no FCM token exists. Generating new FCM token.")
-                createFcmToken()
+            Log.d(TAG, "Permission granted. Getting new or current token from FCM")
+            createFcmToken()
+        } else {
+            val service = MyFirebaseMessagingService()
+            val userId = SessionManager.getUserId()
+            if (userId.isNotEmpty()) {
+                service.clearToken(userId)
             }
+            SessionManager.clearFcmToken()
         }
     }
 

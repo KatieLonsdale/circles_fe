@@ -2,6 +2,7 @@ package com.katielonsdale.chatterbox.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.api.data.UserResponse
@@ -45,7 +46,11 @@ class UserViewModel : ViewModel() {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {
                     // HTTP 200: Success
-                    setCurrentUser(response.body()!!.data.attributes)
+                    val userAttributes = response.body()!!.data.attributes
+                    setCurrentUser(userAttributes)
+                    if (!userAttributes.notificationsToken.isNullOrEmpty()) {
+                        SessionManager.saveFcmToken(userAttributes.notificationsToken)
+                    }
                     return
                 } else if (response.code() == 404) {
                     val errorMessage = response.message()

@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannels()
         val notificationsPermissionManager = NotificationsManager(this)
 
+        // make sure all tokens are up to date
+        notificationsPermissionManager.checkPushNotificationPermissions()
+
         setContent {
             MaterialTheme {
                 MainScreen(
