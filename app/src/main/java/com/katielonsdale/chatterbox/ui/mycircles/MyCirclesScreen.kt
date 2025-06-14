@@ -58,6 +58,7 @@ fun MyCirclesScreen(
         CircularProgressIndicator()
     } else {
         MyCirclesList(userChatters, onCircleClick)
+        //todo: if no chatters, add button to create one
     }
 }
 

@@ -15,8 +15,8 @@ android {
         applicationId = "com.katielonsdale.chatterbox"
         minSdk = 28
         targetSdk = 34
-        versionCode = 22
-        versionName = "3.1.1"
+        versionCode = 25
+        versionName = "4.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,6 +38,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -75,6 +76,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.androidx.ui.tooling.android)
+    implementation(libs.play.services.tasks)
 
 // Testing
 testImplementation(libs.junit)
@@ -116,4 +118,7 @@ androidTestImplementation(libs.arch.core.testing)
 
     // auto link text
     implementation(libs.autolinktext)
+
+//    implementation(libs.coreLibraryDesugaring)
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

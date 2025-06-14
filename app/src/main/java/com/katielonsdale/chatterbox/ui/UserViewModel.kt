@@ -4,12 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
-import com.katielonsdale.chatterbox.api.data.AuthenticatedUser
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.api.data.UserResponse
 import com.katielonsdale.chatterbox.api.data.UserUiState
-import com.katielonsdale.chatterbox.utils.NotificationsManager
-import com.katielonsdale.chatterbox.utils.TouAcceptanceValidator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,7 +46,11 @@ class UserViewModel : ViewModel() {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {
                     // HTTP 200: Success
-                    setCurrentUser(response.body()!!.data.attributes)
+                    val userAttributes = response.body()!!.data.attributes
+                    setCurrentUser(userAttributes)
+                    if (!userAttributes.notificationsToken.isNullOrEmpty()) {
+                        SessionManager.saveFcmToken(userAttributes.notificationsToken)
+                    }
                     return
                 } else if (response.code() == 404) {
                     val errorMessage = response.message()
@@ -68,17 +69,5 @@ class UserViewModel : ViewModel() {
                 Log.e(TAG, "onFailure: $t")
             }
         })
-    }
-
-    private fun extractUserAttributes(userData: AuthenticatedUser?): Map<String, String> {
-        val attributes = mutableMapOf<String, String>()
-        attributes["id"] = userData?.id.toString()
-        attributes["email"] = userData?.attributes?.email.toString()
-        attributes["displayName"] = userData?.attributes?.displayName.toString()
-        attributes["notificationFrequency"] = userData?.attributes?.notificationFrequency.toString()
-        attributes["lastTouAcceptance"] = userData?.attributes?.lastTouAcceptance ?: ""
-        attributes["notificationsToken"] = userData?.attributes?.notificationsToken ?: ""
-
-        return attributes
     }
 }

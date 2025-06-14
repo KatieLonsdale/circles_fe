@@ -8,9 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.katielonsdale.chatterbox.ui.MainScreen
 import com.katielonsdale.chatterbox.utils.NotificationsManager
@@ -27,23 +27,25 @@ class MainActivity : AppCompatActivity() {
         // Initialize the SessionManager
         SessionManager.init(this)
 
-        //set up for notifications
-        val notificationPermissionGranted = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
+        // Notifications
         createNotificationChannels()
-        NotificationsManager.init(notificationPermissionGranted)
+        val notificationsPermissionManager = NotificationsManager(this)
 
-            setContent {
-                MaterialTheme {
-                    MainScreen(
-                        route = intent?.getStringExtra("route"),
-                        circleId = intent?.getStringExtra("circleId"),
-                        postId = intent?.getStringExtra("postId"),
-                    )
-                }
+        // make sure all tokens are up to date
+        notificationsPermissionManager.checkPushNotificationPermissions()
+
+        setContent {
+            MaterialTheme {
+                MainScreen(
+                    route = intent?.getStringExtra("route"),
+                    circleId = intent?.getStringExtra("circleId"),
+                    postId = intent?.getStringExtra("postId"),
+                    onRequestNotificationPermission = {
+                        notificationsPermissionManager.requestNotificationPermissionIfNeeded()
+                    }
+                )
             }
+        }
     }
 
     private fun createNotificationChannels() {
