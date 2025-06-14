@@ -12,6 +12,8 @@ import java.time.OffsetDateTime
 
 object SessionManager {
 
+    val TAG = "Session Manager"
+
     private const val PREF_NAME = "UserSession"
     private lateinit var sharedPreferences: SharedPreferences
     private var isInitialized = false
@@ -134,5 +136,16 @@ object SessionManager {
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun setPushNotificationsPermissionChecked(checked: Boolean) {
+        checkInitialization()
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("pushNotificationsChecked?", checked)
+        editor.apply()
+    }
+
+    fun wasPushNotificationsPermissionChecked(): Boolean {
+        return sharedPreferences.getBoolean("pushNotificationsChecked?", false)
     }
 }
