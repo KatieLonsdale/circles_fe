@@ -1,7 +1,6 @@
 package com.katielonsdale.chatterbox.utils
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,11 +10,10 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.katielonsdale.chatterbox.SessionManager
 import android.net.Uri
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import com.katielonsdale.chatterbox.MyFirebaseMessagingService
 
 class NotificationsManager(
@@ -27,8 +25,7 @@ class NotificationsManager(
     private val permissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()
         ) { isGranted ->
-            val sessionManager = SessionManager
-            val pendingUserId = sessionManager.getUserId()
+            val pendingUserId = SessionManager.getUserId()
             val service = MyFirebaseMessagingService()
 
             if (isGranted) {
@@ -50,11 +47,10 @@ class NotificationsManager(
                     showRetryDialog()
                 } else if (requestsAllowed || requestsDenied == 2) {
                     showSettingsDialog()
-                    //todo: clear token
-                }
-                if (sessionManager.getFcmToken() != null) {
-                    service.clearToken(pendingUserId)
-                    sessionManager.clearFcmToken()
+                    if (SessionManager.getFcmToken() != null) {
+                        service.clearToken(pendingUserId)
+                        SessionManager.clearFcmToken()
+                    }
                 }
             }
         }
@@ -64,35 +60,52 @@ class NotificationsManager(
             val permissionGranted = ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
             if (!permissionGranted) {
                 permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+        // we want to catch if a user has enabled permission outside the app
+        // because we won't have created an FCM token for them yet
+        checkPushNotificationPermissions()
+        SessionManager.setPushNotificationsPermissionChecked(true)
     }
 
-    fun createFcmToken(
+    private fun createFcmToken(
         service: MyFirebaseMessagingService = MyFirebaseMessagingService(),
         pendingUserId: String = SessionManager.getUserId()
     ) {
-        getFcmToken()
-        val token = SessionManager.getFcmToken()
-        if (token != null) {
-            service.sendTokenToServer(token, pendingUserId)
-        } else {
-            Log.e(TAG, "FCM token is null")
+        service.getFcmToken() { success ->
+            if(success) {
+                val token = SessionManager.getFcmToken()
+                if (token != null) {
+                    service.sendTokenToServer(token, pendingUserId)
+                } else {
+                    Log.e(TAG, "FCM token is null")
+                }
+            }
         }
     }
 
-    private fun getFcmToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.e(com.katielonsdale.chatterbox.ui.notifications.TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
+    private fun checkPushNotificationPermissions(){
+        //for older versions
+        val manager = NotificationManagerCompat.from(activity)
+        var permissionGranted = manager.areNotificationsEnabled()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionGranted = ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+        if (permissionGranted) {
+            val fcmToken = SessionManager.getFcmToken()
+            Log.d(TAG, "Permission granted.")
+            if (fcmToken == null) {
+                Log.d(TAG, "permission granted, but no FCM token exists. Generating new FCM token.")
+                createFcmToken()
             }
-            val token = task.result
-            SessionManager.saveFcmToken(token)
-        })
+        }
     }
 
     private fun showRetryDialog() {

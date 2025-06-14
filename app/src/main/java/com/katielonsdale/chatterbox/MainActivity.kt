@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         // Notifications
         createNotificationChannels()
         val notificationsPermissionManager = NotificationsManager(this)
-        checkPushNotificationPermissions()
 
         setContent {
             MaterialTheme {
@@ -57,29 +56,5 @@ class MainActivity : AppCompatActivity() {
         val notificationManager =
             ContextCompat.getSystemService(this, NotificationManager::class.java)
         notificationManager?.createNotificationChannel(channel)
-    }
-
-    // we want to catch if a user has enabled permission outside the app
-    // because we won't have created an FCM token for them yet
-    private fun checkPushNotificationPermissions(){
-        //for older versions
-        val manager = NotificationManagerCompat.from(this)
-        var permissionGranted = manager.areNotificationsEnabled()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissionGranted = ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-            if (permissionGranted) {
-                val fcmToken = SessionManager.getFcmToken()
-                if (fcmToken == null) {
-                    val notificationsManager = NotificationsManager(
-                        this
-                    )
-                    notificationsManager.createFcmToken()
-                }
-            }
-        }
     }
 }

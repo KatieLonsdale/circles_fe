@@ -53,16 +53,15 @@ fun NotificationsScreen(
 ){
     val userNotifications = remember { mutableStateListOf<Notification>() }
     var isLoading by remember { mutableStateOf(true) }
-    val sessionManager = SessionManager
-    val userId = sessionManager.getUserId()
+    val userId = SessionManager.getUserId()
 
     LaunchedEffect(Unit) {
         getNotifications(userId, userNotifications)  // Await the result of getPosts
         isLoading = false    // Set loading to false after fetching the posts
-//        val permissionRequests = sessionManager.getNotificationsPermissionRequests()
-//        if (permissionRequests < 2) {
+        val permissionChecked = SessionManager.wasPushNotificationsPermissionChecked()
+        if (!permissionChecked) {
             onRequestNotificationPermission()
-//        }
+        }
     }
 
     Column() {
@@ -225,3 +224,6 @@ fun NotificationCardPreview(){
         notification = exampleNotification
     )
 }
+
+//todo: allow multiple notifications tokens for multiple devices under one user
+//todo: refresh token on login

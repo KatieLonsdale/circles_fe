@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.katielonsdale.chatterbox.api.data.UserRequest
@@ -36,7 +38,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        Log.d(TAG, "Refreshed FCM token: $token")
+        Log.d(TAG, "Refreshed FCM token")
         
         try {
             // Check if we have permission to send notifications and a valid userId
@@ -52,6 +54,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         } catch (e: Exception) {
             Log.e(TAG, "Error handling token refresh: ${e.message}", e)
         }
+    }
+
+    fun getFcmToken(
+        onComplete: (Boolean) -> Unit
+    ) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.e(TAG, "Fetching FCM registration token failed", task.exception)
+                onComplete(false)
+                return@OnCompleteListener
+            }
+            val token = task.result
+            SessionManager.saveFcmToken(token)
+            onComplete(true)
+        })
     }
     
     fun sendTokenToServer(token: String, userId: String) {
@@ -77,7 +94,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     fun clearToken(userId: String) {
-        val updatedUserRequest = UserRequest(notificationsToken = null)
+        val updatedUserRequest = UserRequest(notificationsToken = "")
 
         apiService.updateUser(userId,updatedUserRequest).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
