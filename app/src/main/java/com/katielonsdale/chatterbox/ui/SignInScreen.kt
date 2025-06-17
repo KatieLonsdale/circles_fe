@@ -5,31 +5,29 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.max
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import com.katielonsdale.chatterbox.utils.TouAcceptanceValidator
 
 @Composable
@@ -85,53 +83,20 @@ fun SignInScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        TextField(
+        TextFieldOnSurface(
             value = email,
             onValueChange = { email = it },
-            label = { Text(
-                text = "Email address",
-                style = MaterialTheme.typography.labelSmall,
-            ) },
-            textStyle = MaterialTheme.typography.labelSmall,
-            shape = MaterialTheme.shapes.small,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .width(280.dp),
-            maxLines = 1,
+            label = "Email address",
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        TextFieldOnSurface(
             value = password,
             onValueChange = { password = it },
-            label = { Text(
-                text = "Password",
-                style = MaterialTheme.typography.labelSmall
-            ) },
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = MaterialTheme.typography.labelSmall,
-            shape = MaterialTheme.shapes.small,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .width(280.dp),
-            maxLines = 1,
+            label = "Password",
+            hidden = true,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -162,13 +127,21 @@ fun SignInScreen(
 
         if (errorMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(errorMessage, color = MaterialTheme.colorScheme.onErrorContainer)
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp
+                )
+            )
         }
 
         Spacer(modifier = Modifier.height(50.dp))
 
         Text(
-            text = "Don't have an account?",
+            text = "Don't have a ChatterBox account?",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.background
         )
@@ -183,7 +156,7 @@ fun SignInScreen(
         ) {
             Text(
                 text = "Sign Up",
-                style = MaterialTheme.typography.labelSmall
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }

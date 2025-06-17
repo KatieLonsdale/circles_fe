@@ -7,23 +7,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
@@ -35,6 +30,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.katielonsdale.chatterbox.ui.components.BackButton
+import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 
 @Composable
 fun SignUpScreen(
@@ -85,110 +81,45 @@ fun SignUpScreen(
                 text = it,
                 color = MaterialTheme.colorScheme.onErrorContainer,
                 style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        TextField(
+        TextFieldOnSurface(
             value = displayName,
             onValueChange = { displayName = it },
-            label = { Text(
-                text = "Display Name",
-                style = MaterialTheme.typography.labelSmall,
-            ) },
-            textStyle = MaterialTheme.typography.labelSmall,
-            shape = MaterialTheme.shapes.small,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .width(280.dp),
-            maxLines = 1,
+            label = "Display Name",
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        TextFieldOnSurface(
             value = email,
             onValueChange = { email = it },
-            label = { Text(
-                text = "Email",
-                style = MaterialTheme.typography.labelSmall,
-            ) },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            textStyle = MaterialTheme.typography.labelSmall,
-            shape = MaterialTheme.shapes.small,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .width(280.dp),
-            maxLines = 1,
+            label = "Email",
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        TextFieldOnSurface(
             value = password,
             onValueChange = { password = it },
-            label = { Text(
-                text = "Password",
-                style = MaterialTheme.typography.labelSmall,
-            ) },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            textStyle = MaterialTheme.typography.labelSmall,
-            shape = MaterialTheme.shapes.small,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .width(280.dp),
-            maxLines = 1,
+            label = "Password",
+            hidden = true,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        TextFieldOnSurface(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text(
-                text = "Confirm Password",
-                style = MaterialTheme.typography.labelSmall
-            ) },
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = MaterialTheme.typography.labelSmall,
-            shape = MaterialTheme.shapes.small,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier
-                .width(280.dp),
-            maxLines = 1,
+            label = "Confirm Password",
+            hidden = true,
         )
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -196,7 +127,7 @@ fun SignUpScreen(
         Button(
             onClick = {
                 if (displayName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()) {
-                    if (password == confirmPassword) {
+                    if (password.trim() == confirmPassword.trim()) {
                         isLoading = true
                         signUpUser(
                             email.trim(),
