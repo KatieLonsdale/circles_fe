@@ -3,13 +3,13 @@ package com.katielonsdale.chatterbox.theme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
-import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 val LightColorTheme = lightColorScheme(
     primary = Primary,
+    secondary = Secondary,
     surface = Surface,
     surfaceVariant = SurfaceVariant,
     onSurface = OnSurface,
