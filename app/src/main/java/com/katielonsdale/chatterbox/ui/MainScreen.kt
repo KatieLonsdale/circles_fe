@@ -20,6 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import com.katielonsdale.chatterbox.ui.mycircles.MyCirclesScreen
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import com.katielonsdale.chatterbox.api.data.PostViewModel
@@ -283,8 +285,32 @@ fun MainScreen(
             }
             composable(route = InnerCirclesScreen.SignUp.name) {
                 SignUpScreen(
-                    onClickSignUp = { navController.navigate(InnerCirclesScreen.SignIn.name) },
+                    onClickSignUp = {
+                        navController.navigate("sign_in?signedUp=true") {
+                            popUpTo("sign_up") { inclusive = true }
+                        }
+                    },
                     onClickBack = { navController.popBackStack() }
+                )
+            }
+
+            // special route for after a successful user sign up
+            composable(
+                route = "sign_in?signedUp={signedUp}",
+                arguments = listOf(
+                    navArgument("signedUp") {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) { backStackEntry ->
+                val signedUp = backStackEntry.arguments?.getBoolean("signedUp") ?: false
+                SignInScreen(
+                    updateUser = { userViewModel.setCurrentUser(it) },
+                    onClickSignIn = { navController.navigate(Screen.MyCircles.route) },
+                    onTouOutdated = { navController.navigate(InnerCirclesScreen.TermsOfUseScreen.name) },
+                    onClickSignUp = { navController.navigate(InnerCirclesScreen.SignUp.name) },
+                    signedUp = signedUp
                 )
             }
 

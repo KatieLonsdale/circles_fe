@@ -1,25 +1,33 @@
 package com.katielonsdale.chatterbox.ui
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.Button
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
+import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.UserAttributes
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import com.katielonsdale.chatterbox.utils.TouAcceptanceValidator
 
 @Composable
@@ -28,6 +36,7 @@ fun SignInScreen(
     onClickSignIn: () -> Unit,
     onTouOutdated: () -> Unit,
     onClickSignUp: () -> Unit,
+    signedUp: Boolean = false,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -36,25 +45,62 @@ fun SignInScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.secondary),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
-        TextField(
+        Image(
+            painterResource(
+                id = R.drawable.cb_logo_dark
+            ),
+            contentDescription = "ChatterBox Logo",
+            modifier = Modifier
+                .height(300.dp)
+        )
+
+        //successful sign up message
+        if (signedUp) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(50)
+                    )
+            ) {
+                Text(
+                    text = "Successful sign up. Please log in.",
+                    color = MaterialTheme.colorScheme.background,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(
+                        top = 5.dp,
+                        bottom = 5.dp,
+                        start = 10.dp,
+                        end = 10.dp
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        TextFieldOnSurface(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth(),
+            label = "Email address",
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
+
         Spacer(modifier = Modifier.height(16.dp))
-        TextField(
+
+        TextFieldOnSurface(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            label = "Password",
+            hidden = true,
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
                 errorMessage = ""
@@ -73,17 +119,32 @@ fun SignInScreen(
                 }
             }
         ) {
-            Text("Sign In")
+            Text(
+                text = "Sign In",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
 
         if (errorMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(errorMessage, color = Color.Red)
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp
+                )
+            )
         }
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Text("Don't have an account?", modifier = Modifier)
+        Text(
+            text = "Don't have a ChatterBox account?",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.background
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -93,7 +154,10 @@ fun SignInScreen(
                 onClickSignUp()
             }
         ) {
-            Text("Sign Up")
+            Text(
+                text = "Sign Up",
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
@@ -172,12 +236,15 @@ private fun extractUserAttributes(userData: UserAttributes?): Map<String, String
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewLoginScreen() {
-    SignInScreen(
-        updateUser = {},
-        onClickSignIn = {},
-        onTouOutdated = {},
-        onClickSignUp = {},
-    )
+    ChatterBoxTheme {
+        SignInScreen(
+            updateUser = {},
+            onClickSignIn = {},
+            onTouOutdated = {},
+            onClickSignUp = {},
+//            signedUp = true,
+        )
+    }
 }
 
 //todo: error handling for sign in

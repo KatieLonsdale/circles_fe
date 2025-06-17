@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.androidx.ui.tooling.android)
     implementation(libs.play.services.tasks)
+    implementation(libs.androidx.ui.text.google.fonts)
 
 // Testing
 testImplementation(libs.junit)
