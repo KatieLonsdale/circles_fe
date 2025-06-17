@@ -34,7 +34,7 @@ val Typography: Typography @Composable get() = Typography(
         fontFamily = Figtree,
         fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
-        lineHeight = 25.sp
+        lineHeight = 20.sp
     ),
     titleLarge = TextStyle(
         fontFamily = Figtree,
@@ -54,5 +54,23 @@ val Typography: Typography @Composable get() = Typography(
         fontSize = 38.sp,
         lineHeight = 40.sp
     ),
+    labelSmall = TextStyle(
+        fontFamily = Figtree,
+        fontWeight = FontWeight.Normal,
+        fontSize = 15.sp,
+        lineHeight = 15.sp,
+    ),
+    labelMedium = TextStyle(
+        fontFamily = Figtree,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+        lineHeight = 30.sp,
+    ),
+    labelLarge = TextStyle(
+        fontFamily = Figtree,
+        fontWeight = FontWeight.Normal,
+        fontSize = 30.sp,
+        lineHeight = 30.sp,
+    )
 
 )
