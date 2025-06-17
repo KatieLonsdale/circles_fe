@@ -63,14 +63,14 @@ val Typography: Typography @Composable get() = Typography(
     labelMedium = TextStyle(
         fontFamily = Figtree,
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
+        fontSize = 30.sp,
         lineHeight = 30.sp,
     ),
     labelLarge = TextStyle(
         fontFamily = Figtree,
         fontWeight = FontWeight.Normal,
-        fontSize = 30.sp,
-        lineHeight = 30.sp,
+        fontSize = 40.sp,
+        lineHeight = 40.sp,
     )
 
 )
