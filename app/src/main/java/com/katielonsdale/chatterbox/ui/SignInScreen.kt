@@ -25,6 +25,7 @@ import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.max
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.UserAttributes
@@ -102,6 +103,9 @@ fun SignInScreen(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
             ),
+            modifier = Modifier
+                .width(280.dp),
+            maxLines = 1,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -124,7 +128,10 @@ fun SignInScreen(
                 cursorColor = MaterialTheme.colorScheme.primary,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
-            )
+            ),
+            modifier = Modifier
+                .width(280.dp),
+            maxLines = 1,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
