@@ -301,7 +301,6 @@ fun MainScreen(
                     navArgument("signedUp") {
                         type = NavType.BoolType
                         defaultValue = false
-                        nullable = true
                     }
                 )
             ) { backStackEntry ->
