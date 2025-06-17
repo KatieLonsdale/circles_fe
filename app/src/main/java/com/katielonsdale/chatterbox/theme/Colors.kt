@@ -10,6 +10,8 @@ val Surface = Color(0xFFc9d7dd)
 val SurfaceVariant = Color(0xFF829da9)
 val OnSurface = Color(0xFF5f6a71)
 val OnSurfaceVariant = Color(0xFF5f6a71)
+val OnError = Color(0xFFFF5449)
+val OnErrorContainer = Color(0xFFc6302c)
 
 //val BackgroundDark
 //val PrimaryDark

@@ -16,6 +16,8 @@ val LightColorTheme = lightColorScheme(
     onSurfaceVariant = OnSurfaceVariant,
     background = Background,
     onBackground = OnBackground,
+    onError = OnError,
+    onErrorContainer = OnErrorContainer,
 )
 
 //@Composable
