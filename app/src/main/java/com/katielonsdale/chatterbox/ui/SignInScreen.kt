@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,11 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignInRequest
 import com.katielonsdale.chatterbox.api.data.SignInResponse
@@ -37,6 +37,7 @@ fun SignInScreen(
     onClickSignIn: () -> Unit,
     onTouOutdated: () -> Unit,
     onClickSignUp: () -> Unit,
+    signedUp: Boolean = false,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -56,21 +57,51 @@ fun SignInScreen(
             modifier = Modifier
                 .height(300.dp)
         )
+
+        //successful sign up message
+        if (signedUp) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(50)
+                    )
+            ) {
+                Text(
+                    text = "Successful sign up. Please log in.",
+                    color = MaterialTheme.colorScheme.background,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(
+                        top = 5.dp,
+                        bottom = 5.dp,
+                        start = 10.dp,
+                        end = 10.dp
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email address") },
+            label = { Text(
+                text = "Email address",
+                style = MaterialTheme.typography.labelSmall,
+            ) },
             textStyle = MaterialTheme.typography.labelSmall,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.primary,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
-            )
+            ),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -78,13 +109,16 @@ fun SignInScreen(
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text(
+                text = "Password",
+                style = MaterialTheme.typography.labelSmall
+            ) },
             visualTransformation = PasswordVisualTransformation(),
             textStyle = MaterialTheme.typography.labelSmall,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.primary,
@@ -115,13 +149,13 @@ fun SignInScreen(
         ) {
             Text(
                 text = "Sign In",
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.labelSmall
             )
         }
 
         if (errorMessage.isNotEmpty()) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(errorMessage, color = Color.Red)
+            Text(errorMessage, color = MaterialTheme.colorScheme.onErrorContainer)
         }
 
         Spacer(modifier = Modifier.height(50.dp))
@@ -129,7 +163,7 @@ fun SignInScreen(
         Text(
             text = "Don't have an account?",
             style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier
+            color = MaterialTheme.colorScheme.background
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -140,7 +174,10 @@ fun SignInScreen(
                 onClickSignUp()
             }
         ) {
-            Text("Sign Up")
+            Text(
+                text = "Sign Up",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
@@ -225,6 +262,7 @@ fun PreviewLoginScreen() {
             onClickSignIn = {},
             onTouOutdated = {},
             onClickSignUp = {},
+//            signedUp = true,
         )
     }
 }
