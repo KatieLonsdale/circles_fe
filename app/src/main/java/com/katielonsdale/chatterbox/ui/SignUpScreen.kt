@@ -1,15 +1,19 @@
 package com.katielonsdale.chatterbox.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,15 +21,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.RetrofitClient
+import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.SignUpFields
 import com.katielonsdale.chatterbox.api.data.SignUpRequest
 import com.katielonsdale.chatterbox.api.data.SignUpResponse
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,7 +50,8 @@ fun SignUpScreen(
 
     Column(
         modifier = Modifier
-            .padding(top = 10.dp, start = 2.dp)
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondary)
     ){
         BackButton(onClickBack = onClickBack)
     }
@@ -54,41 +60,138 @@ fun SignUpScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
+        Image(
+            painterResource(
+                id = R.drawable.cb_logo_dark
+            ),
+            contentDescription = "ChatterBox Logo",
+            modifier = Modifier
+                .height(200.dp),
+        )
+
+        Text(
+            text = "Sign up for ChatterBox",
+            color = MaterialTheme.colorScheme.background,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .padding(bottom = 30.dp)
+        )
+
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         TextField(
             value = displayName,
             onValueChange = { displayName = it },
-            label = { Text("Display Name") }
-        )
-
-        TextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
-        )
-
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-        TextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password") },
-            visualTransformation = PasswordVisualTransformation()
+            label = { Text(
+                text = "Display Name",
+                style = MaterialTheme.typography.labelSmall,
+            ) },
+            textStyle = MaterialTheme.typography.labelSmall,
+            shape = MaterialTheme.shapes.small,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(280.dp),
+            maxLines = 1,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        errorMessage?.let {
-            Text(text = it, color = Color.Red)
-        }
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text(
+                text = "Email",
+                style = MaterialTheme.typography.labelSmall,
+            ) },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            textStyle = MaterialTheme.typography.labelSmall,
+            shape = MaterialTheme.shapes.small,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(280.dp),
+            maxLines = 1,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(
+                text = "Password",
+                style = MaterialTheme.typography.labelSmall,
+            ) },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            textStyle = MaterialTheme.typography.labelSmall,
+            shape = MaterialTheme.shapes.small,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(280.dp),
+            maxLines = 1,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text(
+                text = "Confirm Password",
+                style = MaterialTheme.typography.labelSmall
+            ) },
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = MaterialTheme.typography.labelSmall,
+            shape = MaterialTheme.shapes.small,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(280.dp),
+            maxLines = 1,
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
 
         Button(
             onClick = {
@@ -116,7 +219,10 @@ fun SignUpScreen(
             },
             enabled = !isLoading
         ) {
-            Text("Sign Up")
+            Text(
+                text = "Sign Up",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
@@ -155,8 +261,10 @@ fun signUpUser(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun SignUpScreenPreview(){
-    SignUpScreen(
-        onClickSignUp = {},
-        onClickBack = {},
-    )
+    ChatterBoxTheme {
+        SignUpScreen(
+            onClickSignUp = {},
+            onClickBack = {},
+        )
+    }
 }
