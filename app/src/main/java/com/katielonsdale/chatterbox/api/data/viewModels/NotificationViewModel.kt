@@ -77,7 +77,7 @@ class NotificationViewModel : ViewModel() {
                     response: Response<NotificationResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.e(TAG, "Notification marked as read")
+                        Log.d(TAG, "Notification marked as read")
                     } else {
                         Log.e(
                             TAG,
