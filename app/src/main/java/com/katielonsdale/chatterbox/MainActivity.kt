@@ -38,8 +38,8 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme {
                 MainScreen(
                     route = intent?.getStringExtra("route"),
-                    circleId = intent?.getStringExtra("circleId"),
-                    postId = intent?.getStringExtra("postId"),
+                    circleId = intent?.getStringExtra("circle_id"),
+                    postId = intent?.getStringExtra("post_id"),
                     onRequestNotificationPermission = {
                         notificationsPermissionManager.requestNotificationPermissionIfNeeded()
                     }
