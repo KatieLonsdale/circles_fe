@@ -15,8 +15,8 @@ android {
         applicationId = "com.katielonsdale.chatterbox"
         minSdk = 28
         targetSdk = 34
-        versionCode = 26
-        versionName = "4.0.2"
+        versionCode = 27
+        versionName = "4.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
