@@ -58,7 +58,6 @@ fun MainScreen(
     val commentViewModel: CommentViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
     val notificationViewModel: NotificationViewModel = viewModel()
-    var startDestination = Screen.MyCircles.route
 
     LaunchedEffect(
         isUserLoggedIn
@@ -75,8 +74,7 @@ fun MainScreen(
                     postId = postId,
                     circleId = circleId,
                 )
-//                navController.navigate(InnerCirclesScreen.DisplayPost.name)
-                startDestination = InnerCirclesScreen.DisplayPost.name
+                navController.navigate(InnerCirclesScreen.DisplayPost.name)
             } else {
                 userViewModel.getUser(userId)
             }
@@ -147,7 +145,7 @@ fun MainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = Screen.MyCircles.route,
             modifier = Modifier.padding(innerPadding)
         ) {
 //            composable(Screen.Newsfeed.route) {
