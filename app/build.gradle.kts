@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.android)
     implementation(libs.play.services.tasks)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.splash.screen)
 
 // Testing
 testImplementation(libs.junit)

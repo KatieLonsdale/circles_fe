@@ -16,4 +16,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blackest_black">#000000</color>"
+
+    <color name="primary">#FF5F6A71</color>
 </resources>
