@@ -15,9 +15,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/chatter_box_logo_with_background"
+        android:icon="@mipmap/cb_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/chatter_box_logo_with_background"
+        android:roundIcon="@mipmap/cb_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
         tools:targetApi="31">
