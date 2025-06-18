@@ -58,7 +58,6 @@ fun MainScreen(
     val commentViewModel: CommentViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
     val notificationViewModel: NotificationViewModel = viewModel()
-    val startDestination = Screen.MyCircles.route
 
     LaunchedEffect(
         isUserLoggedIn
@@ -146,7 +145,7 @@ fun MainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = Screen.MyCircles.route,
             modifier = Modifier.padding(innerPadding)
         ) {
 //            composable(Screen.Newsfeed.route) {
