@@ -1,5 +1,8 @@
 package com.katielonsdale.chatterbox.ui
 
+import android.app.Activity
+import android.view.WindowManager
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -10,7 +13,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -28,6 +36,8 @@ import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.BackButton
 
 enum class InnerCirclesScreen {
     Circle,
@@ -44,6 +54,7 @@ enum class InnerCirclesScreen {
     EditUser
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     route: String?,
@@ -60,6 +71,11 @@ fun MainScreen(
     val commentViewModel: CommentViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
     val notificationViewModel: NotificationViewModel = viewModel()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val allowFullAccess = isUserLoggedIn && isTouUpToDate
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val activity = LocalView.current.context as Activity
 
     LaunchedEffect(
         isUserLoggedIn
@@ -83,13 +99,37 @@ fun MainScreen(
         }
     }
 
-    Scaffold(
-        bottomBar = {
-            if (isUserLoggedIn && isTouUpToDate) {
-                NavigationBar {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentDestination = navBackStackEntry?.destination
+    LaunchedEffect(Unit) {
+        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
 
+        val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+        windowInsetsController.isAppearanceLightStatusBars = true // or false for white icons on dark background
+
+        activity.window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+    }
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            if (currentDestination?.route != InnerCirclesScreen.SignIn.name) {
+                if (allowFullAccess) {
+                    TopAppBar(
+                        navController = navController,
+                        scrollBehavior = scrollBehavior,
+                    )
+                } else {
+                    TopAppBarLoggedOut(
+                        navController = navController,
+                        scrollBehavior = scrollBehavior,
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            if (allowFullAccess) {
+                NavigationBar {
                     listOf(
 //                        Screen.Newsfeed,
                         Screen.MyCircles,
@@ -120,9 +160,6 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
-
             if (currentDestination?.route == Screen.MyCircles.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
                 FloatingActionButton(
                     onClick = {
@@ -198,7 +235,6 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.Circle.name) {
                 CircleScreen(
                     circle = circleUiState,
-                    onClickBack = { navController.popBackStack() },
                     onClickDisplayPost = {
                         postViewModel.resetPost()
                         postViewModel.setCurrentPost(it)
@@ -213,7 +249,6 @@ fun MainScreen(
                         newPostViewModel.resetNewPost()
                         navController.navigate(Screen.MyCircles.route)
                     },
-                    onClickBack = { navController.popBackStack() }
                 )
             }
             composable(route = InnerCirclesScreen.NewPost.name) {
@@ -223,13 +258,11 @@ fun MainScreen(
                     onCaptionChanged = { newPostViewModel.setCaption(it) },
                     onMediaSelected = { newPostViewModel.setContent(it) },
                     onClickNext = {navController.navigate(InnerCirclesScreen.SelectCircles.name)},
-                    onClickBack = { navController.popBackStack() }
                 )
             }
 
             composable(route = InnerCirclesScreen.NewCircle.name) {
                 NewCircleScreen(
-                    onClickBack = { navController.popBackStack() },
                     onClickCreate = { navController.navigate(Screen.MyCircles.route) }
                 )
             }
@@ -238,7 +271,6 @@ fun MainScreen(
                 DisplayPostScreen(
                     post = postUiState,
                     comment = commentUiState,
-                    onClickBack = { navController.popBackStack() },
                     onCommentChanged = { commentViewModel.setCommentText(it) },
                     addCommentToPost = { postViewModel.addComment(it) },
                     clearComment = { commentViewModel.resetComment() }
@@ -247,7 +279,6 @@ fun MainScreen(
 
             composable(route = InnerCirclesScreen.CreateNew.name) {
                 CreateNewScreen(
-                    onClickBack = { navController.popBackStack() },
                     onClickNewPost = { navController.navigate(InnerCirclesScreen.NewPost.name) },
                     onClickNewCircle = { navController.navigate(InnerCirclesScreen.NewCircle.name) },
                     onClickNewFriend = { navController.navigate(InnerCirclesScreen.AddFriend.name) }
@@ -255,14 +286,11 @@ fun MainScreen(
             }
 
             composable(route = InnerCirclesScreen.EditUser.name) {
-                EditUserScreen(
-                    onClickBack = { navController.popBackStack() }
-                )
+                EditUserScreen()
             }
             //todo: add adding friend functionality
 //            composable(route = InnerCirclesScreen.AddFriend.name) {
 //                AddFriendScreen(
-//                    onClickBack = { navController.popBackStack() },
 //                    onNavigateToNewsfeed = { navController.navigate(Screen.Newsfeed.route) }
 //                )
 //            }
@@ -288,7 +316,6 @@ fun MainScreen(
                             popUpTo("sign_up") { inclusive = true }
                         }
                     },
-                    onClickBack = { navController.popBackStack() }
                 )
             }
 
@@ -314,16 +341,13 @@ fun MainScreen(
 
             composable(route = InnerCirclesScreen.TermsOfUseScreen.name) {
                 TermsOfUseScreen(
-                    onClickBack = { navController.popBackStack() },
                     onReadFullTermsOfUse = { navController.navigate(InnerCirclesScreen.CompleteTermsOfUseScreen.name) },
                     onClickAccept = { navController.navigate(Screen.MyCircles.route) }
                 )
             }
 
             composable(route = InnerCirclesScreen.CompleteTermsOfUseScreen.name) {
-                CompleteTermsOfUseScreen(
-                    onClickBack = { navController.popBackStack() },
-                )
+                CompleteTermsOfUseScreen()
             }
         }
     }
@@ -335,5 +359,79 @@ sealed class Screen(val route: String, val iconResourceId: Int) {
     object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
     object Notifications : Screen("Notifications", R.drawable.notifications)
     object Me : Screen("Me", R.drawable.account_circle_24dp)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopAppBar(
+    navController: NavHostController = rememberNavController(),
+    scrollBehavior: TopAppBarScrollBehavior,
+){
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text(
+                "ChatterBox",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Medium
+                ),
+            )
+        },
+        navigationIcon = {
+            BackButton(
+                onClickBack = { navController.popBackStack() }
+            )
+        },
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopAppBarLoggedOut(
+    navController: NavHostController = rememberNavController(),
+    scrollBehavior: TopAppBarScrollBehavior,
+){
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            titleContentColor = MaterialTheme.colorScheme.onSecondary,
+        ),
+        title = {
+            Text(
+                "",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Medium
+                ),
+            )
+        },
+        navigationIcon = {
+            BackButton(
+                onClickBack = { navController.popBackStack() },
+                tint = MaterialTheme.colorScheme.onSecondary
+            )
+        },
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(apiLevel = 34, showBackground = true)
+@Composable
+fun PreviewMainScreen(){
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    ChatterBoxTheme {
+        Column() {
+            TopAppBar(
+                scrollBehavior = scrollBehavior
+            )
+            TopAppBarLoggedOut(
+                scrollBehavior = scrollBehavior
+            )
+        }
+    }
 }
 
