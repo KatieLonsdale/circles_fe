@@ -48,14 +48,18 @@ fun SignInScreen(
             .background(MaterialTheme.colorScheme.secondary),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Spacer(modifier = Modifier.height(80.dp))
         Image(
             painterResource(
                 id = R.drawable.cb_logo_dark
             ),
             contentDescription = "ChatterBox Logo",
             modifier = Modifier
-                .height(300.dp)
+                .height(175.dp)
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
 
         //successful sign up message
         if (signedUp) {
@@ -81,7 +85,7 @@ fun SignInScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         TextFieldOnSurface(
             value = email,
@@ -146,7 +150,7 @@ fun SignInScreen(
             color = MaterialTheme.colorScheme.background
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
 
         Button(
