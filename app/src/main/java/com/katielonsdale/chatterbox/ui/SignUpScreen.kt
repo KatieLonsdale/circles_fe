@@ -59,22 +59,26 @@ fun SignUpScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
+        Spacer(modifier = Modifier.height(80.dp))
+
         Image(
             painterResource(
                 id = R.drawable.cb_logo_dark
             ),
             contentDescription = "ChatterBox Logo",
             modifier = Modifier
-                .height(200.dp),
+                .height(125.dp),
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "Sign up for ChatterBox",
             color = MaterialTheme.colorScheme.background,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(bottom = 30.dp)
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         errorMessage?.let {
             Text(
@@ -86,7 +90,7 @@ fun SignUpScreen(
                     end = 20.dp
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
         TextFieldOnSurface(
