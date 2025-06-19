@@ -30,7 +30,6 @@ import com.katielonsdale.chatterbox.ui.components.BackButton
 
 @Composable
 fun CreateNewScreen(
-    onClickBack: () -> Unit,
     onClickNewPost: () -> Unit,
     onClickNewCircle: () -> Unit,
     onClickNewFriend: () -> Unit,
@@ -45,7 +44,6 @@ fun CreateNewScreen(
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        BackButton(onClickBack = onClickBack)
         Text(
             text = "Create New...",
             color = Color.DarkGray,
@@ -82,7 +80,6 @@ fun CreateNewScreen(
 fun PreviewCreateNewScreen(){
     MaterialTheme {
         CreateNewScreen(
-            onClickBack = {},
             onClickNewPost = {},
             onClickNewCircle = {},
             onClickNewFriend = {},

@@ -15,9 +15,7 @@ import com.katielonsdale.chatterbox.ui.components.BackButton
 
 @Composable
 fun CompleteTermsOfUseScreen(
-    onClickBack: () -> Unit
 ) {
-    BackButton(onClickBack)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -231,7 +229,5 @@ fun CompleteTermsOfUseScreen(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun CompleteTermsOfUseScreenPreview() {
-    CompleteTermsOfUseScreen(
-        onClickBack = {},
-    )
+    CompleteTermsOfUseScreen()
 }

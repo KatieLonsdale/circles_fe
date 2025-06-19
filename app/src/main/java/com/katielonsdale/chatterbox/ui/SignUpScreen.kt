@@ -35,7 +35,6 @@ import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 @Composable
 fun SignUpScreen(
     onClickSignUp: () -> Unit,
-    onClickBack: () -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -43,14 +42,6 @@ fun SignUpScreen(
     var displayName by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondary)
-    ){
-        BackButton(onClickBack = onClickBack)
-    }
 
     Column(
         modifier = Modifier
@@ -199,7 +190,6 @@ fun SignUpScreenPreview(){
     ChatterBoxTheme {
         SignUpScreen(
             onClickSignUp = {},
-            onClickBack = {},
         )
     }
 }

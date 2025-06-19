@@ -23,18 +23,9 @@ import java.time.OffsetDateTime
 
 @Composable
 fun TermsOfUseScreen(
-    onClickBack: () -> Unit,
     onReadFullTermsOfUse: () -> Unit,
     onClickAccept: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 10.dp, start = 2.dp)
-    ){
-        BackButton(onClickBack = onClickBack)
-    }
-
     var isChecked by remember { mutableStateOf(false) }
 
     Column(
@@ -115,7 +106,6 @@ private fun updateUserTou() {
 fun TermsOfUseScreenPreview() {
     MaterialTheme {
         TermsOfUseScreen(
-            onClickBack = {},
             onReadFullTermsOfUse = {},
             onClickAccept = {},
         )

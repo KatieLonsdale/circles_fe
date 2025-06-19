@@ -42,7 +42,6 @@ import retrofit2.Response
 val TAG = "NewCircleScreen"
 @Composable
 fun NewCircleScreen(
-    onClickBack: () -> Unit,
     onClickCreate: () -> Unit
 ){
     var circleName by remember { mutableStateOf("") }
@@ -54,9 +53,6 @@ fun NewCircleScreen(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ){
-        BackButton(
-            onClickBack = onClickBack
-        )
         Text(
             text = "Create Chatter",
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
@@ -140,7 +136,6 @@ private fun createCircle(
 @Composable
 fun NewCircleScreenPreview() {
     NewCircleScreen(
-        onClickBack = {},
         onClickCreate = {}
     )
 }

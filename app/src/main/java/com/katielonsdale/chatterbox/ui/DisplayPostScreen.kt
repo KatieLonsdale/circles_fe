@@ -66,7 +66,6 @@ import com.katielonsdale.chatterbox.utils.CommentCreator
 fun DisplayPostScreen(
     post: PostUiState,
     comment: CommentUiState,
-    onClickBack: () -> Unit,
     onCommentChanged: (String) -> Unit,
     addCommentToPost: (Comment) -> Unit,
     clearComment: () -> Unit
@@ -86,8 +85,6 @@ fun DisplayPostScreen(
             .padding(top = 10.dp)
             .verticalScroll(rememberScrollState()) // Enable vertical scrolling
     ) {
-        BackButton(onClickBack = onClickBack)
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -287,7 +284,6 @@ fun DisplayPostScreenPreview() {
     DisplayPostScreen(
         postUiState,
         commentUiState,
-        onClickBack= {},
         onCommentChanged = {},
         addCommentToPost = {},
         clearComment = {}
