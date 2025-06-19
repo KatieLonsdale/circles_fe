@@ -72,7 +72,7 @@ fun SignInScreen(
             ) {
                 Text(
                     text = "Successful sign up. Please log in.",
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(
@@ -147,7 +147,7 @@ fun SignInScreen(
         Text(
             text = "Don't have a ChatterBox account?",
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.onSecondary
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -246,7 +246,7 @@ fun PreviewLoginScreen() {
             onClickSignIn = {},
             onTouOutdated = {},
             onClickSignUp = {},
-//            signedUp = true,
+            signedUp = true,
         )
     }
 }

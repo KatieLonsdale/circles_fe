@@ -46,7 +46,7 @@ fun SignUpScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.secondary),
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
@@ -65,7 +65,7 @@ fun SignUpScreen(
 
         Text(
             text = "Sign up for ChatterBox",
-            color = MaterialTheme.colorScheme.background,
+            color = MaterialTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.bodyMedium,
         )
 
