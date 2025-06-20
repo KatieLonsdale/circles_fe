@@ -18,7 +18,8 @@ import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 // Box for back arrow
 @Composable
 fun BackButton(
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    tint: Color = MaterialTheme.colorScheme.primary,
 ){
     IconButton(
         onClick = {
@@ -30,7 +31,7 @@ fun BackButton(
             contentDescription = "Back",
             modifier = Modifier
                 .minimumInteractiveComponentSize(),
-            tint = MaterialTheme.colorScheme.primary
+            tint = tint
         )
     }
 }

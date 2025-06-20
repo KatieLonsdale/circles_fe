@@ -1,6 +1,5 @@
 package com.katielonsdale.chatterbox.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -57,7 +56,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.text.AnnotatedString
-import com.katielonsdale.chatterbox.ui.components.BackButton
 import sh.calvin.autolinktext.rememberAutoLinkText
 import com.katielonsdale.chatterbox.ui.components.CommentCard
 import com.katielonsdale.chatterbox.utils.CommentCreator
@@ -66,7 +64,6 @@ import com.katielonsdale.chatterbox.utils.CommentCreator
 fun DisplayPostScreen(
     post: PostUiState,
     comment: CommentUiState,
-    onClickBack: () -> Unit,
     onCommentChanged: (String) -> Unit,
     addCommentToPost: (Comment) -> Unit,
     clearComment: () -> Unit
@@ -86,8 +83,6 @@ fun DisplayPostScreen(
             .padding(top = 10.dp)
             .verticalScroll(rememberScrollState()) // Enable vertical scrolling
     ) {
-        BackButton(onClickBack = onClickBack)
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -287,7 +282,6 @@ fun DisplayPostScreenPreview() {
     DisplayPostScreen(
         postUiState,
         commentUiState,
-        onClickBack= {},
         onCommentChanged = {},
         addCommentToPost = {},
         clearComment = {}

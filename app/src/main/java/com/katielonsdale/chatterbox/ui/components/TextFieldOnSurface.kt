@@ -40,7 +40,9 @@ fun TextFieldOnSurface(
             textStyle = MaterialTheme.typography.labelSmall,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
+                    alpha = (0.7F)
+                ),
                 focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
@@ -72,7 +74,9 @@ fun TextFieldOnSurface(
             textStyle = MaterialTheme.typography.labelSmall,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
+                    alpha = (0.7F)
+                ),
                 focusedContainerColor = MaterialTheme.colorScheme.background,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.secondary,

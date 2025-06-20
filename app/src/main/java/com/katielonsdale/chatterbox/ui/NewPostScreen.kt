@@ -34,19 +34,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.NewPostUiState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.util.Log
-import com.katielonsdale.chatterbox.ui.components.BackButton
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
 
@@ -57,7 +52,6 @@ fun NewPostScreen(
     onCaptionChanged: (String) -> Unit = {},
     onMediaSelected: (ContentViewModel) -> Unit = {},
     onClickNext: () -> Unit = {},
-    onClickBack: () -> Unit = {}
 ){
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
@@ -79,8 +73,6 @@ fun NewPostScreen(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
     ){
-        BackButton(onClickBack = onClickBack)
-
         Text(
             text = "New Post",
             style = MaterialTheme.typography.titleLarge

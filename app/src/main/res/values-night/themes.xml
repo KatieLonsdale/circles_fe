@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.InnerCircles" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.InnerCircles" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue_grey</item>
         <item name="colorPrimaryVariant">@color/navy</item>
@@ -10,7 +10,5 @@
         <item name="colorSecondaryVariant">@color/light_grey</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
     </style>
 </resources>

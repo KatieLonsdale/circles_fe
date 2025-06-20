@@ -11,13 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.katielonsdale.chatterbox.ui.components.BackButton
 
 @Composable
-fun CompleteTermsOfUseScreen(
-    onClickBack: () -> Unit
-) {
-    BackButton(onClickBack)
+fun CompleteTermsOfUseScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -231,7 +227,5 @@ fun CompleteTermsOfUseScreen(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun CompleteTermsOfUseScreenPreview() {
-    CompleteTermsOfUseScreen(
-        onClickBack = {},
-    )
+    CompleteTermsOfUseScreen()
 }

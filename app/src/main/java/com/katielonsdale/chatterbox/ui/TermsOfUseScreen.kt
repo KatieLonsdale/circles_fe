@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.UserRequest
-import com.katielonsdale.chatterbox.ui.components.BackButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,18 +22,9 @@ import java.time.OffsetDateTime
 
 @Composable
 fun TermsOfUseScreen(
-    onClickBack: () -> Unit,
     onReadFullTermsOfUse: () -> Unit,
-    onClickAccept: () -> Unit
+    onClickAccept: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 10.dp, start = 2.dp)
-    ){
-        BackButton(onClickBack = onClickBack)
-    }
-
     var isChecked by remember { mutableStateOf(false) }
 
     Column(
@@ -115,7 +105,6 @@ private fun updateUserTou() {
 fun TermsOfUseScreenPreview() {
     MaterialTheme {
         TermsOfUseScreen(
-            onClickBack = {},
             onReadFullTermsOfUse = {},
             onClickAccept = {},
         )

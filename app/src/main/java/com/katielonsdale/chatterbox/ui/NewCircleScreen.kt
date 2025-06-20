@@ -23,18 +23,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
-import com.katielonsdale.chatterbox.api.data.Circle
 import com.katielonsdale.chatterbox.api.data.NewCircleAttributes
 import com.katielonsdale.chatterbox.api.data.NewCircleRequest
 import com.katielonsdale.chatterbox.api.data.NewCircleResponse
-import com.katielonsdale.chatterbox.api.data.NewPostResponse
-import com.katielonsdale.chatterbox.ui.components.BackButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,7 +37,6 @@ import retrofit2.Response
 val TAG = "NewCircleScreen"
 @Composable
 fun NewCircleScreen(
-    onClickBack: () -> Unit,
     onClickCreate: () -> Unit
 ){
     var circleName by remember { mutableStateOf("") }
@@ -54,9 +48,6 @@ fun NewCircleScreen(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ){
-        BackButton(
-            onClickBack = onClickBack
-        )
         Text(
             text = "Create Chatter",
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
@@ -140,7 +131,6 @@ private fun createCircle(
 @Composable
 fun NewCircleScreenPreview() {
     NewCircleScreen(
-        onClickBack = {},
         onClickCreate = {}
     )
 }
