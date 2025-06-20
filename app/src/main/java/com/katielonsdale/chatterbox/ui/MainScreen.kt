@@ -119,11 +119,6 @@ fun MainScreen(
                         navController = navController,
                         scrollBehavior = scrollBehavior,
                     )
-                } else {
-                    TopAppBarLoggedOut(
-                        navController = navController,
-                        scrollBehavior = scrollBehavior,
-                    )
                 }
             }
         },
@@ -316,6 +311,7 @@ fun MainScreen(
                             popUpTo("sign_up") { inclusive = true }
                         }
                     },
+                    onClickBack = {navController.popBackStack()}
                 )
             }
 
@@ -342,12 +338,14 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.TermsOfUseScreen.name) {
                 TermsOfUseScreen(
                     onReadFullTermsOfUse = { navController.navigate(InnerCirclesScreen.CompleteTermsOfUseScreen.name) },
-                    onClickAccept = { navController.navigate(Screen.MyCircles.route) }
+                    onClickAccept = { navController.navigate(Screen.MyCircles.route) },
                 )
             }
 
             composable(route = InnerCirclesScreen.CompleteTermsOfUseScreen.name) {
-                CompleteTermsOfUseScreen()
+                CompleteTermsOfUseScreen(
+                    onClickBack = {navController.popBackStack()}
+                )
             }
         }
     }
@@ -390,35 +388,6 @@ fun TopAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBarLoggedOut(
-    navController: NavHostController = rememberNavController(),
-    scrollBehavior: TopAppBarScrollBehavior,
-){
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            titleContentColor = MaterialTheme.colorScheme.onSecondary,
-        ),
-        title = {
-            Text(
-                "",
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontWeight = FontWeight.Medium
-                ),
-            )
-        },
-        navigationIcon = {
-            BackButton(
-                onClickBack = { navController.popBackStack() },
-                tint = MaterialTheme.colorScheme.onSecondary
-            )
-        },
-        scrollBehavior = scrollBehavior,
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewMainScreen(){
@@ -426,9 +395,6 @@ fun PreviewMainScreen(){
     ChatterBoxTheme {
         Column() {
             TopAppBar(
-                scrollBehavior = scrollBehavior
-            )
-            TopAppBarLoggedOut(
                 scrollBehavior = scrollBehavior
             )
         }

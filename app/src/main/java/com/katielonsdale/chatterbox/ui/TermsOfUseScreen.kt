@@ -24,7 +24,7 @@ import java.time.OffsetDateTime
 @Composable
 fun TermsOfUseScreen(
     onReadFullTermsOfUse: () -> Unit,
-    onClickAccept: () -> Unit
+    onClickAccept: () -> Unit,
 ) {
     var isChecked by remember { mutableStateOf(false) }
 

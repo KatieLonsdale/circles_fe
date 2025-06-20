@@ -1,7 +1,10 @@
 package com.katielonsdale.chatterbox.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +18,20 @@ import com.katielonsdale.chatterbox.ui.components.BackButton
 
 @Composable
 fun CompleteTermsOfUseScreen(
+    onClickBack: () -> Unit,
 ) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        BackButton(
+            onClickBack = onClickBack,
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -229,5 +245,7 @@ fun CompleteTermsOfUseScreen(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun CompleteTermsOfUseScreenPreview() {
-    CompleteTermsOfUseScreen()
+    CompleteTermsOfUseScreen(
+        onClickBack = {},
+    )
 }
