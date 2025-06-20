@@ -3,7 +3,9 @@ package com.katielonsdale.chatterbox.ui
 import android.app.Activity
 import android.view.WindowManager
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -14,11 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -28,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.katielonsdale.chatterbox.ui.mycircles.MyCirclesScreen
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.katielonsdale.chatterbox.SessionManager
@@ -37,7 +37,8 @@ import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
-import com.katielonsdale.chatterbox.ui.components.BackButton
+import com.katielonsdale.chatterbox.ui.components.TopAppBar
+import com.katielonsdale.chatterbox.ui.components.TopAppBarNoNav
 
 enum class InnerCirclesScreen {
     Circle,
@@ -75,7 +76,6 @@ fun MainScreen(
     val allowFullAccess = isUserLoggedIn && isTouUpToDate
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val activity = LocalView.current.context as Activity
 
     LaunchedEffect(
         isUserLoggedIn
@@ -98,29 +98,15 @@ fun MainScreen(
             }
         }
     }
-
-    LaunchedEffect(Unit) {
-        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-
-        val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
-        windowInsetsController.isAppearanceLightStatusBars = true // or false for white icons on dark background
-
-        activity.window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
-    }
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentWindowInsets = WindowInsets.safeContent,
         topBar = {
-            if (currentDestination?.route != InnerCirclesScreen.SignIn.name) {
-                if (allowFullAccess) {
-                    TopAppBar(
-                        navController = navController,
-                        scrollBehavior = scrollBehavior,
-                    )
-                }
-            }
+            TopBarGenerator(
+                navController = navController,
+                scrollBehavior = scrollBehavior,
+                loggedIn = isUserLoggedIn,
+            )
         },
         bottomBar = {
             if (allowFullAccess) {
@@ -311,7 +297,6 @@ fun MainScreen(
                             popUpTo("sign_up") { inclusive = true }
                         }
                     },
-                    onClickBack = {navController.popBackStack()}
                 )
             }
 
@@ -343,10 +328,38 @@ fun MainScreen(
             }
 
             composable(route = InnerCirclesScreen.CompleteTermsOfUseScreen.name) {
-                CompleteTermsOfUseScreen(
-                    onClickBack = {navController.popBackStack()}
-                )
+                CompleteTermsOfUseScreen()
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarGenerator(
+    navController: NavHostController,
+    scrollBehavior: TopAppBarScrollBehavior,
+    loggedIn: Boolean,
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val homeScreens = arrayOf(
+        Screen.MyCircles.route,
+        Screen.Notifications.route,
+        Screen.Me.route
+    )
+
+    if (currentDestination?.route != InnerCirclesScreen.SignIn.name) {
+        if (homeScreens.contains(currentDestination?.route)) {
+            TopAppBarNoNav(
+                scrollBehavior = scrollBehavior,
+            )
+        } else {
+            TopAppBar(
+                navController = navController,
+                scrollBehavior = scrollBehavior,
+                loggedIn = loggedIn,
+            )
         }
     }
 }
@@ -354,50 +367,8 @@ fun MainScreen(
 
 sealed class Screen(val route: String, val iconResourceId: Int) {
 //    object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
-    object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
-    object Notifications : Screen("Notifications", R.drawable.notifications)
-    object Me : Screen("Me", R.drawable.account_circle_24dp)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBar(
-    navController: NavHostController = rememberNavController(),
-    scrollBehavior: TopAppBarScrollBehavior,
-){
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ),
-        title = {
-            Text(
-                "ChatterBox",
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontWeight = FontWeight.Medium
-                ),
-            )
-        },
-        navigationIcon = {
-            BackButton(
-                onClickBack = { navController.popBackStack() }
-            )
-        },
-        scrollBehavior = scrollBehavior,
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(apiLevel = 34, showBackground = true)
-@Composable
-fun PreviewMainScreen(){
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    ChatterBoxTheme {
-        Column() {
-            TopAppBar(
-                scrollBehavior = scrollBehavior
-            )
-        }
-    }
+    data object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
+    data object Notifications : Screen("Notifications", R.drawable.notifications)
+    data object Me : Screen("Me", R.drawable.account_circle_24dp)
 }
 
