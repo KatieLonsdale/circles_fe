@@ -22,20 +22,10 @@ fun TopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
     loggedIn: Boolean,
 ){
-    val containerColor: Color
-    val titleContentColor: Color
-
-    if (loggedIn) {
-        containerColor = MaterialTheme.colorScheme.background
-        titleContentColor = MaterialTheme.colorScheme.primary
-    } else {
-        containerColor = MaterialTheme.colorScheme.secondary
-        titleContentColor = MaterialTheme.colorScheme.onSecondary
-    }
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = containerColor,
-            titleContentColor = titleContentColor,
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {
             if(loggedIn) {
@@ -50,7 +40,7 @@ fun TopAppBar(
         navigationIcon = {
             BackButton(
                 onClickBack = { navController.popBackStack() },
-                tint = titleContentColor,
+                tint = MaterialTheme.colorScheme.primary,
             )
         },
         scrollBehavior = scrollBehavior,
@@ -65,7 +55,7 @@ fun PreviewTopAppBar(){
     ChatterBoxTheme {
         TopAppBar(
             scrollBehavior = scrollBehavior,
-            loggedIn = false,
+            loggedIn = true,
         )
     }
 }
