@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.UserRequest
-import com.katielonsdale.chatterbox.ui.components.BackButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

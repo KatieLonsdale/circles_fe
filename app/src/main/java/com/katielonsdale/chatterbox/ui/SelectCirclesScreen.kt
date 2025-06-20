@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import com.katielonsdale.chatterbox.api.data.PostRequest
 import com.katielonsdale.chatterbox.api.data.PostRequestContent
 import com.katielonsdale.chatterbox.api.data.NewPostResponse
-import com.katielonsdale.chatterbox.ui.components.BackButton
 
 var circles by mutableStateOf(emptyList<Circle>())
 
@@ -41,7 +40,6 @@ var circles by mutableStateOf(emptyList<Circle>())
 fun SelectCirclesScreen(
     newPostUiState: NewPostUiState = NewPostUiState(),
     onClickPost: () -> Unit = {},
-    onClickBack: () -> Unit = {}
 ){
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
@@ -54,7 +52,7 @@ fun SelectCirclesScreen(
     if (isLoading) {
         CircularProgressIndicator()
     } else {
-        SelectCircles(newPostUiState, onClickPost, onClickBack)
+        SelectCircles(newPostUiState, onClickPost)
     }
 }
 
@@ -62,7 +60,6 @@ fun SelectCirclesScreen(
 fun SelectCircles(
     newPostUiState: NewPostUiState = NewPostUiState(),
     onClickPost: () -> Unit = {},
-    onClickBack: () -> Unit = {},
 ){
     var showError by remember { mutableStateOf(false) }
 
@@ -71,8 +68,6 @@ fun SelectCircles(
             .fillMaxWidth()
     ) {
         val selectedCircleIds = remember { mutableStateListOf<String>() }
-
-        BackButton(onClickBack = onClickBack)
 
         Text(
             text = "Select Chatters",

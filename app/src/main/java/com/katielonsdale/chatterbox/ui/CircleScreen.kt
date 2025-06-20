@@ -34,14 +34,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.api.data.CircleUiState
 import androidx.compose.foundation.layout.Row
-import com.katielonsdale.chatterbox.ui.components.BackButton
 
 var circlePosts by mutableStateOf(emptyList<Post>())
 
 @Composable
 fun CircleScreen(
     circle: CircleUiState,
-    onClickBack: () -> Unit = {},
     onClickDisplayPost: (Post) -> Unit = {}
 ) {
     var isLoading by remember { mutableStateOf(true) }
@@ -58,7 +56,6 @@ fun CircleScreen(
         DisplayPosts(
             circle,
             circlePosts,
-            onClickBack,
             onClickDisplayPost
         )
     }
@@ -68,7 +65,6 @@ fun CircleScreen(
 fun DisplayPosts(
     circle: CircleUiState,
     posts: List<Post>,
-    onClickBack: () -> Unit,
     onClickDisplayPost: (Post) -> Unit
     ) {
     Column(
@@ -76,8 +72,6 @@ fun DisplayPosts(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-            BackButton(onClickBack = onClickBack)
-
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(bottom = 16.dp),
@@ -133,7 +127,6 @@ fun PreviewCircleScreen() {
             DisplayPosts(
                 circle,
                 posts,
-                onClickBack = {},
                 onClickDisplayPost = {}
             )
         }

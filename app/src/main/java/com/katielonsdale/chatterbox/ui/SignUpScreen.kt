@@ -2,13 +2,9 @@ package com.katielonsdale.chatterbox.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,13 +29,11 @@ import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.katielonsdale.chatterbox.ui.components.BackButton
 import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 
 @Composable
 fun SignUpScreen(
     onClickSignUp: () -> Unit,
-    onClickBack: () -> Unit,
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -55,18 +49,6 @@ fun SignUpScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 5.dp),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            BackButton(
-                onClickBack = onClickBack,
-                tint = MaterialTheme.colorScheme.onSecondary
-            )
-        }
-
         Spacer(modifier = Modifier.height(80.dp))
 
         Image(
@@ -207,7 +189,6 @@ fun SignUpScreenPreview(){
     ChatterBoxTheme {
         SignUpScreen(
             onClickSignUp = {},
-            onClickBack = {},
         )
     }
 }
