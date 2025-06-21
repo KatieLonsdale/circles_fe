@@ -1,8 +1,5 @@
 package com.katielonsdale.chatterbox.ui
 
-import android.app.Activity
-import android.view.WindowManager
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
@@ -16,10 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,7 +20,6 @@ import androidx.navigation.compose.rememberNavController
 import com.katielonsdale.chatterbox.ui.mycircles.MyCirclesScreen
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.katielonsdale.chatterbox.SessionManager
@@ -36,7 +28,8 @@ import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
-import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.CreateNewFloatingActionButton
+import com.katielonsdale.chatterbox.ui.components.NavBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBarNoNav
 
@@ -110,50 +103,17 @@ fun MainScreen(
         },
         bottomBar = {
             if (allowFullAccess) {
-                NavigationBar {
-                    listOf(
-//                        Screen.Newsfeed,
-                        Screen.MyCircles,
-                        Screen.Notifications,
-                        Screen.Me,
-                    ).forEach { screen ->
-                        NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    painterResource(screen.iconResourceId),
-                                    contentDescription = null
-                                )
-                            },
-                            label = { Text(screen.route) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                            onClick = {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        )
-                    }
-                }
+               NavBar(
+                   currentDestination = currentDestination,
+                   navController = navController,
+               )
             }
         },
         floatingActionButton = {
             if (currentDestination?.route == Screen.MyCircles.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate(InnerCirclesScreen.CreateNew.name)
-                    },
-                    containerColor = Color.DarkGray,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = "Add"
-                    )
-                }
+                CreateNewFloatingActionButton(
+                    navController = navController
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.Center // Optional, can position FAB in the center or elsewhere
@@ -364,11 +324,9 @@ fun TopBarGenerator(
     }
 }
 
-
 sealed class Screen(val route: String, val iconResourceId: Int) {
-//    object Newsfeed : Screen("Newsfeed", R.drawable.ic_home_black_24dp)
-    data object MyCircles : Screen("My Chatters", R.drawable.ic_my_chatters_icon_24dp)
-    data object Notifications : Screen("Notifications", R.drawable.notifications)
-    data object Me : Screen("Me", R.drawable.account_circle_24dp)
+    data object MyCircles : Screen("My Chatters", R.drawable.my_chatters_nav)
+    data object Notifications : Screen("Notifications", R.drawable.notifications_nav)
+    data object Me : Screen("Me", R.drawable.me_nav)
 }
 
