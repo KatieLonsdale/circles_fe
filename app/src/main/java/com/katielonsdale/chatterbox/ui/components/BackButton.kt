@@ -27,7 +27,7 @@ fun BackButton(
         },
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_back),
+            painter = painterResource(id = R.drawable.back_arrow),
             contentDescription = "Back",
             modifier = Modifier
                 .minimumInteractiveComponentSize(),
