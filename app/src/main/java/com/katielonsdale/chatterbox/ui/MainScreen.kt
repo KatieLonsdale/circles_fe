@@ -1,16 +1,11 @@
 package com.katielonsdale.chatterbox.ui
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,13 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,7 +20,6 @@ import androidx.navigation.compose.rememberNavController
 import com.katielonsdale.chatterbox.ui.mycircles.MyCirclesScreen
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.katielonsdale.chatterbox.SessionManager
@@ -41,7 +28,7 @@ import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
-import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.NavBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBarNoNav
 
@@ -344,83 +331,6 @@ fun TopBarGenerator(
         }
     }
 }
-
-@Composable
-fun NavBar(
-    currentDestination: NavDestination?,
-    navController: NavHostController,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(
-                width = Dp.Hairline,
-                color = MaterialTheme.colorScheme.primary.copy(
-                    alpha = (0.5F)
-                )
-            )
-    ) {
-        NavigationBar(
-            containerColor = MaterialTheme.colorScheme.background,
-            tonalElevation = 100.dp
-        ) {
-            listOf(
-                Screen.MyCircles,
-                Screen.Notifications,
-                Screen.Me,
-            ).forEach { screen ->
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(screen.iconResourceId),
-                            contentDescription = null,
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = screen.route,
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    },
-                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                    onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    colors = NavigationBarItemColors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.primary,
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedTextColor = MaterialTheme.colorScheme.primary,
-                        selectedIndicatorColor = MaterialTheme.colorScheme.primary.copy(
-                            alpha = (0.3F)
-                        ),
-                        disabledIconColor = MaterialTheme.colorScheme.secondary,
-                        disabledTextColor = MaterialTheme.colorScheme.secondary,
-                    ),
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewNavBar(){
-    val navController: NavHostController = rememberNavController()
-    ChatterBoxTheme {
-        NavBar(
-            currentDestination = null,
-            navController = navController,
-        )
-    }
-}
-
 
 sealed class Screen(val route: String, val iconResourceId: Int) {
     data object MyCircles : Screen("My Chatters", R.drawable.my_chatters_nav)
