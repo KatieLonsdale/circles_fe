@@ -28,6 +28,7 @@ import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
+import com.katielonsdale.chatterbox.ui.components.CreateNewFloatingActionButton
 import com.katielonsdale.chatterbox.ui.components.NavBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBarNoNav
@@ -110,18 +111,9 @@ fun MainScreen(
         },
         floatingActionButton = {
             if (currentDestination?.route == Screen.MyCircles.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate(InnerCirclesScreen.CreateNew.name)
-                    },
-                    containerColor = Color.DarkGray,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = "Add"
-                    )
-                }
+                CreateNewFloatingActionButton(
+                    navController = navController
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.Center // Optional, can position FAB in the center or elsewhere
