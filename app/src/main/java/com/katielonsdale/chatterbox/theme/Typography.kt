@@ -51,8 +51,8 @@ val Typography: Typography @Composable get() = Typography(
     titleSmall = TextStyle(
         fontFamily = Figtree,
         fontWeight = FontWeight.Normal,
-        fontSize = 38.sp,
-        lineHeight = 40.sp
+        fontSize = 30.sp,
+        lineHeight = 30.sp
     ),
     labelSmall = TextStyle(
         fontFamily = Figtree,

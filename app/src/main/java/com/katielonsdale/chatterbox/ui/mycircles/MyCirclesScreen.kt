@@ -1,13 +1,13 @@
 package com.katielonsdale.chatterbox.ui.mycircles
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Circle
@@ -31,10 +30,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import androidx.compose.material3.*
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import com.katielonsdale.chatterbox.api.data.CircleAttributes
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 
 @Composable
 fun MyCirclesScreen(
@@ -67,9 +65,16 @@ fun MyCirclesList(
     chatters: MutableList<Circle>,
     onCircleClick: (Circle) -> Unit
 ) {
-    LazyColumn {
-        items(chatters) { chatter ->
-            CircleCard(chatter, onCircleClick)
+    val sortedChatters = chatters.sortedBy { it.attributes.name }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        LazyColumn {
+            items(sortedChatters) { chatter ->
+                CircleCard(chatter, onCircleClick)
+            }
         }
     }
 }
@@ -87,33 +92,20 @@ fun CircleCard(
                 onCircleClick(chatter)
             })
             .fillMaxWidth()
-            .padding(
-                start = 5.dp,
-                top = 5.dp,
-            )
     ) {
-        Row() {
-            Text(
-                text = chatterAttributes.name,
-                color = Color.DarkGray,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Bottom)
-            )
-        }
-
+        Spacer(modifier = Modifier.height(15.dp))
+        Text(
+            text = chatterAttributes.name,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleSmall
+        )
         Spacer(modifier = Modifier.height(5.dp))
-
-        Row() {
-            Text(
-                text = chatterAttributes.description,
-                color = Color.DarkGray,
-                fontSize = 15.sp,
-                modifier = Modifier.align(Alignment.Bottom)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = chatterAttributes.description,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(modifier = Modifier.height(15.dp))
     }
 }
 
@@ -160,9 +152,29 @@ fun PreviewMyCirclesList() {
             description = "High school friends. This description is super long. I need to make it look nicer."
         )
     )
-    MaterialTheme {
+    val circle3 = Circle(
+        id = "3",
+        type = "circle",
+        attributes = CircleAttributes(
+            id = 3,
+            userId = "2",
+            name = "House Bonanza",
+            description = "Erie crew"
+        )
+    )
+    val circle4 = Circle(
+        id = "3",
+        type = "circle",
+        attributes = CircleAttributes(
+            id = 3,
+            userId = "2",
+            name = "Basketball Team",
+            description = "rec basketball team chat"
+        )
+    )
+    ChatterBoxTheme {
         MyCirclesList(
-            mutableStateListOf(circle1, circle2),
+            mutableStateListOf(circle1, circle2, circle3, circle4),
             onCircleClick = {}
         )
     }
