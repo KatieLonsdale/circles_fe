@@ -36,6 +36,8 @@ import java.time.format.DateTimeFormatter
 import java.time.ZoneId
 import java.util.Locale
 
+val TAG = "Post Card"
+
 
 // used for Newsfeed and Circle Newsfeed, only displays 2 comments
 @Composable
