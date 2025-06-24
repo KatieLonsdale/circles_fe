@@ -34,7 +34,7 @@ import com.katielonsdale.chatterbox.ui.components.TopAppBar
 import com.katielonsdale.chatterbox.ui.components.TopAppBarNoNav
 
 enum class InnerCirclesScreen {
-    Circle,
+    Chatter,
     NewPost,
     NewCircle,
     SelectCircles,
@@ -110,7 +110,7 @@ fun MainScreen(
             }
         },
         floatingActionButton = {
-            if (currentDestination?.route == Screen.MyCircles.route || currentDestination?.route == InnerCirclesScreen.Circle.name) {
+            if (currentDestination?.route == Screen.MyCircles.route || currentDestination?.route == InnerCirclesScreen.Chatter.name) {
                 CreateNewFloatingActionButton(
                     navController = navController
                 )
@@ -141,7 +141,7 @@ fun MainScreen(
                 MyCirclesScreen(
                     onCircleClick = {
                         circleViewModel.setCurrentCircle(it)
-                        navController.navigate(InnerCirclesScreen.Circle.name)
+                        navController.navigate(InnerCirclesScreen.Chatter.name)
                     }
                 )
             }
@@ -173,9 +173,9 @@ fun MainScreen(
                 )
             }
             // Routes without icons (not in nav bar)
-            composable(route = InnerCirclesScreen.Circle.name) {
-                CircleScreen(
-                    circle = circleUiState,
+            composable(route = InnerCirclesScreen.Chatter.name) {
+                ChatterScreen(
+                    chatter = circleUiState,
                     onClickDisplayPost = {
                         postViewModel.resetPost()
                         postViewModel.setCurrentPost(it)

@@ -30,7 +30,7 @@ object SampleData {
                         "type": "content",
                         "attributes": {
                             "id": 1,
-                            "presigned_image_url": "https://inner-circles-app.s3.amazonaws.com/36_1_images/c462a314d8341b9ef679.jpg"
+                            "presigned_image_url": "https://images.unsplash.com/photo-1749587452499-ea1fd591e63f?q=80&w=1056&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         }
                     }
                     ]
