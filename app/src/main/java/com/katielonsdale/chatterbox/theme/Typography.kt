@@ -28,7 +28,7 @@ val Typography: Typography @Composable get() = Typography(
         fontFamily = Figtree,
         fontWeight = FontWeight.Normal,
         fontSize = 30.sp,
-        lineHeight = 35.sp
+        lineHeight = 30.sp
     ),
     bodySmall = TextStyle(
         fontFamily = Figtree,

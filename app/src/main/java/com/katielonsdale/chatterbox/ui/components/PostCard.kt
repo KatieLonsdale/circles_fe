@@ -1,27 +1,29 @@
 package com.katielonsdale.chatterbox.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,7 +32,7 @@ import coil.request.ImageRequest
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
-import sh.calvin.autolinktext.rememberAutoLinkText
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.ZoneId
@@ -49,15 +51,18 @@ fun PostCard(
     val medias = post.attributes.contents.data
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
+            .fillMaxSize()
             .clickable { onClickDisplayPost(post) }
             .shadow(
                 8.dp,
-                shape = RoundedCornerShape(16.dp)
-            )  // Apply shadow with rounded corners
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.LightGray)  // Set background color (e.g., white)
+                shape = MaterialTheme.shapes.small
+            )
+            .clip(MaterialTheme.shapes.small)
+            .background(
+                MaterialTheme.colorScheme.surface
+            ),
+        verticalArrangement = Arrangement.Center,
+
     ) {
         for (media in medias) {
             val imageUrl = media.attributes.imageUrl
@@ -68,53 +73,68 @@ fun PostCard(
                     .build(),
                 error = painterResource(R.drawable.ic_image_error_24dp),
                 contentDescription = stringResource(R.string.description),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.small)
             )
         }
 
-        Spacer(modifier = Modifier.height(5.dp))
-
-
         Row(
             modifier = Modifier
-                .padding(
-                    start = 10.dp,
-                    top = 5.dp,
-                )
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            val fontSize = 15.sp
-
+            //todo: users can add profile pictures
+//            AsyncImage(
+//                model = ImageRequest.Builder(LocalContext.current)
+//                    .data("")
+//                    .crossfade(true)
+//                    .build(),
+//                placeholder = painterResource(id = R.drawable.me_nav),
+//                error = painterResource(R.drawable.ic_image_error_24dp),
+//                contentDescription = stringResource(R.string.description),
+//                modifier = Modifier
+//                    .clip(shape = CircleShape)
+//                    .height(30.dp)
+//                    .width(30.dp)
+//            )
+            Image(
+                painter = painterResource(R.drawable.me_nav),
+                modifier = Modifier
+                    .clip(shape = CircleShape)
+                    .height(30.dp)
+                    .width(30.dp),
+                contentDescription = "place holder for profile picture"
+            )
+            Spacer(Modifier.width(5.dp))
             Text(
                 text = post.attributes.authorDisplayName,
-                color = Color.DarkGray,
-                fontSize = fontSize,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.alignByBaseline()
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
-
-
+            Spacer(Modifier.width(5.dp))
             Text(
                 text = formatTimeStamp(post.attributes.updatedAt),
-                color = Color.DarkGray,
-                fontSize = fontSize,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 15.sp,
+                ),
+                modifier = Modifier.alignByBaseline(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp)) // Small gap between header and comment
 
         Row(
-            modifier = Modifier
-                .padding(start = 10.dp)
+            modifier = Modifier.padding(start = 36.dp)
         ) {
-            val fontSize = 20.sp
             Text(
-//                reset: annotated string breaks previews
-                text = AnnotatedString.rememberAutoLinkText(text = post.attributes.caption),
-//                text = post.attributes.caption,
-                color = Color.DarkGray,
-                fontSize = fontSize,
+                text = post.attributes.caption,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodySmall
             )
         }
 
@@ -122,7 +142,7 @@ fun PostCard(
         if (comments.isNotEmpty()) {
             Column(
                 Modifier
-                    .padding(start = 15.dp, top = 5.dp, bottom = 5.dp)
+                    .padding(start = 15.dp)
             ) {
                 comments.take(2).forEach { comment ->
                     NewsfeedCommentCard(
@@ -133,8 +153,6 @@ fun PostCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
         if (displayCircleName) {
             Row(
                 modifier = Modifier
@@ -144,13 +162,12 @@ fun PostCard(
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = post.attributes.circleName,
-                    color = Color.DarkGray,
-                    fontSize = 20.sp,
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(Modifier.height(5.dp))
     }
 }
 
@@ -171,11 +188,7 @@ fun formatTimeStamp(originalTimestamp: String): String {
             today -> "Today $timePart"
             yesterday -> "Yesterday $timePart"
             else -> {
-                val dateFormatter = if (date.year == today.year) {
-                    DateTimeFormatter.ofPattern("MMM dd", Locale.getDefault())
-                } else {
-                    DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.getDefault())
-                }
+                val dateFormatter = DateTimeFormatter.ofPattern("M/d/yy", Locale.getDefault())
                 "${zonedDateTime.format(dateFormatter)} $timePart"
             }
         }
@@ -190,9 +203,12 @@ fun formatTimeStamp(originalTimestamp: String): String {
 @Composable
 fun PostCardPreview(){
     val posts = SampleData.returnSamplePosts()
-    PostCard(
-        posts[0],
-        onClickDisplayPost = {},
-        true
-    )
+    val post = posts.first()
+    ChatterBoxTheme {
+        PostCard(
+            post,
+            onClickDisplayPost = {},
+            true
+        )
+    }
 }

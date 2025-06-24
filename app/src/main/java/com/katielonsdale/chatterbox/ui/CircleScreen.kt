@@ -1,10 +1,9 @@
 package com.katielonsdale.chatterbox.ui
 
 import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.SampleData
@@ -30,10 +28,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.katielonsdale.chatterbox.ui.components.PostCard
 import androidx.compose.material3.Text
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.api.data.CircleUiState
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.text.style.TextAlign
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 
 var circlePosts by mutableStateOf(emptyList<Post>())
 
@@ -69,23 +69,23 @@ fun DisplayPosts(
     ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text(
-                text = circle.name,
-                color = Color.DarkGray,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-            )
-        }
+        Text(
+            text = circle.name,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleSmall,
+            softWrap = true,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
 
-        LazyColumn {
+        Spacer(Modifier.height(10.dp))
+
+        LazyColumn() {
             val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
             items(sortedPosts) { post ->
                 PostCard(
@@ -93,6 +93,7 @@ fun DisplayPosts(
                     onClickDisplayPost,
                     false
                 )
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }
@@ -120,9 +121,9 @@ private fun getPostsForCircle(circleId: String, userId: String?) {
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCircleScreen() {
-    val circle = CircleUiState("1", "Sample Circle")
+    val circle = CircleUiState("1", "Tuesday Night Run Club")
     val posts = SampleData.returnSamplePosts()
-    MaterialTheme {
+    ChatterBoxTheme {
         Surface{
             DisplayPosts(
                 circle,

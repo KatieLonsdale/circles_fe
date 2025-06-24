@@ -77,7 +77,7 @@ data class CommentAttributes(
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
     @SerializedName("author_display_name") val authorDisplayName: String,
-    @SerializedName("replies") val replies: Replies,
+    @SerializedName("replies") val replies: Replies?,
 ) : Parcelable
 
 @Parcelize
