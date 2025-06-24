@@ -2,7 +2,9 @@ package com.katielonsdale.chatterbox.ui
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,7 +34,12 @@ import com.katielonsdale.chatterbox.api.data.CircleUiState
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 
 var circlePosts by mutableStateOf(emptyList<Post>())
@@ -84,6 +91,35 @@ fun DisplayPosts(
         )
 
         Spacer(Modifier.height(10.dp))
+
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.Center,
+//        ){
+//            Icon(
+//                painter = painterResource(R.drawable.chat),
+//                contentDescription = "chat",
+//                modifier = Modifier.height(80.dp)
+//            )
+//            Spacer(Modifier.width(70.dp))
+//
+//            Icon(
+//                painter = painterResource(R.drawable.album),
+//                contentDescription = "chat",
+//                modifier = Modifier.height(80.dp)
+//            )
+//            Spacer(Modifier.width(70.dp))
+//
+//            Icon(
+//                painter = painterResource(R.drawable.calendar),
+//                contentDescription = "chat",
+//                modifier = Modifier.height(80.dp)
+//            )
+//        }
+//
+//        Spacer(Modifier.height(10.dp))
 
         LazyColumn() {
             val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
