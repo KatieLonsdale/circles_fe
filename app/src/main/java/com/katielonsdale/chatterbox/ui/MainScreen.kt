@@ -175,7 +175,7 @@ fun MainScreen(
             // Routes without icons (not in nav bar)
             composable(route = InnerCirclesScreen.Chatter.name) {
                 ChatterScreen(
-                    circle = circleUiState,
+                    chatter = circleUiState,
                     onClickDisplayPost = {
                         postViewModel.resetPost()
                         postViewModel.setCurrentPost(it)

@@ -34,18 +34,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.text.style.TextAlign
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 
-var circlePosts by mutableStateOf(emptyList<Post>())
+var chatterPosts by mutableStateOf(emptyList<Post>())
 
 @Composable
 fun ChatterScreen(
-    circle: CircleUiState,
+    chatter: CircleUiState,
     onClickDisplayPost: (Post) -> Unit = {}
 ) {
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
 
     LaunchedEffect(Unit) {
-        getPostsForCircle(circle.id, userId)
+        getPostsForChatter(chatter.id, userId)
         isLoading = false
     }
 
@@ -53,8 +53,8 @@ fun ChatterScreen(
         CircularProgressIndicator()
     } else {
         DisplayPosts(
-            circle,
-            circlePosts,
+            chatter,
+            chatterPosts,
             onClickDisplayPost
         )
     }
@@ -62,7 +62,7 @@ fun ChatterScreen(
 
 @Composable
 fun DisplayPosts(
-    circle: CircleUiState,
+    chatter: CircleUiState,
     posts: List<Post>,
     onClickDisplayPost: (Post) -> Unit
     ) {
@@ -71,7 +71,7 @@ fun DisplayPosts(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            item{ ChatterScreenHeader(circle) }
+            item{ ChatterScreenHeader(chatter) }
             val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
             items(sortedPosts) { post ->
                 PostCard(
@@ -86,10 +86,10 @@ fun DisplayPosts(
 
 @Composable
 fun ChatterScreenHeader(
-    circle: CircleUiState,
+    chatter: CircleUiState,
 ){
     Text(
-        text = circle.name,
+        text = chatter.name,
         color = MaterialTheme.colorScheme.primary,
         style = MaterialTheme.typography.titleSmall,
         softWrap = true,
@@ -131,16 +131,19 @@ fun ChatterScreenHeader(
 //        Spacer(Modifier.height(10.dp))
 }
 
-private fun getPostsForCircle(circleId: String, userId: String?) {
-    apiService.getPostsForCircle(userId, circleId).enqueue(object : Callback<PostsResponse> {
+private fun getPostsForChatter(
+    chatterId: String,
+    userId: String?,
+) {
+    apiService.getPostsForChatter(userId, chatterId).enqueue(object : Callback<PostsResponse> {
         override fun onResponse(call: Call<PostsResponse>, response: Response<PostsResponse>) {
             if (response.isSuccessful) {
-                circlePosts = response.body()?.data ?: emptyList()
-                for (post in circlePosts) {
+                chatterPosts = response.body()?.data ?: emptyList()
+                for (post in chatterPosts) {
 
                 }
             } else {
-                Log.e("CircleScreen", "Failed to fetch circle ${circleId} posts: ${response.errorBody()?.string()}")
+                Log.e("CircleScreen", "Failed to fetch circle ${chatterId} posts: ${response.errorBody()?.string()}")
             }
         }
 
@@ -152,13 +155,13 @@ private fun getPostsForCircle(circleId: String, userId: String?) {
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
-fun PreviewCircleScreen() {
-    val circle = CircleUiState("1", "Tuesday Night Run Club")
+fun PreviewChatterScreen() {
+    val chatter = CircleUiState("1", "Tuesday Night Run Club")
     val posts = SampleData.returnSamplePosts()
     ChatterBoxTheme {
         Surface{
             DisplayPosts(
-                circle,
+                chatter,
                 posts,
                 onClickDisplayPost = {}
             )

@@ -86,7 +86,7 @@ interface ApiService {
 
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")
-    fun getPostsForCircle(
+    fun getPostsForChatter(
         @Path("userId") userId: String?,
         @Path("circleId") circleId: String
     ): Call<PostsResponse>
