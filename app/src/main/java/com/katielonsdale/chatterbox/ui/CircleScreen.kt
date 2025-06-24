@@ -74,23 +74,40 @@ fun DisplayPosts(
     posts: List<Post>,
     onClickDisplayPost: (Post) -> Unit
     ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        Text(
-            text = circle.name,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleSmall,
-            softWrap = true,
-            textAlign = TextAlign.Center,
-            maxLines = 2,
+        LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-        )
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            item{ CircleScreenHeader(circle) }
+            val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
+            items(sortedPosts) { post ->
+                PostCard(
+                    post,
+                    onClickDisplayPost,
+                    false
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+}
 
-        Spacer(Modifier.height(10.dp))
+@Composable
+fun CircleScreenHeader(
+    circle: CircleUiState,
+){
+    Text(
+        text = circle.name,
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.titleSmall,
+        softWrap = true,
+        textAlign = TextAlign.Center,
+        maxLines = 2,
+        modifier = Modifier
+            .fillMaxWidth()
+    )
+
+    Spacer(Modifier.height(10.dp))
 
 //        Row(
 //            modifier = Modifier
@@ -120,19 +137,6 @@ fun DisplayPosts(
 //        }
 //
 //        Spacer(Modifier.height(10.dp))
-
-        LazyColumn() {
-            val sortedPosts = posts.sortedByDescending { it.attributes.updatedAt }
-            items(sortedPosts) { post ->
-                PostCard(
-                    post,
-                    onClickDisplayPost,
-                    false
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-        }
-    }
 }
 
 private fun getPostsForCircle(circleId: String, userId: String?) {
