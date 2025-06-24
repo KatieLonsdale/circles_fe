@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.ZoneId
@@ -153,6 +155,8 @@ fun PostCard(
             }
         }
 
+        Spacer(Modifier.height(20.dp))
+
         if (displayCircleName) {
             Row(
                 modifier = Modifier
@@ -166,6 +170,26 @@ fun PostCard(
                     style = MaterialTheme.typography.labelSmall
                 )
             }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 10.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = "See conversation",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Icon(
+                    painter = painterResource(
+                        id = R.drawable.arrow_right
+                    ),
+                    contentDescription = "arrow right"
+                )
+            }
+
         }
         Spacer(Modifier.height(5.dp))
     }
