@@ -63,6 +63,7 @@ import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.CommentAndRepliesCard
 import sh.calvin.autolinktext.rememberAutoLinkText
 import com.katielonsdale.chatterbox.ui.components.CommentCard
+import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import com.katielonsdale.chatterbox.ui.components.formatTimeStamp
 import com.katielonsdale.chatterbox.utils.CommentCreator
 
@@ -199,7 +200,8 @@ fun DisplayPostScreen(
                 onCommentChanged(newComment)
             },
             focusManager = focusManager,
-            keyboardController = keyboardController
+            keyboardController = keyboardController,
+            post = post,
         )
 
         Box(
@@ -243,6 +245,7 @@ fun CommentInput(
     onCommentChanged: (String) -> Unit,
     focusManager: FocusManager,
     keyboardController: SoftwareKeyboardController?,
+    post: PostUiState,
 ) {
     Box(
         modifier = Modifier
@@ -254,7 +257,10 @@ fun CommentInput(
             onValueChange = { newText ->   // Update the state with the new text
                 onCommentChanged(newText)
             },
-            placeholder = { Text("Add a comment") },
+            placeholder = { Text(
+                text = "Comment on ${post.authorDisplayName}'s post",
+                style = MaterialTheme.typography.bodySmall
+            ) },
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.LightGray),
@@ -266,6 +272,14 @@ fun CommentInput(
                 focusManager.clearFocus()
             }),
             textStyle = TextStyle(color = Color.DarkGray)
+        )
+        TextFieldOnSurface(
+            value = value,
+            onValueChange = onCommentChanged,
+            label = "Comment on ${post.authorDisplayName}'s post",
+            keyboardOptions =  KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
         )
     }
 }
