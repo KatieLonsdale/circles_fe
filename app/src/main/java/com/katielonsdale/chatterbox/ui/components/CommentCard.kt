@@ -77,6 +77,7 @@ fun CommentAndRepliesCard(
                 val id = "comment ${comment.id}"
                 replyVisibilityId.value = if (replyVisibilityId.value == id) "" else id
             },
+
         )
 
         spacer
@@ -230,7 +231,7 @@ fun CommentCard(
             ) {
                 ReplyIconButton(
                     onClick = {
-                        onClick
+                        onClick ()
                     }
                 )
             }

@@ -1,5 +1,6 @@
 package com.katielonsdale.chatterbox.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -24,7 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,7 +86,6 @@ fun DisplayPostScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var counter by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -193,48 +195,30 @@ fun DisplayPostScreen(
         }
 
         Spacer(modifier = Modifier.height(15.dp))
-
-        CommentInput(
-            value = comment.commentText,
-            onCommentChanged = { newComment ->   // Call setCaption on text change
-                onCommentChanged(newComment)
-            },
-            focusManager = focusManager,
-            keyboardController = keyboardController,
-            post = post,
-        )
-
-        Box(
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(
-                    start = 10.dp,
-                    end = 10.dp,
-                    top = 5.dp,
-                    bottom = 5.dp
+                    start = 2.dp,
+                    end = 2.dp,
+                    bottom = 5.dp,
                 )
         ) {
-            ElevatedButton(
-                onClick = {
+            CommentInput(
+                value = comment.commentText,
+                onCommentChanged = { newComment ->   // Call setCaption on text change
+                    onCommentChanged(newComment)
+                },
+                post = post,
+                onDone = {
                     CommentCreator.createComment(
                         comment = comment,
                         postId = post.id,
                         circleId = post.circleId,
                         addCommentToPost = addCommentToPost,
                     )
-                    counter++
                     clearComment()
-                },
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(Alignment.BottomEnd),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White, // Background color
-                    contentColor = Color.DarkGray,  // Text color
-                ),
-            ) {
-                Text("Post")
-            }
+                }
+            )
         }
     }
 }
@@ -243,45 +227,51 @@ fun DisplayPostScreen(
 fun CommentInput(
     value: String,
     onCommentChanged: (String) -> Unit,
-    focusManager: FocusManager,
-    keyboardController: SoftwareKeyboardController?,
     post: PostUiState,
+    onDone: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        TextField(
-            value = value,
-            onValueChange = { newText ->   // Update the state with the new text
-                onCommentChanged(newText)
-            },
-            placeholder = { Text(
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+
+    TextField(
+        value = value,
+        onValueChange = { onCommentChanged(it) },
+        label = {
+            Text(
                 text = "Comment on ${post.authorDisplayName}'s post",
-                style = MaterialTheme.typography.bodySmall
-            ) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
+                style = MaterialTheme.typography.labelSmall,
+            )
+        },
+        textStyle = MaterialTheme.typography.labelSmall,
+        shape = MaterialTheme.shapes.small,
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
+                alpha = (0.7F)
             ),
-            keyboardActions = KeyboardActions(onDone = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }),
-            textStyle = TextStyle(color = Color.DarkGray)
-        )
-        TextFieldOnSurface(
-            value = value,
-            onValueChange = onCommentChanged,
-            label = "Comment on ${post.authorDisplayName}'s post",
-            keyboardOptions =  KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-        )
-    }
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(onDone = {
+            keyboardController?.hide()
+            focusManager.clearFocus()
+            onDone()
+            Toast.makeText(
+                context,
+                "You commented on ${post.authorDisplayName}'s post",
+                Toast.LENGTH_LONG
+            ).show()
+        }),
+    )
 }
 
 @Preview(apiLevel = 34, showBackground = true)
