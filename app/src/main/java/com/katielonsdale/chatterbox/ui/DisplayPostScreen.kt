@@ -198,8 +198,8 @@ fun DisplayPostScreen(
         Row(
             modifier = Modifier
                 .padding(
-                    start = 2.dp,
-                    end = 2.dp,
+                    start = 5.dp,
+                    end = 5.dp,
                     bottom = 5.dp,
                 )
         ) {
