@@ -250,104 +250,61 @@ fun CommentReplies(
     replyVisibilityId: MutableState<String> = remember { mutableStateOf("") },
 
 ){
-    val repliesHidden = remember {mutableStateOf(true)}
     val commentUiState by commentViewModel.uiState.collectAsState()
 
-    if (repliesHidden.value) {
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    bottom = 5.dp,
-                    end = 5.dp,
-                )
-                .clickable{
-                    repliesHidden.value = false
-                },
-        ) {
-            Text(
-                text = "View ${commentReplies.count()} replies",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    } else {
-        for (reply in commentReplies) {
-            val secondCommentReplies = reply.attributes.replies.data
-            CommentCard(
-                comment = reply,
-                onClick = {
-                    val id = "reply ${reply.id}"
-                    replyVisibilityId.value =
-                        if (replyVisibilityId.value == id) "" else id
-                },
-                startPadding = 25.dp,
-                replyVisibilityId = replyVisibilityId,
+    for (reply in commentReplies) {
+        val secondCommentReplies = reply.attributes.replies.data
+        CommentCard(
+            comment = reply,
+            onClick = {
+                val id = "reply ${reply.id}"
+                replyVisibilityId.value =
+                    if (replyVisibilityId.value == id) "" else id
+            },
+            startPadding = 25.dp,
+            replyVisibilityId = replyVisibilityId,
+            commentViewModel = commentViewModel,
+            postId = postId,
+            circleId = circleId,
+            addCommentToPost = addCommentToPost,
+            replyCount = secondCommentReplies.count()
+        )
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        if (secondCommentReplies.isNotEmpty()) {
+            val sortedSecondCommentReplies = secondCommentReplies.sortedBy { it.attributes.createdAt }
+            SecondCommentReplies(
+                secondCommentReplies = sortedSecondCommentReplies,
                 commentViewModel = commentViewModel,
                 postId = postId,
                 circleId = circleId,
                 addCommentToPost = addCommentToPost,
-                replyCount = secondCommentReplies.count()
+                replyVisibilityId = replyVisibilityId,
+                commentUiState = commentUiState,
+                reply = reply,
             )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            if (secondCommentReplies.isNotEmpty()) {
-                val sortedSecondCommentReplies = secondCommentReplies.sortedBy { it.attributes.createdAt }
-                SecondCommentReplies(
-                    secondCommentReplies = sortedSecondCommentReplies,
-                    commentViewModel = commentViewModel,
-                    postId = postId,
-                    circleId = circleId,
-                    addCommentToPost = addCommentToPost,
-                    replyVisibilityId = replyVisibilityId,
-                    commentUiState = commentUiState,
-                    reply = reply,
-                )
-            }
-            Spacer(modifier = Modifier.height(5.dp))
-            //reset: for editing in preview
-//              if (true){
-            if (replyVisibilityId.value == "reply ${reply.id}") {
-                CommentInput(
-                    value = commentUiState.commentText,
-                    commentViewModel = commentViewModel,
-                    startPadding = 30,
-                    parentComment = reply,
-                    onDone = {
-                        replyVisibilityId.value = ""
-                        createComment(
-                            comment = commentUiState,
-                            postId = postId,
-                            circleId = circleId,
-                            addCommentToPost = addCommentToPost,
-                        )
-                        commentViewModel.resetComment()
-                    }
-                )
-            }
         }
-
-        if(!repliesHidden.value) {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        bottom = 5.dp,
-                        end = 5.dp,
+        Spacer(modifier = Modifier.height(5.dp))
+        //reset: for editing in preview
+//              if (true){
+        if (replyVisibilityId.value == "reply ${reply.id}") {
+            CommentInput(
+                value = commentUiState.commentText,
+                commentViewModel = commentViewModel,
+                startPadding = 30,
+                parentComment = reply,
+                onDone = {
+                    replyVisibilityId.value = ""
+                    createComment(
+                        comment = commentUiState,
+                        postId = postId,
+                        circleId = circleId,
+                        addCommentToPost = addCommentToPost,
                     )
-                    .clickable {
-                        repliesHidden.value = true
-                    },
-            ) {
-                Text(
-                    text = "Hide replies",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+                    commentViewModel.resetComment()
+                }
+            )
         }
     }
 }
@@ -363,88 +320,45 @@ private fun SecondCommentReplies(
     commentUiState: CommentUiState,
     reply: Comment,
 ){
-    val secondCommentRepliesHidden = remember {mutableStateOf(true)}
+    for (subReply in secondCommentReplies) {
+        CommentCard(
+            comment = subReply,
+            onClick = {
+                val id = "subreply ${subReply.attributes.parentCommentId}"
+                replyVisibilityId.value =
+                    if (replyVisibilityId.value == id) "" else id
+            },
+            startPadding = 50.dp,
+            replyVisibilityId = replyVisibilityId,
+            commentViewModel = commentViewModel,
+            postId = postId,
+            circleId = circleId,
+            addCommentToPost = addCommentToPost,
+            replyCount = 0
+        )
 
-    if (secondCommentRepliesHidden.value) {
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    bottom = 5.dp,
-                    end = 5.dp,
-                )
-                .clickable{
-                    secondCommentRepliesHidden.value = false
-                },
-        ) {
-            Text(
-                text = "View ${secondCommentReplies.count()} replies",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    } else {
-        for (subReply in secondCommentReplies) {
-            CommentCard(
-                comment = subReply,
-                onClick = {
-                    val id = "subreply ${subReply.attributes.parentCommentId}"
-                    replyVisibilityId.value =
-                        if (replyVisibilityId.value == id) "" else id
-                },
-                startPadding = 50.dp,
-                replyVisibilityId = replyVisibilityId,
-                commentViewModel = commentViewModel,
-                postId = postId,
-                circleId = circleId,
-                addCommentToPost = addCommentToPost,
-                replyCount = 0
-            )
+        Spacer(modifier = Modifier.height(5.dp))
 
-            Spacer(modifier = Modifier.height(5.dp))
-
-            //reset: for editing in preview
+        //reset: for editing in preview
 //                                      if (true){
-            if (replyVisibilityId.value == "subreply ${subReply.attributes.parentCommentId}") {
-                CommentInput(
-                    value = commentUiState.commentText,
-                    commentViewModel = commentViewModel,
-                    startPadding = 30,
-                    parentComment = reply,
-                    onDone = {
-                        replyVisibilityId.value = ""
-                        createComment(
-                            comment = commentUiState,
-                            postId = postId,
-                            circleId = circleId,
-                            addCommentToPost = addCommentToPost,
-                        )
-                        commentViewModel.resetComment()
-                    },
-                    finalComment = true
-                )
-            }
-        }
-        if (!secondCommentRepliesHidden.value) {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        bottom = 5.dp,
-                        end = 5.dp,
+        if (replyVisibilityId.value == "subreply ${subReply.attributes.parentCommentId}") {
+            CommentInput(
+                value = commentUiState.commentText,
+                commentViewModel = commentViewModel,
+                startPadding = 30,
+                parentComment = reply,
+                onDone = {
+                    replyVisibilityId.value = ""
+                    createComment(
+                        comment = commentUiState,
+                        postId = postId,
+                        circleId = circleId,
+                        addCommentToPost = addCommentToPost,
                     )
-                    .clickable {
-                        secondCommentRepliesHidden.value = true
-                    },
-            ) {
-                Text(
-                    text = "Hide replies",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+                    commentViewModel.resetComment()
+                },
+                finalComment = true
+            )
         }
     }
 }
