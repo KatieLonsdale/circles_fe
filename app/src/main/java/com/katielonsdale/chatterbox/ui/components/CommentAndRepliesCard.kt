@@ -48,11 +48,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
-import sh.calvin.autolinktext.rememberAutoLinkText
 
 
 @Composable
