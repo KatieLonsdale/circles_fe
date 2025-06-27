@@ -54,6 +54,9 @@ import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.AnnotatedString
+import sh.calvin.autolinktext.rememberAutoLinkText
+
 
 
 @Composable
@@ -180,8 +183,8 @@ fun CommentCard(
                     }
                     Text(
                         // reset: AnnotatedString breaks preview
-//                            text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-                        text = comment.attributes.commentText,
+                        text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+//                        text = comment.attributes.commentText,
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
@@ -290,8 +293,8 @@ fun SelectedCommentCard(
                     }
                     Text(
                         // reset: AnnotatedString breaks preview
-//                            text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-                        text = comment.attributes.commentText,
+                        text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+//                        text = comment.attributes.commentText,
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier

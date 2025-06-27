@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,37 +15,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,9 +49,7 @@ import com.katielonsdale.chatterbox.api.data.Comment
 import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.api.data.PostUiState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -70,10 +58,7 @@ import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.CommentAndRepliesCard
 import sh.calvin.autolinktext.rememberAutoLinkText
-import com.katielonsdale.chatterbox.ui.components.CommentCard
-import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import com.katielonsdale.chatterbox.ui.components.formatTimeStamp
-import com.katielonsdale.chatterbox.utils.CommentCreator
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
 
 @Composable
@@ -166,8 +151,8 @@ fun DisplayPostScreen(
                  Spacer(modifier = Modifier.width(10.dp))
                  Text(
                      // reset: annotatedString breaks previews
-//                            text = AnnotatedString.rememberAutoLinkText(post.caption),
-                     text = post.caption,
+                     text = AnnotatedString.rememberAutoLinkText(post.caption),
+//                     text = post.caption,
                      color = MaterialTheme.colorScheme.onSurface,
                      style = MaterialTheme.typography.bodySmall
                  )
