@@ -74,7 +74,8 @@ object SampleData {
                                                                 "comment_text": "Here is a very long comment that should wrap properly and not cover the reply button",
                                                                 "created_at": "2024-08-10T21:52:58.186Z",
                                                                 "updated_at": "2024-08-10T21:52:58.186Z",
-                                                                "author_display_name": "chagurlll"
+                                                                "author_display_name": "chagurlll",
+                                                                "replies": {"data": []}
                                                             }
                                                         }
                                                     ]
@@ -91,7 +92,8 @@ object SampleData {
                                                 "comment_text": "I disagree",
                                                 "created_at": "2024-08-10T20:52:58.186Z",
                                                 "updated_at": "2024-08-10T20:52:58.186Z",
-                                                "author_display_name": "chagurlll"
+                                                "author_display_name": "chagurlll",
+                                                "replies": {"data": []}
                                             }
                                         }
                                     ]
@@ -109,7 +111,8 @@ object SampleData {
                                 "comment_text": "I agree",
                                 "created_at": "2024-08-10T20:42:58.186Z",
                                 "updated_at": "2024-08-10T20:42:58.186Z",
-                                "author_display_name": "chagurlll"
+                                "author_display_name": "chagurlll",
+                                "replies": {"data": []}
                             }
                         }
                     ]
@@ -153,7 +156,8 @@ object SampleData {
                                 "comment_text": "beautiful shot",
                                 "created_at": "2024-08-23T17:40:52.444Z",
                                 "updated_at": "2024-08-23T17:40:52.444Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -167,7 +171,8 @@ object SampleData {
                                 "comment_text": "tght",
                                 "created_at": "2024-08-24T17:05:58.194Z",
                                 "updated_at": "2024-08-24T17:05:58.194Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -181,7 +186,8 @@ object SampleData {
                                 "comment_text": "tght",
                                 "created_at": "2024-08-24T17:06:29.173Z",
                                 "updated_at": "2024-08-24T17:06:29.173Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -195,7 +201,8 @@ object SampleData {
                                 "comment_text": "tght",
                                 "created_at": "2024-08-24T17:06:57.094Z",
                                 "updated_at": "2024-08-24T17:06:57.094Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -209,7 +216,8 @@ object SampleData {
                                 "comment_text": "new new",
                                 "created_at": "2024-08-24T17:07:13.418Z",
                                 "updated_at": "2024-08-24T17:07:13.418Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         }
                     ]

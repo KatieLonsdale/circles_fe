@@ -1,9 +1,11 @@
 package com.katielonsdale.chatterbox.ui
 
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,34 +14,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,21 +49,22 @@ import com.katielonsdale.chatterbox.api.data.Comment
 import com.katielonsdale.chatterbox.api.data.CommentUiState
 import com.katielonsdale.chatterbox.api.data.PostUiState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.katielonsdale.chatterbox.api.data.CommentViewModel
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.CommentAndRepliesCard
 import sh.calvin.autolinktext.rememberAutoLinkText
-import com.katielonsdale.chatterbox.ui.components.CommentCard
-import com.katielonsdale.chatterbox.utils.CommentCreator
+import com.katielonsdale.chatterbox.ui.components.formatTimeStamp
+import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
 
 @Composable
 fun DisplayPostScreen(
     post: PostUiState,
-    comment: CommentUiState,
-    onCommentChanged: (String) -> Unit,
     addCommentToPost: (Comment) -> Unit,
-    clearComment: () -> Unit
 ){
     val contents = post.contents
     var hasContent = true;
@@ -75,191 +73,201 @@ fun DisplayPostScreen(
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    var counter by remember { mutableIntStateOf(0) }
+    val commentViewModel: CommentViewModel = viewModel()
 
     Column(
-        Modifier
-            .padding(top = 10.dp)
-            .verticalScroll(rememberScrollState()) // Enable vertical scrolling
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 10.dp,
-                    end = 10.dp,
-                    top = 10.dp,
-                    bottom = 50.dp
-                )
-                .shadow(
-                    8.dp,
-                    shape = RoundedCornerShape(16.dp)
-                )  // Apply shadow with rounded corners
-                .clip(RoundedCornerShape(10.dp))
-                .background(Color.White)  // Set background color (e.g., white),
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        // Remove focus and dismiss keyboard when tapping outside the TextField
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    })
-                },
-            Arrangement.Center,
-        ) {
-
-            for (content in contents) {
-                val imageUrl = content.attributes.imageUrl
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    error = painterResource(R.drawable.ic_image_error_24dp),
-                    contentDescription = stringResource(R.string.description),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                )
-            }
-
-            Surface(
-                shape = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp),
-                color = Color.LightGray,
-                modifier = Modifier
-                    .padding(
-                        start = 10.dp,
-                        end = 10.dp,
-                        top = 10.dp,
-                    )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(all = 8.dp)
-                ) {
-                    Text(
-                        text = post.authorDisplayName,
-                        color = Color.DarkGray,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    SelectionContainer {
-                        Text(
-                            // reset: annotatedString breaks previews
-                            text = AnnotatedString.rememberAutoLinkText(post.caption),
-//                            text = post.caption,
-                            color = Color.DarkGray,
-                            fontSize = 20.sp,
-                        )
-                    }
-                }
-
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-
-            val comments = post.comments
-            if (comments.isNotEmpty()) {
-                val replyVisibilityId = remember { mutableStateOf("") }
-                val sortedComments = comments.sortedBy { it.attributes.createdAt }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp)
-                ) {
-                    sortedComments.forEach { comment ->
-                        CommentCard(
-                            comment = comment,
-                            postId = post.id,
-                            circleId = post.circleId,
-                            addCommentToPost = addCommentToPost,
-                            replyVisibilityId = replyVisibilityId,
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            CommentInput(
-                value = comment.commentText,
-                onCommentChanged = { newComment ->   // Call setCaption on text change
-                    onCommentChanged(newComment)
-                },
-                focusManager = focusManager,
-                keyboardController = keyboardController
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                top = 5.dp,
+                bottom = 5.dp,
             )
-
-            Box(
+            .shadow(
+                8.dp,
+                shape = MaterialTheme.shapes.small
+            )
+            .clip(MaterialTheme.shapes.small)
+            .background(MaterialTheme.colorScheme.surface)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    // Remove focus and dismiss keyboard when tapping outside the TextField
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        for (content in contents) {
+            val imageUrl = content.attributes.imageUrl
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                error = painterResource(R.drawable.ic_image_error_24dp),
+                contentDescription = stringResource(R.string.description),
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        start = 10.dp,
-                        end = 10.dp,
-                        top = 5.dp,
-                        bottom = 5.dp
-                    )
+                    .clip(MaterialTheme.shapes.small)
+            )
+        }
+             Column(
+                 modifier = Modifier
+                     .padding(
+                         start = 4.dp,
+                         end = 4.dp,
+                     )
+             ) {
+                 Row(
+                     modifier = Modifier
+                         .fillMaxWidth(),
+                     verticalAlignment = Alignment.CenterVertically,
+                 ) {
+                     Image(
+                         painter = painterResource(R.drawable.me_nav),
+                         modifier = Modifier
+                             .clip(shape = CircleShape)
+                             .height(30.dp)
+                             .width(30.dp),
+                         contentDescription = "place holder for profile picture"
+                     )
+                     Spacer(Modifier.width(5.dp))
+                     Text(
+                         text = post.authorDisplayName,
+                         color = MaterialTheme.colorScheme.onSurface,
+                         style = MaterialTheme.typography.bodyMedium,
+                         modifier = Modifier.alignByBaseline(),
+                     )
+                     Spacer(Modifier.width(5.dp))
+                     Text(
+                         text = formatTimeStamp(post.updatedAt),
+                         color = MaterialTheme.colorScheme.onSurface,
+                         style = MaterialTheme.typography.bodySmall.copy(
+                             fontSize = 15.sp,
+                         ),
+                         modifier = Modifier.alignByBaseline(),
+                         maxLines = 1,
+                         overflow = TextOverflow.Ellipsis
+                     )
+                 }
+                 Spacer(modifier = Modifier.width(10.dp))
+                 Text(
+                     // reset: annotatedString breaks previews
+                     text = AnnotatedString.rememberAutoLinkText(post.caption),
+//                     text = post.caption,
+                     color = MaterialTheme.colorScheme.onSurface,
+                     style = MaterialTheme.typography.bodySmall
+                 )
+             }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        val comments = post.comments
+        if (comments.isNotEmpty()) {
+            val replyVisibilityId = remember { mutableStateOf("") }
+            val sortedComments = comments.sortedBy { it.attributes.createdAt }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp)
             ) {
-                ElevatedButton(
-                    onClick = {
-                        CommentCreator.createComment(
-                            comment = comment,
-                            postId = post.id,
-                            circleId = post.circleId,
-                            addCommentToPost = addCommentToPost,
-                        )
-                        counter++
-                        clearComment()
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.BottomEnd),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White, // Background color
-                        contentColor = Color.DarkGray,  // Text color
-                    ),
-                ) {
-                    Text("Post")
+                sortedComments.forEach { comment ->
+                    CommentAndRepliesCard(
+                        comment = comment,
+                        postId = post.id,
+                        circleId = post.circleId,
+                        addCommentToPost = addCommentToPost,
+                        replyVisibilityId = replyVisibilityId,
+                    )
                 }
             }
+        }
+
+        Spacer(modifier = Modifier.height(15.dp))
+        Row(
+            modifier = Modifier
+                .padding(
+                    start = 5.dp,
+                    end = 5.dp,
+                    bottom = 5.dp,
+                )
+        ) {
+            CommentInput(
+                post = post,
+                addCommentToPost = addCommentToPost
+            )
         }
     }
 }
 
 @Composable
 fun CommentInput(
-    value: String,
-    onCommentChanged: (String) -> Unit,
-    focusManager: FocusManager,
-    keyboardController: SoftwareKeyboardController?,
+    post: PostUiState,
+    addCommentToPost: (Comment) -> Unit,
 ) {
-    Box(
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+    val inputValue = remember{mutableStateOf("")}
+    val commentViewModel: CommentViewModel = viewModel()
+    val commentUiState by commentViewModel.uiState.collectAsState()
+
+    TextField(
+        value = inputValue.value,
+        onValueChange = { newComment ->
+            inputValue.value = newComment
+            commentViewModel.setCommentText(newComment)
+        },
+        placeholder = {
+            Text(
+                text = "Comment on ${post.authorDisplayName}'s post",
+                style = MaterialTheme.typography.labelSmall,
+            )
+        },
+        textStyle = MaterialTheme.typography.labelSmall,
+        shape = MaterialTheme.shapes.small,
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
+                alpha = (0.5F)
+            ),
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.secondary,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        TextField(
-            value = value,
-            onValueChange = { newText ->   // Update the state with the new text
-                onCommentChanged(newText)
-            },
-            placeholder = { Text("Add a comment") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(onDone = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }),
-            textStyle = TextStyle(color = Color.DarkGray)
-        )
-    }
+            .onFocusChanged {
+                commentViewModel.setCommentText("")
+                inputValue.value = ""
+            }
+            .focusable(),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(onDone = {
+            inputValue.value = ""
+            keyboardController?.hide()
+            focusManager.clearFocus()
+            createComment(
+                comment = commentUiState,
+                postId = post.id,
+                circleId = post.circleId,
+                addCommentToPost = addCommentToPost,
+            )
+            commentViewModel.resetComment()
+            Toast.makeText(
+                context,
+                "You commented on ${post.authorDisplayName}'s post",
+                Toast.LENGTH_LONG
+            ).show()
+        }),
+    )
 }
 
 @Preview(apiLevel = 34, showBackground = true)
@@ -278,12 +286,10 @@ fun DisplayPostScreenPreview() {
     )
 
     val commentUiState = CommentUiState()
-
-    DisplayPostScreen(
-        postUiState,
-        commentUiState,
-        onCommentChanged = {},
-        addCommentToPost = {},
-        clearComment = {}
-    )
+    ChatterBoxTheme {
+        DisplayPostScreen(
+            postUiState,
+            addCommentToPost = {},
+        )
+    }
 }

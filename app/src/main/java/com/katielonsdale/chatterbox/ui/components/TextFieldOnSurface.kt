@@ -1,5 +1,6 @@
 package com.katielonsdale.chatterbox.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,8 +22,9 @@ fun TextFieldOnSurface(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    width: Modifier = Modifier.fillMaxWidth(),
     hidden: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -50,8 +52,7 @@ fun TextFieldOnSurface(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
             ),
-            modifier = Modifier
-                .width(280.dp),
+            modifier = width,
             maxLines = 1,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
@@ -84,8 +85,7 @@ fun TextFieldOnSurface(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
             ),
-            modifier = Modifier
-                .width(280.dp),
+            modifier = width,
             maxLines = 1,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
