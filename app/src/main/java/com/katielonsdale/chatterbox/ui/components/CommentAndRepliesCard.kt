@@ -190,9 +190,9 @@ fun CommentCard(
                         modifier = Modifier
                             .padding(start = 25.dp)
                     )
-                    EmojiRow(
-                        startPadding = 15.dp
-                    )
+//                    EmojiRow(
+//                        startPadding = 15.dp
+//                    )
                 }
                 Column(
                     modifier = Modifier
@@ -300,9 +300,9 @@ fun SelectedCommentCard(
                         modifier = Modifier
                             .padding(start = 25.dp)
                     )
-                    EmojiRow(
-                        startPadding = 15.dp
-                    )
+//                    EmojiRow(
+//                        startPadding = 15.dp
+//                    )
                 }
                 Column(
                     modifier = Modifier
