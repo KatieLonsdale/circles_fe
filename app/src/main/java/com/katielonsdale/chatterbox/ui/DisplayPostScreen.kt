@@ -3,6 +3,7 @@ package com.katielonsdale.chatterbox.ui
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,6 +62,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,6 +74,7 @@ import com.katielonsdale.chatterbox.ui.components.CommentCard
 import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import com.katielonsdale.chatterbox.ui.components.formatTimeStamp
 import com.katielonsdale.chatterbox.utils.CommentCreator
+import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
 
 @Composable
 fun DisplayPostScreen(
@@ -203,22 +206,9 @@ fun DisplayPostScreen(
                     bottom = 5.dp,
                 )
         ) {
-            val commentUiState by commentViewModel.uiState.collectAsState()
             CommentInput(
-                value = commentUiState.commentText,
-                onCommentChanged = { newComment ->   // Call setCaption on text change
-                    commentViewModel.setCommentText(newComment)
-                },
                 post = post,
-                onDone = {
-                    CommentCreator.createComment(
-                        comment = commentUiState,
-                        postId = post.id,
-                        circleId = post.circleId,
-                        addCommentToPost = addCommentToPost,
-                    )
-                    commentViewModel.resetComment()
-                }
+                addCommentToPost = addCommentToPost
             )
         }
     }
@@ -226,19 +216,23 @@ fun DisplayPostScreen(
 
 @Composable
 fun CommentInput(
-    value: String,
-    onCommentChanged: (String) -> Unit,
     post: PostUiState,
-    onDone: () -> Unit,
+    addCommentToPost: (Comment) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val inputValue = remember{mutableStateOf("")}
+    val commentViewModel: CommentViewModel = viewModel()
+    val commentUiState by commentViewModel.uiState.collectAsState()
 
     TextField(
-        value = value,
-        onValueChange = { onCommentChanged(it) },
-        label = {
+        value = inputValue.value,
+        onValueChange = { newComment ->
+            inputValue.value = newComment
+            commentViewModel.setCommentText(newComment)
+        },
+        placeholder = {
             Text(
                 text = "Comment on ${post.authorDisplayName}'s post",
                 style = MaterialTheme.typography.labelSmall,
@@ -248,7 +242,7 @@ fun CommentInput(
         shape = MaterialTheme.shapes.small,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
-                alpha = (0.7F)
+                alpha = (0.5F)
             ),
             focusedContainerColor = MaterialTheme.colorScheme.background,
             unfocusedLabelColor = MaterialTheme.colorScheme.primary,
@@ -257,15 +251,27 @@ fun CommentInput(
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent
         ),
-        modifier = Modifier.fillMaxWidth(),
-        maxLines = 1,
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged {
+                commentViewModel.setCommentText("")
+                inputValue.value = ""
+            }
+            .focusable(),
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(onDone = {
+            inputValue.value = ""
             keyboardController?.hide()
             focusManager.clearFocus()
-            onDone()
+            createComment(
+                comment = commentUiState,
+                postId = post.id,
+                circleId = post.circleId,
+                addCommentToPost = addCommentToPost,
+            )
+            commentViewModel.resetComment()
             Toast.makeText(
                 context,
                 "You commented on ${post.authorDisplayName}'s post",
