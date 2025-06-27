@@ -417,15 +417,26 @@ private fun SecondCommentReplies(
         modifier = Modifier.padding(start = 50.dp)
     ) {
         for (subReply in secondCommentReplies) {
-            if (thirdReplyVisibilityId.value == "subreply ${subReply.id}") {
+            if (thirdReplyVisibilityId.value == "subreplies") {
                 SelectedCommentCard(
                     comment = subReply,
                     onClick = {
-                        val id = "comment ${subReply.id}"
+                        val id = "subreplies"
                         thirdReplyVisibilityId.value = if (thirdReplyVisibilityId.value == id) "" else id
                     },
                 )
-
+            } else {
+                CommentCard(
+                    comment = subReply,
+                    onClick = {
+                        val id = "subreplies"
+                        thirdReplyVisibilityId.value =
+                            if (thirdReplyVisibilityId.value == id) "" else id
+                    },
+                )
+            }
+        }
+            if (thirdReplyVisibilityId.value == "subreplies") {
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Row(
@@ -434,28 +445,18 @@ private fun SecondCommentReplies(
                             bottom = 5.dp
                         )
                 ) {
-                        CommentInput(
-                            parentComment = comment,
-                            finalComment = true,
-                            postId = postId,
-                            circleId = circleId,
-                            addCommentToPost = addCommentToPost,
-                            onDone = {
-                                thirdReplyVisibilityId.value = ""
-                            }
-                        )
+                    CommentInput(
+                        parentComment = comment,
+                        finalComment = true,
+                        postId = postId,
+                        circleId = circleId,
+                        addCommentToPost = addCommentToPost,
+                        onDone = {
+                            thirdReplyVisibilityId.value = ""
+                        }
+                    )
                 }
-            } else {
-                CommentCard(
-                    comment = subReply,
-                    onClick = {
-                        val id = "subreply ${subReply.id}"
-                        thirdReplyVisibilityId.value =
-                            if (thirdReplyVisibilityId.value == id) "" else id
-                    },
-                )
             }
-        }
     }
 }
 
