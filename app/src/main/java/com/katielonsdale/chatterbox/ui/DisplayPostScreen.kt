@@ -78,6 +78,10 @@ fun DisplayPostScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(
+                top = 5.dp,
+                bottom = 5.dp,
+            )
             .shadow(
                 8.dp,
                 shape = MaterialTheme.shapes.small
@@ -112,8 +116,8 @@ fun DisplayPostScreen(
              Column(
                  modifier = Modifier
                      .padding(
-                         start = 2.dp,
-                         end = 2.dp,
+                         start = 4.dp,
+                         end = 4.dp,
                      )
              ) {
                  Row(
