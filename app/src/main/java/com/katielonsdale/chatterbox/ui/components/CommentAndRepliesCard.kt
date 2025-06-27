@@ -506,7 +506,7 @@ fun CommentInput(
                 },
                 placeholder = {
                     Text(
-                        text = if(finalComment) "Reply in thread" else "Replying to ${parentComment.attributes.authorDisplayName}...",
+                        text = if(finalComment) "Reply" else "Replying to ${parentComment.attributes.authorDisplayName}...",
                         style = MaterialTheme.typography.labelSmall
                     )
                 },
