@@ -62,7 +62,6 @@ fun MainScreen(
     val circleViewModel: CircleViewModel = viewModel()
     val newPostViewModel: NewPostViewModel = viewModel()
     val postViewModel: PostViewModel = viewModel()
-    val commentViewModel: CommentViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
     val notificationViewModel: NotificationViewModel = viewModel()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -121,7 +120,6 @@ fun MainScreen(
         val circleUiState by circleViewModel.uiState.collectAsState()
         val newPostUiState by newPostViewModel.uiState.collectAsState()
         val postUiState by postViewModel.uiState.collectAsState()
-        val commentUiState by commentViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -211,10 +209,7 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.DisplayPost.name) {
                 DisplayPostScreen(
                     post = postUiState,
-                    comment = commentUiState,
-                    onCommentChanged = { commentViewModel.setCommentText(it) },
                     addCommentToPost = { postViewModel.addComment(it) },
-                    clearComment = { commentViewModel.resetComment() }
                 )
             }
 

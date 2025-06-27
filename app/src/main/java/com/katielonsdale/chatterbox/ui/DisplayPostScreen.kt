@@ -28,6 +28,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,6 +63,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.CommentAndRepliesCard
 import sh.calvin.autolinktext.rememberAutoLinkText
@@ -73,10 +76,7 @@ import com.katielonsdale.chatterbox.utils.CommentCreator
 @Composable
 fun DisplayPostScreen(
     post: PostUiState,
-    comment: CommentUiState,
-    onCommentChanged: (String) -> Unit,
     addCommentToPost: (Comment) -> Unit,
-    clearComment: () -> Unit
 ){
     val contents = post.contents
     var hasContent = true;
@@ -85,7 +85,7 @@ fun DisplayPostScreen(
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    val commentViewModel: CommentViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -203,20 +203,21 @@ fun DisplayPostScreen(
                     bottom = 5.dp,
                 )
         ) {
+            val commentUiState by commentViewModel.uiState.collectAsState()
             CommentInput(
-                value = comment.commentText,
+                value = commentUiState.commentText,
                 onCommentChanged = { newComment ->   // Call setCaption on text change
-                    onCommentChanged(newComment)
+                    commentViewModel.setCommentText(newComment)
                 },
                 post = post,
                 onDone = {
                     CommentCreator.createComment(
-                        comment = comment,
+                        comment = commentUiState,
                         postId = post.id,
                         circleId = post.circleId,
                         addCommentToPost = addCommentToPost,
                     )
-                    clearComment()
+                    commentViewModel.resetComment()
                 }
             )
         }
@@ -293,10 +294,7 @@ fun DisplayPostScreenPreview() {
     ChatterBoxTheme {
         DisplayPostScreen(
             postUiState,
-            commentUiState,
-            onCommentChanged = {},
             addCommentToPost = {},
-            clearComment = {}
         )
     }
 }
