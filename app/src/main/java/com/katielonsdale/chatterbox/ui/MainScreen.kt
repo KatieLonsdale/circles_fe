@@ -3,15 +3,12 @@ package com.katielonsdale.chatterbox.ui
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.data.CommentViewModel
 import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
