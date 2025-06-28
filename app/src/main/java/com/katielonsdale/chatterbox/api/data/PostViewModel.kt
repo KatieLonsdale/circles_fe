@@ -2,12 +2,16 @@ package com.katielonsdale.chatterbox.api.data
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,6 +21,8 @@ class PostViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(PostUiState())
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
+    private val _errorChannel = Channel<String>(Channel.BUFFERED)
+    val errorFlow = _errorChannel.receiveAsFlow()
 
     fun setCurrentPost(post: Post) {
         val postAttributes = post.attributes
@@ -67,10 +73,16 @@ class PostViewModel : ViewModel() {
                             "PostViewModel.addComment()",
                             "Failed to update post"
                         )
+                        viewModelScope.launch {
+                            _errorChannel.send("Post failed to load.")
+                        }
                     }
                 }
                 override fun onFailure(call: Call<PostResponse>, t: Throwable) {
                     Log.e("PostViewModel.addComment()", "Error updating post", t)
+                    viewModelScope.launch {
+                        _errorChannel.send("Could not connect. Please try again.")
+                    }
                 }
             })
         }

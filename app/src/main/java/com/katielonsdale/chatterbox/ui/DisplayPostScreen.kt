@@ -60,12 +60,16 @@ import com.katielonsdale.chatterbox.ui.components.CommentAndRepliesCard
 import sh.calvin.autolinktext.rememberAutoLinkText
 import com.katielonsdale.chatterbox.ui.components.formatTimeStamp
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
+import androidx.compose.runtime.LaunchedEffect
+import com.katielonsdale.chatterbox.api.data.PostViewModel
 
 @Composable
 fun DisplayPostScreen(
-    post: PostUiState,
+    postViewModel: PostViewModel,
     addCommentToPost: (Comment) -> Unit,
+    onFailedLoad: () -> Unit,
 ){
+    val post by postViewModel.uiState.collectAsState()
     val contents = post.contents
     var hasContent = true;
     if (contents.isEmpty()) { hasContent = false }
@@ -73,7 +77,14 @@ fun DisplayPostScreen(
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val commentViewModel: CommentViewModel = viewModel()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        postViewModel.errorFlow.collect { errorMsg ->
+            Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+            onFailedLoad
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -288,8 +299,9 @@ fun DisplayPostScreenPreview() {
     val commentUiState = CommentUiState()
     ChatterBoxTheme {
         DisplayPostScreen(
-            postUiState,
+            viewModel(),
             addCommentToPost = {},
+            onFailedLoad = {},
         )
     }
 }

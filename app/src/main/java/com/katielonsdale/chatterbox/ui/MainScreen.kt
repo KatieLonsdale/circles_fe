@@ -115,7 +115,6 @@ fun MainScreen(
     ) { innerPadding ->
         val circleUiState by circleViewModel.uiState.collectAsState()
         val newPostUiState by newPostViewModel.uiState.collectAsState()
-        val postUiState by postViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -204,8 +203,9 @@ fun MainScreen(
 
             composable(route = InnerCirclesScreen.DisplayPost.name) {
                 DisplayPostScreen(
-                    post = postUiState,
+                    postViewModel = postViewModel,
                     addCommentToPost = { postViewModel.addComment(it) },
+                    onFailedLoad = { navController.navigate(Screen.MyCircles.route) }
                 )
             }
 
