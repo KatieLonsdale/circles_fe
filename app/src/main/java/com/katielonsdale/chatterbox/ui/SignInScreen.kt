@@ -60,15 +60,13 @@ fun SignInScreen(
             .background(
                 MaterialTheme.colorScheme.background
             )
-            .fillMaxSize()
-            .padding(
-                top = 100.dp,
-                bottom = 100.dp
-            ),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
     ) {
         Surface(
             shape = MaterialTheme.shapes.small,
+            modifier = Modifier
+                .padding(10.dp)
         ) {
             Column(
                 modifier = Modifier
