@@ -44,7 +44,7 @@ val Typography: Typography @Composable get() = Typography(
     ),
     titleMedium = TextStyle(
         fontFamily = Figtree,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
         lineHeight = 50.sp
     ),
