@@ -32,7 +32,7 @@ import com.katielonsdale.chatterbox.ui.components.TopAppBarNoNav
 enum class InnerCirclesScreen {
     Chatter,
     NewPost,
-    NewCircle,
+    NewChatter,
     SelectCircles,
     DisplayPost,
     CreateNew,
@@ -195,7 +195,7 @@ fun MainScreen(
                 )
             }
 
-            composable(route = InnerCirclesScreen.NewCircle.name) {
+            composable(route = InnerCirclesScreen.NewChatter.name) {
                 NewCircleScreen(
                     onClickCreate = { navController.navigate(Screen.MyCircles.route) }
                 )
@@ -212,8 +212,7 @@ fun MainScreen(
             composable(route = InnerCirclesScreen.CreateNew.name) {
                 CreateNewScreen(
                     onClickNewPost = { navController.navigate(InnerCirclesScreen.NewPost.name) },
-                    onClickNewCircle = { navController.navigate(InnerCirclesScreen.NewCircle.name) },
-                    onClickNewFriend = { navController.navigate(InnerCirclesScreen.AddFriend.name) }
+                    onClickNewChatter = { navController.navigate(InnerCirclesScreen.NewChatter.name) },
                 )
             }
 
