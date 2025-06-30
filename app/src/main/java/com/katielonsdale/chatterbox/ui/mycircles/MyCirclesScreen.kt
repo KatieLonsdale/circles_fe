@@ -126,7 +126,6 @@ fun CircleCard(
                     color = MaterialTheme.colorScheme.primary,
                     shape = CircleShape
                 )
-//                .weight(1F)
         )
         Spacer(modifier = Modifier.width(15.dp))
         Column(

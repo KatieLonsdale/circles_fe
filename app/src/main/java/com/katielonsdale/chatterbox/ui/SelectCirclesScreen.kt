@@ -30,9 +30,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.PostRequest
 import com.katielonsdale.chatterbox.api.data.PostRequestContent
 import com.katielonsdale.chatterbox.api.data.NewPostResponse
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 
 var circles by mutableStateOf(emptyList<Circle>())
 
@@ -200,7 +202,7 @@ private fun createPostRequest(newPostUiState: NewPostUiState): PostRequest {
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun SelectCirclesPreview() {
-    MaterialTheme {
+    ChatterBoxTheme {
         SelectCircles()
     }
 }
