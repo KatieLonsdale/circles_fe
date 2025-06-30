@@ -1,4 +1,4 @@
-package com.katielonsdale.chatterbox.api.data.States
+package com.katielonsdale.chatterbox.api.data.states
 
 import com.google.gson.annotations.SerializedName
 

@@ -56,8 +56,8 @@ fun NotificationsScreen(
     val userId = SessionManager.getUserId()
 
     LaunchedEffect(Unit) {
-        getNotifications(userId, userNotifications)  // Await the result of getPosts
-        isLoading = false    // Set loading to false after fetching the posts
+        getNotifications(userId, userNotifications)
+        isLoading = false
         val permissionChecked = SessionManager.wasPushNotificationsPermissionChecked()
         if (!permissionChecked) {
             onRequestNotificationPermission()

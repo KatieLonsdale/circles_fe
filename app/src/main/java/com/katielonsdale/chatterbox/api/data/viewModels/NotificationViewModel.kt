@@ -8,7 +8,7 @@ import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 import com.katielonsdale.chatterbox.api.data.NotificationRequest
 import com.katielonsdale.chatterbox.api.data.NotificationRequestAttributes
 import com.katielonsdale.chatterbox.api.data.NotificationResponse
-import com.katielonsdale.chatterbox.api.data.States.NotificationUiState
+import com.katielonsdale.chatterbox.api.data.states.NotificationUiState
 import com.katielonsdale.chatterbox.ui.InnerCirclesScreen
 import com.katielonsdale.chatterbox.ui.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
