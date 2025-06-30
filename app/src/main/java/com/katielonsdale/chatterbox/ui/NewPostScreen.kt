@@ -2,10 +2,8 @@ package com.katielonsdale.chatterbox.ui
 
 import android.content.Context
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,105 +25,177 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import com.katielonsdale.chatterbox.api.data.NewPostUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.SampleData
+import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.components.NewOptionIcon
+import com.katielonsdale.chatterbox.ui.components.SelectChatters
+import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import java.io.ByteArrayOutputStream
 
 
 @Composable
 fun NewPostScreen(
-    circleId: String,
-    newPostUiState: NewPostUiState,
     onCaptionChanged: (String) -> Unit = {},
     onMediaSelected: (ContentViewModel) -> Unit = {},
     onClickNext: () -> Unit = {},
+    currentUserChatters: List<Circle>,
 ){
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var showError by remember { mutableStateOf(false) }
+    val selectedChatterIds = remember {mutableStateListOf<String>()}
+    val userChatters = currentUserChatters
+    val newPostViewModel = NewPostViewModel()
+    val newPostUiState by newPostViewModel.uiState.collectAsState()
+
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(16.dp)
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     // Remove focus and dismiss keyboard when tapping outside the TextField
                     focusManager.clearFocus()
                     keyboardController?.hide()
                 })
-            },
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top,
-    ){
-        Text(
-            text = "New Post",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        MediaUploadButton(onMediaSelected)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CaptionInput(
-            value = newPostUiState.caption,
-            onCaptionChanged = { newCaption ->   // Call setCaption on text change
-                onCaptionChanged(newCaption)
-                showError = false // Clear error when user types
-            },
-            focusManager,
-            keyboardController
-        )
-
-        if (showError) {
-            Text(
-                text = "Please add either an image or a caption",
-                color = Color.Red,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-    }
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize() // Make the Box fill the entire screen
+            }
+            .background(MaterialTheme.colorScheme.background),
     ) {
-        ElevatedButton(
-            onClick = {
-                if (newPostUiState.caption.isBlank() && newPostUiState.contents == null) {
-                    showError = true
-                } else {
-                    onClickNext()
-                }
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.LightGray, // Background color
-                contentColor = Color.DarkGray,  // Text color
-            ),
-            modifier = Modifier
-                .align(Alignment.BottomEnd) // Align to the bottom-right
-                .padding(16.dp) // Padding to prevent the button from touching the screen edge
+        Surface(
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.padding(
+                10.dp
+            )
         ) {
-            Text("Next")
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        MaterialTheme.colorScheme.secondary.copy(
+                            alpha = (0.5F)
+                        )
+                    )
+                    .padding(
+                        top = 20.dp,
+                        bottom = 20.dp,
+                        start = 10.dp,
+                        end = 10.dp,
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(10.dp)
+                ) {
+                    NewOptionIcon(
+                        icon = R.drawable.new_post,
+                        label = "Post"
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(10.dp)
+                ) {
+                    MediaUploadButton(onMediaSelected)
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                ){
+                    TextFieldOnSurface(
+                        value = newPostUiState.caption,
+                        onValueChange = { newCaption ->
+                            onCaptionChanged(newCaption)
+                            showError = false
+                        },
+                        label = "Write something...",
+                        maxLines = 5,
+                    )
+                }
+
+                if (showError) {
+                    Row(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Please add either an image or a caption",
+                            color = Color.Red,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            start = 10.dp,
+                            end = 10.dp,
+                        )
+                ){
+                    if (userChatters.isNotEmpty()) {
+                        SelectChatters(
+                            chatters = userChatters,
+                            selectedChatterIds = selectedChatterIds,
+                        )
+                    } else {
+                        Text(
+                            text = "You don't belong to any Chatters! Please create or join a Chatter before posting.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+                    }
+                }
+
+                if (userChatters.isNotEmpty() && selectedChatterIds.isNotEmpty()) {
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Button(
+                            onClick = {
+                                if (newPostUiState.caption.isBlank() && newPostUiState.contents == null) {
+                                    showError = true
+                                } else {
+                                    onClickNext()
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                                    alpha = 0.5F
+                                ),
+                                contentColor = MaterialTheme.colorScheme.primary
+                            ),
+                        ) {
+                            Text(
+                                text = "Next",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -145,14 +215,20 @@ fun MediaUploadButton(
     ) { uri: Uri? ->
         selectedImageUri = uri
     }
-    ElevatedButton(
+    Button(
         onClick = { launcher.launch("image/*") },
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.LightGray, // Background color
-            contentColor = Color.DarkGray  // Text color
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                alpha = 0.5F
+            ),
+                contentColor = MaterialTheme.colorScheme.primary
         )
     ) {
-        Text("Upload Image")
+        Text(
+            text = "Add Image",
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodySmall,
+        )
     }
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -179,41 +255,6 @@ fun MediaUploadButton(
                 .height(200.dp)
                 .fillMaxWidth()
                 .padding(16.dp)
-        )
-    }
-}
-
-@Composable
-fun CaptionInput(
-    value: String,
-    onCaptionChanged: (String) -> Unit,
-    focusManager: FocusManager,
-    keyboardController: SoftwareKeyboardController?
-) {
-    Box(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        TextField(
-            value = value,
-            onValueChange = { newText ->   // Update the state with the new text
-                onCaptionChanged(newText)
-            },
-            placeholder = { Text("Add a caption") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray),
-            // Custom background
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(onDone = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }),
-            textStyle = TextStyle(color = Color.DarkGray) // Custom text style
         )
     }
 }
@@ -268,12 +309,14 @@ private suspend fun Uri.toCompressedByteArray(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NewPostScreenPreview(){
-    val newPostUiState = NewPostUiState()
-    NewPostScreen(
-        circleId = "1",
-        newPostUiState = newPostUiState,
-        onCaptionChanged = {},
-        onMediaSelected = {},
-        onClickNext = {}
-    )
+    val userViewModel = UserViewModel()
+    userViewModel.setCurrentUserChatters(SampleData.returnSampleChatters)
+    ChatterBoxTheme {
+        NewPostScreen(
+            onCaptionChanged = {},
+            onMediaSelected = {},
+            onClickNext = {},
+            currentUserChatters = userViewModel.getCurrentUserChatters()
+        )
+    }
 }
