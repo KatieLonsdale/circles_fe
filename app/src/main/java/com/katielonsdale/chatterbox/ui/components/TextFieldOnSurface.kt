@@ -22,8 +22,9 @@ fun TextFieldOnSurface(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    width: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier.fillMaxWidth(),
     hidden: Boolean = false,
+    maxLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ){
     val focusManager = LocalFocusManager.current
@@ -52,9 +53,9 @@ fun TextFieldOnSurface(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
             ),
-            modifier = width,
-            maxLines = 1,
-            keyboardOptions = KeyboardOptions.Default.copy(
+            modifier = modifier,
+            maxLines = maxLines,
+            keyboardOptions = keyboardOptions.copy(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(onDone = {
@@ -85,9 +86,9 @@ fun TextFieldOnSurface(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent
             ),
-            modifier = width,
-            maxLines = 1,
-            keyboardOptions = KeyboardOptions.Default.copy(
+            modifier = modifier,
+            maxLines = maxLines,
+            keyboardOptions = keyboardOptions.copy(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(onDone = {
