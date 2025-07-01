@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,11 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
+import com.katielonsdale.chatterbox.api.data.Friend
 import com.katielonsdale.chatterbox.api.data.NewCircleAttributes
 import com.katielonsdale.chatterbox.api.data.NewCircleRequest
 import com.katielonsdale.chatterbox.api.data.NewCircleResponse
@@ -47,12 +50,14 @@ import com.katielonsdale.chatterbox.ui.components.SelectFriends
 val TAG = "NewChatterScreen"
 @Composable
 fun NewChatterScreen(
+    currentUserFriends: List<Friend>,
     onClickCreate: () -> Unit
 ){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var chatterName by remember { mutableStateOf("") }
     var chatterDescription by remember { mutableStateOf("") }
+    val selectedFriendIds = remember {mutableStateListOf<String>()}
 
     Column(
         modifier = Modifier
@@ -102,6 +107,7 @@ fun NewChatterScreen(
                         label = "Chatter"
                     )
                 }
+
                 Row(
                     modifier = Modifier
                         .padding(10.dp)
@@ -116,6 +122,7 @@ fun NewChatterScreen(
                         maxLines = 2,
                     )
                 }
+
                 Row(
                     modifier = Modifier
                         .padding(10.dp)
@@ -133,10 +140,35 @@ fun NewChatterScreen(
 
                 Row(
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = {
+                            // add image to new chatter //
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                                alpha = 0.5F
+                            ),
+                            contentColor = MaterialTheme.colorScheme.primary
+                        ),
+                    ) {
+                        Text(
+                            text = "Add Image",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
                         .padding(
                             start = 10.dp,
                             end = 10.dp,
-                        )
+                        ),
                 ){
 //                    if (userFriends.isNotEmpty()) {
 //                        SelectFriends(
@@ -148,36 +180,40 @@ fun NewChatterScreen(
                             text = "Please add friends before creating a Chatter.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onErrorContainer,
+                            textAlign = TextAlign.Center
                         )
 //                    }
                 }
 
                 Spacer(Modifier.height(20.dp))
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(
-                        onClick = {
-                            createChatter(
-                                chatterName = chatterName,
-                                chatterDescription = chatterDescription
-                            )
-                            onClickCreate()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                alpha = 0.5F
-                            ),
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
+
+                if (currentUserFriends.isNotEmpty() && selectedFriendIds.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "Create",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+                        Button(
+                            onClick = {
+                                createChatter(
+                                    chatterName = chatterName,
+                                    chatterDescription = chatterDescription
+                                )
+                                onClickCreate()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                                    alpha = 0.5F
+                                ),
+                                contentColor = MaterialTheme.colorScheme.primary
+                            ),
+                        ) {
+                            Text(
+                                text = "Create",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
                     }
                 }
             }
@@ -223,7 +259,8 @@ private fun createChatter(
 fun NewChatterScreenPreview() {
     ChatterBoxTheme {
         NewChatterScreen(
-            onClickCreate = {}
+            currentUserFriends = emptyList<Friend>(),
+            onClickCreate = {},
         )
     }
 }

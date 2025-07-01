@@ -83,7 +83,7 @@ fun SelectChatters(
                                 ) else Color.Transparent
                             )
                             .clickable {
-                                onGroupToggle(
+                                onChatterToggle(
                                     chatterId = chatter.id,
                                     selectedChatterIds = selectedChatterIds,
                                 )
@@ -121,7 +121,7 @@ fun SelectChatters(
     }
 }
 
-fun onGroupToggle(
+fun onChatterToggle(
     chatterId: String,
     selectedChatterIds: MutableList<String>
 ) {

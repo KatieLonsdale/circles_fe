@@ -195,6 +195,7 @@ fun MainScreen(
 
             composable(route = InnerCirclesScreen.NewChatter.name) {
                 NewChatterScreen(
+                    currentUserFriends = userViewModel.getCurrentUserFriends(),
                     onClickCreate = { navController.navigate(Screen.MyCircles.route) }
                 )
             }

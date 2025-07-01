@@ -56,7 +56,7 @@ fun SelectFriends(
                 )
         ) {
             Text(
-                text = "Add friends:",
+                text = "Invite friends",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(

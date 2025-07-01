@@ -57,6 +57,10 @@ class UserViewModel : ViewModel() {
         return _uiState.value.myChatters
     }
 
+    fun getCurrentUserFriends(): List<Friend>{
+        return _uiState.value.myFriends
+    }
+
     fun getCurrentUser(): UserUiState {
         return _uiState.value
     }
