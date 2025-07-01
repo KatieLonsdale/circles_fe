@@ -49,17 +49,15 @@ import java.io.ByteArrayOutputStream
 
 @Composable
 fun NewPostScreen(
-    onMediaSelected: (ContentViewModel) -> Unit = {},
     currentUserChatters: List<Circle>,
     onClickPost: () -> Unit,
+    newPostViewModel: NewPostViewModel,
 ){
-    // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var showError by remember { mutableStateOf(false) }
     val selectedChatterIds = remember {mutableStateListOf<String>()}
     val userChatters = currentUserChatters
-    val newPostViewModel = NewPostViewModel()
     val newPostUiState by newPostViewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -83,6 +81,7 @@ fun NewPostScreen(
             modifier = Modifier.padding(
                 10.dp
             )
+                .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
@@ -117,7 +116,7 @@ fun NewPostScreen(
                         .padding(10.dp)
                 ) {
                     MediaUploadButton(
-                        newPostViewModel = newPostViewModel
+                        onMediaSelected = {newPostViewModel.setContent(it)}
                     )
                 }
 
@@ -211,7 +210,7 @@ fun NewPostScreen(
 
 @Composable
 fun MediaUploadButton(
-    newPostViewModel: NewPostViewModel
+    onMediaSelected: (ContentViewModel) -> Unit
 ){
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
@@ -219,7 +218,7 @@ fun MediaUploadButton(
 
     // Image Picker Launcher
     // todo: upgrade to photo picker https://developer.android.com/training/data-storage/shared/photopicker
-    // todo: permission to access photos?
+    // todo: permission to access photos
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -250,7 +249,7 @@ fun MediaUploadButton(
     if (byteArray != null) {
         val contentViewModel = ContentViewModel()
         contentViewModel.setImage(byteArray)
-        newPostViewModel.setContent(contentViewModel)
+        onMediaSelected(contentViewModel)
     }
 
     // Show selected image if available
@@ -259,7 +258,7 @@ fun MediaUploadButton(
         val painter = rememberAsyncImagePainter(
             ImageRequest.Builder(context)
                 .data(uri)
-                .size(Size.ORIGINAL) // Use original size of the image
+                .size(Size.ORIGINAL)
                 .build()
         )
         Image(
@@ -326,9 +325,9 @@ fun NewPostScreenPreview(){
     userViewModel.setCurrentUserChatters(SampleData.returnSampleChatters)
     ChatterBoxTheme {
         NewPostScreen(
-            onMediaSelected = {},
             currentUserChatters = userViewModel.getCurrentUserChatters(),
             onClickPost = {},
+            newPostViewModel = NewPostViewModel()
         )
     }
 }

@@ -50,7 +50,10 @@ fun SelectChatters(
                 .background(MaterialTheme.colorScheme.background.copy(
                     alpha = 0.7F
                 ))
-                .heightIn(min = 100.dp, max = 400.dp)
+                .heightIn(
+                    min = 100.dp,
+                    max = 500.dp
+                )
         ) {
             Text(
                 text = "Post to Chatters:",

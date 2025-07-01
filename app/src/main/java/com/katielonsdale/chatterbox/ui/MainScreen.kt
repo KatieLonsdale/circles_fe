@@ -184,12 +184,12 @@ fun MainScreen(
             }
             composable(route = InnerCirclesScreen.NewPost.name) {
                 NewPostScreen(
-                    onMediaSelected = { newPostViewModel.setContent(it) },
                     currentUserChatters = userViewModel.getCurrentUserChatters(),
                     onClickPost = {
                         newPostViewModel.resetNewPost()
                         navController.navigate(Screen.MyCircles.route)
-                    }
+                    },
+                    newPostViewModel = newPostViewModel
                 )
             }
 
