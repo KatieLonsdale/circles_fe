@@ -104,7 +104,7 @@ fun SignUpScreen(
                     value = displayName,
                     onValueChange = { displayName = it },
                     label = "Display Name",
-                    width = Modifier.width(280.dp),
+                    modifier =  Modifier.width(280.dp),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -114,7 +114,7 @@ fun SignUpScreen(
                     onValueChange = { email = it },
                     label = "Email",
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    width = Modifier.width(280.dp),
+                    modifier =  Modifier.width(280.dp),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -124,7 +124,7 @@ fun SignUpScreen(
                     onValueChange = { password = it },
                     label = "Password",
                     hidden = true,
-                    width = Modifier.width(280.dp),
+                    modifier =  Modifier.width(280.dp),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -134,7 +134,7 @@ fun SignUpScreen(
                     onValueChange = { confirmPassword = it },
                     label = "Confirm Password",
                     hidden = true,
-                    width = Modifier.width(280.dp),
+                    modifier =  Modifier.width(280.dp),
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))

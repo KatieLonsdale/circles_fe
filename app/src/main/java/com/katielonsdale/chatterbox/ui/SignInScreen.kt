@@ -121,7 +121,7 @@ fun SignInScreen(
                     onValueChange = { email = it },
                     label = "Email address",
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    width = Modifier.width(280.dp)
+                    modifier = Modifier.width(280.dp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -131,7 +131,7 @@ fun SignInScreen(
                     onValueChange = { password = it },
                     label = "Password",
                     hidden = true,
-                    width = Modifier.width(280.dp),
+                    modifier = Modifier.width(280.dp),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

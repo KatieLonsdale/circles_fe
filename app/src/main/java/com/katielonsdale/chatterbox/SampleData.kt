@@ -3,6 +3,8 @@ package com.katielonsdale.chatterbox
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.google.gson.Gson
+import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.api.data.CircleAttributes
 import com.katielonsdale.chatterbox.api.data.Notification
 import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 
@@ -372,5 +374,72 @@ object SampleData {
     )
 
     val returnSampleNotifications: List<Notification> = notifications
+
+
+    val chatters = listOf(
+        Circle(
+            id = "1",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 1,
+                userId = "1",
+                name = "High School Friends",
+                description = "ole pals from RHS class of 2008"
+            )
+        ),
+    Circle(
+            id = "2",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 2,
+                userId = "1",
+                name = "The Fam",
+                description = "Lonsdale/Forbes family chat"
+            )
+        ),
+    Circle(
+            id = "3",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 3,
+                userId = "1",
+                name = "College Roomies",
+                description = "125 Husky Lane 4-ever <3"
+            )
+        ),
+    Circle(
+            id = "4",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 4,
+                userId = "1",
+                name = "Work budz",
+                description = "planning happy hours & yap"
+            )
+        ),
+    Circle(
+            id = "5",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 5,
+                userId = "1",
+                name = "Willowleaf Neighbors",
+                description = "Chat to organize block parties, can drives, and communicate any issues! Invite any neighbors who want to join."
+            )
+        ),
+    Circle(
+            id = "6",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 6,
+                userId = "1",
+                name = "Tues Night Run Club",
+                description = "We meet Tuesdays at 5pm at Clement Park for a 5 mile jog followed by drinks at Lakehouse!"
+            )
+        ),
+    )
+
+    val returnSampleChatters: List<Circle> = chatters
+
 
 }

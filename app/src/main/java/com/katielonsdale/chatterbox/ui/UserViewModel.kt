@@ -3,7 +3,9 @@ package com.katielonsdale.chatterbox.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.RetrofitClient
+import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
+import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.api.data.CirclesResponse
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.api.data.UserResponse
 import com.katielonsdale.chatterbox.api.data.UserUiState
@@ -33,6 +35,18 @@ class UserViewModel : ViewModel() {
         }
     }
 
+    fun setCurrentUserChatters(userChatters: List<Circle>) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                myChatters = userChatters
+            )
+        }
+    }
+
+    fun getCurrentUserChatters(): List<Circle>{
+        return _uiState.value.myChatters
+    }
+
     fun getCurrentUser(): UserUiState {
         return _uiState.value
     }
@@ -41,13 +55,14 @@ class UserViewModel : ViewModel() {
     fun getUser(
         userId: String,
     ) {
-        RetrofitClient.apiService.getUser(userId).enqueue(object :
+        apiService.getUser(userId).enqueue(object :
             Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {
                     // HTTP 200: Success
                     val userAttributes = response.body()!!.data.attributes
                     setCurrentUser(userAttributes)
+                    getUserChatters(userAttributes.id.toString())
                     if (!userAttributes.notificationsToken.isNullOrEmpty()) {
                         SessionManager.saveFcmToken(userAttributes.notificationsToken)
                     }
@@ -57,7 +72,6 @@ class UserViewModel : ViewModel() {
                     Log.e(TAG, "onResponse: $errorMessage")
                     return
                 } else {
-                    // Handle other error codes as needed
                     val errorMessage = response.message()
                     Log.e(TAG, "onResponse: $errorMessage")
                     return
@@ -66,6 +80,28 @@ class UserViewModel : ViewModel() {
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 // Network or other failure
+                Log.e(TAG, "onFailure: $t")
+            }
+        })
+    }
+
+    fun getUserChatters(
+        userId: String,
+    ){
+        apiService.getCircles(userId).enqueue(object : Callback<CirclesResponse> {
+            override fun onResponse(call: Call<CirclesResponse>, response: Response<CirclesResponse>) {
+                if (response.isSuccessful){
+                    setCurrentUserChatters(
+                        userChatters = response.body()!!.data
+                    )
+                } else {
+                    val errorMessage = response.message()
+                    Log.e(TAG, "onResponse: $errorMessage")
+                    return
+                }
+            }
+
+            override fun onFailure(call: Call<CirclesResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: $t")
             }
         })

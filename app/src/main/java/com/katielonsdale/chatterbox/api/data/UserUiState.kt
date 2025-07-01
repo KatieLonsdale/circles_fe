@@ -7,4 +7,5 @@ data class UserUiState (
         val notificationFrequency: String = "",
         val lastTouAcceptance: String? = null,
         val notificationsToken: String? = null,
+        val myChatters: List<Circle> = emptyList<Circle>(),
 )
