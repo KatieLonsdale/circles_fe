@@ -194,7 +194,7 @@ fun MainScreen(
             }
 
             composable(route = InnerCirclesScreen.NewChatter.name) {
-                NewCircleScreen(
+                NewChatterScreen(
                     onClickCreate = { navController.navigate(Screen.MyCircles.route) }
                 )
             }
