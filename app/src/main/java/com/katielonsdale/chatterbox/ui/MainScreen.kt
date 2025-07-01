@@ -184,7 +184,6 @@ fun MainScreen(
             }
             composable(route = InnerCirclesScreen.NewPost.name) {
                 NewPostScreen(
-                    onCaptionChanged = { newPostViewModel.setCaption(it) },
                     onMediaSelected = { newPostViewModel.setContent(it) },
                     currentUserChatters = userViewModel.getCurrentUserChatters(),
                     onClickPost = {

@@ -34,6 +34,8 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Circle
@@ -47,7 +49,6 @@ import java.io.ByteArrayOutputStream
 
 @Composable
 fun NewPostScreen(
-    onCaptionChanged: (String) -> Unit = {},
     onMediaSelected: (ContentViewModel) -> Unit = {},
     currentUserChatters: List<Circle>,
     onClickPost: () -> Unit,
@@ -60,7 +61,7 @@ fun NewPostScreen(
     val userChatters = currentUserChatters
     val newPostViewModel = NewPostViewModel()
     val newPostUiState by newPostViewModel.uiState.collectAsState()
-
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -72,7 +73,10 @@ fun NewPostScreen(
                     keyboardController?.hide()
                 })
             }
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
         Surface(
             shape = MaterialTheme.shapes.small,
@@ -112,7 +116,9 @@ fun NewPostScreen(
                     modifier = Modifier
                         .padding(10.dp)
                 ) {
-                    MediaUploadButton(onMediaSelected)
+                    MediaUploadButton(
+                        newPostViewModel = newPostViewModel
+                    )
                 }
 
                 Row(
@@ -205,10 +211,11 @@ fun NewPostScreen(
 
 @Composable
 fun MediaUploadButton(
-    onMediaSelected: (ContentViewModel) -> Unit
+    newPostViewModel: NewPostViewModel
 ){
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
+    val photoSelected = remember {mutableStateOf(false)}
 
     // Image Picker Launcher
     // todo: upgrade to photo picker https://developer.android.com/training/data-storage/shared/photopicker
@@ -218,6 +225,8 @@ fun MediaUploadButton(
     ) { uri: Uri? ->
         selectedImageUri = uri
     }
+    if(!photoSelected.value) {
+
     Button(
         onClick = { launcher.launch("image/*") },
         colors = ButtonDefaults.buttonColors(
@@ -231,7 +240,8 @@ fun MediaUploadButton(
             text = "Add Image",
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall,
-        )
+            )
+        }
     }
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -240,11 +250,12 @@ fun MediaUploadButton(
     if (byteArray != null) {
         val contentViewModel = ContentViewModel()
         contentViewModel.setImage(byteArray)
-        onMediaSelected(contentViewModel)
+        newPostViewModel.setContent(contentViewModel)
     }
 
     // Show selected image if available
     selectedImageUri?.let { uri ->
+        photoSelected.value = true
         val painter = rememberAsyncImagePainter(
             ImageRequest.Builder(context)
                 .data(uri)
@@ -304,7 +315,6 @@ private suspend fun Uri.toCompressedByteArray(
     // 4) Log the size
     Log.d("NewPostScreen", "Compressed image size: ${bytes.size} bytes " +
             "(${bytes.size / 1024f / 1024f} MB)")
-
     bytes
 }
 
@@ -316,7 +326,6 @@ fun NewPostScreenPreview(){
     userViewModel.setCurrentUserChatters(SampleData.returnSampleChatters)
     ChatterBoxTheme {
         NewPostScreen(
-            onCaptionChanged = {},
             onMediaSelected = {},
             currentUserChatters = userViewModel.getCurrentUserChatters(),
             onClickPost = {},

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -49,6 +50,7 @@ fun SelectChatters(
                 .background(MaterialTheme.colorScheme.background.copy(
                     alpha = 0.7F
                 ))
+                .heightIn(min = 100.dp, max = 400.dp)
         ) {
             Text(
                 text = "Post to Chatters:",
