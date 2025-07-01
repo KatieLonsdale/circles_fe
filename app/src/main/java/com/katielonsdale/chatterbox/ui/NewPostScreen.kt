@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.Arrangement
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.api.data.source.PostDataSource.createPost
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.NewOptionIcon
 import com.katielonsdale.chatterbox.ui.components.SelectChatters
@@ -48,8 +49,8 @@ import java.io.ByteArrayOutputStream
 fun NewPostScreen(
     onCaptionChanged: (String) -> Unit = {},
     onMediaSelected: (ContentViewModel) -> Unit = {},
-    onClickNext: () -> Unit = {},
     currentUserChatters: List<Circle>,
+    onClickPost: () -> Unit,
 ){
     // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
     val focusManager = LocalFocusManager.current
@@ -119,11 +120,12 @@ fun NewPostScreen(
                         .padding(10.dp)
                         .fillMaxWidth()
                 ){
+                    var caption by remember { mutableStateOf("") }
                     TextFieldOnSurface(
-                        value = newPostUiState.caption,
+                        value = caption,
                         onValueChange = { newCaption ->
-                            onCaptionChanged(newCaption)
-                            showError = false
+                            caption = newCaption
+                            newPostViewModel.setCaption(newCaption)
                         },
                         label = "Write something...",
                         maxLines = 5,
@@ -177,7 +179,8 @@ fun NewPostScreen(
                                 if (newPostUiState.caption.isBlank() && newPostUiState.contents == null) {
                                     showError = true
                                 } else {
-                                    onClickNext()
+                                    createPost(selectedChatterIds,newPostUiState)
+                                    onClickPost()
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -188,7 +191,7 @@ fun NewPostScreen(
                             ),
                         ) {
                             Text(
-                                text = "Next",
+                                text = "Post",
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.bodySmall,
                             )
@@ -315,8 +318,8 @@ fun NewPostScreenPreview(){
         NewPostScreen(
             onCaptionChanged = {},
             onMediaSelected = {},
-            onClickNext = {},
-            currentUserChatters = userViewModel.getCurrentUserChatters()
+            currentUserChatters = userViewModel.getCurrentUserChatters(),
+            onClickPost = {},
         )
     }
 }
