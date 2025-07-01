@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -65,22 +66,29 @@ fun SelectChatters(
             ) {
                 items(chatters) { chatter ->
                     val selected = selectedChatterIds.contains(chatter.id)
-                    val bgColor =
-                        if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(MaterialTheme.shapes.small)
-                            .background(bgColor)
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.7F
+                                ) else Color.Transparent
+                            )
                             .clickable {
                                 onGroupToggle(
                                     chatterId = chatter.id,
                                     selectedChatterIds = selectedChatterIds,
                                 )
                             }
-                            .padding(5.dp)
+                            .padding(
+                                start = 5.dp,
+                                end = 5.dp,
+                                top = 5.dp,
+                                bottom = 5.dp,
+                            )
                     ) {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -98,9 +106,10 @@ fun SelectChatters(
                         Text(
                             text = chatter.attributes.name,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
+                            color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.primary,
                         )
                     }
+                    Spacer(Modifier.height(5.dp))
                 }
             }
         }
