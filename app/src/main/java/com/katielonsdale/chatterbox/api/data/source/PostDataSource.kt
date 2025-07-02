@@ -11,35 +11,31 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+const val TAG = "Post Data Source"
+
 object PostDataSource {
     fun createPost(
-        circleIds: List<String>,
         newPostUiState: NewPostUiState
     ) {
         val userId = SessionManager.getUserId()
         val postRequest = createPostRequest(newPostUiState)
+        val chatterIds = newPostUiState.chatterIds
 
-        for (circleId in circleIds) {
-            RetrofitClient.apiService.createPost(userId, circleId, postRequest).enqueue(object : Callback<NewPostResponse> {
+        for (chatterId in chatterIds) {
+            RetrofitClient.apiService.createPost(userId, chatterId, postRequest).enqueue(object : Callback<NewPostResponse> {
                 override fun onResponse(
                     call: Call<NewPostResponse>,
                     response: Response<NewPostResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.e(
-                            "SelectCirclesScreen",
-                            "Post created successfully: ${response.body()}"
-                        )
+                        Log.e(TAG, "Post created successfully: ${response.body()}")
                     } else {
-                        Log.e(
-                            "SelectCirclesScreen",
-                            "Failed to createPost: ${response.body()} status: ${response.code()}"
-                        )
+                        Log.e(TAG,"Failed to createPost: ${response.body()} status: ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<NewPostResponse>, t: Throwable) {
-                    Log.e("SelectCirclesScreen", "Error creating posts", t)
+                    Log.e(TAG, "Error creating posts", t)
                 }
             })
         }

@@ -188,12 +188,10 @@ fun MainScreen(
             }
             composable(route = InnerCirclesScreen.NewPost.name) {
                 NewPostScreen(
-                    currentUserChatters = userViewModel.getCurrentUserChatters(),
-                    onClickPost = {
-                        newPostViewModel.resetNewPost()
-                        navController.navigate(Screen.MyCircles.route)
-                    },
-                    newPostViewModel = newPostViewModel
+                    userChatters = userViewModel.getCurrentUserChatters(),
+                    onDone = { navController.navigate(Screen.MyCircles.route) },
+                    newPostUiState = newPostUiState,
+                    onEvent = newPostViewModel::onEvent
                 )
             }
 

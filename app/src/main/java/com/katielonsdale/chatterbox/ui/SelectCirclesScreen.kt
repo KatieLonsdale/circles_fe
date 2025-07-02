@@ -96,7 +96,7 @@ fun SelectCircles(
                 onClick = {
                     Log.e("SelectCirclesScreen", "Button clicked")
                     // Call the ViewModel's method with the selectedCircleIds
-                    createPost(selectedCircleIds.toList(),newPostUiState)
+                    createPost(newPostUiState)
                     onClickPost()
                 },
                 colors = ButtonDefaults.buttonColors(

@@ -18,8 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,12 +32,15 @@ import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Circle
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.api.data.NewPostUiState
+import com.katielonsdale.chatterbox.ui.MyEvent
 
 
 @Composable
 fun SelectChatters(
     chatters: List<Circle>,
-    selectedChatterIds: MutableList<String>
+    onEvent: (MyEvent) -> Unit,
+    newPostUiState: NewPostUiState
 ){
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -70,7 +71,7 @@ fun SelectChatters(
                 )
             ) {
                 items(chatters) { chatter ->
-                    val selected = selectedChatterIds.contains(chatter.id)
+                    val selected = newPostUiState.chatterIds.contains(chatter.id)
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -83,10 +84,12 @@ fun SelectChatters(
                                 ) else Color.Transparent
                             )
                             .clickable {
-                                onChatterToggle(
-                                    chatterId = chatter.id,
-                                    selectedChatterIds = selectedChatterIds,
-                                )
+                                val chatterId = chatter.id
+                                if (newPostUiState.chatterIds.contains(chatterId)) {
+                                    onEvent(MyEvent.RemoveChatter(chatterId))
+                                } else {
+                                    onEvent(MyEvent.AddChatter(chatterId))
+                                }
                             }
                             .padding(
                                 start = 5.dp,
@@ -121,22 +124,10 @@ fun SelectChatters(
     }
 }
 
-fun onChatterToggle(
-    chatterId: String,
-    selectedChatterIds: MutableList<String>
-) {
-    if (selectedChatterIds.contains(chatterId)) {
-        selectedChatterIds.remove(chatterId)
-    } else {
-        selectedChatterIds.add(chatterId)
-    }
-}
-
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewSelectChatters(){
     val chatters = SampleData.returnSampleChatters
-    val selectedChatterIds = remember {mutableStateListOf<String>()}
     ChatterBoxTheme{
         Column(
             modifier = Modifier
@@ -150,7 +141,8 @@ fun PreviewSelectChatters(){
         ) {
             SelectChatters(
                 chatters = chatters,
-                selectedChatterIds = selectedChatterIds
+                newPostUiState = NewPostUiState(),
+                onEvent = {}
             )
         }
     }

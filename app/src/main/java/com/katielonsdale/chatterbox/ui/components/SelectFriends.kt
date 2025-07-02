@@ -129,8 +129,6 @@ fun SelectFriends(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewSelectFriends(){
-    val chatters = SampleData.returnSampleChatters
-    val selectedChatterIds = remember {mutableStateListOf<String>()}
     ChatterBoxTheme{
         Column(
             modifier = Modifier
@@ -142,9 +140,10 @@ fun PreviewSelectFriends(){
                 .fillMaxWidth()
                 .padding(5.dp)
         ) {
-            SelectChatters(
-                chatters = chatters,
-                selectedChatterIds = selectedChatterIds
+            SelectFriends(
+                friends = emptyList<Friend>(),
+                newChatterUiState = NewChatterUiState(),
+                onEvent = {}
             )
         }
     }

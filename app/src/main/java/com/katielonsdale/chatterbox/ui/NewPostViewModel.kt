@@ -14,56 +14,54 @@ class NewPostViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NewPostUiState())
     val uiState: StateFlow<NewPostUiState> = _uiState.asStateFlow()
 
-    fun setCaption(newCaption: String) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                caption = newCaption
-            )
+    fun onEvent(event: MyEvent) {
+        when (event) {
+            is MyEvent.ResetNewPost -> {
+                _uiState.value = NewPostUiState()
+
+            }
+
+            is MyEvent.SetContent -> {
+                _uiState.update { currentState ->
+                    val contentViewModel = ContentViewModel()
+                    contentViewModel.setImage(event.content)
+                    currentState.copy(
+                        contents = contentViewModel
+                    )
+                }
+            }
+
+            is MyEvent.SetCaption -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        caption = event.caption
+                    )
+                }
+            }
+
+            is MyEvent.AddChatter -> {
+                _uiState.update { currentState ->
+                    val currentChatterIds = _uiState.value.chatterIds
+                    currentChatterIds.add(event.chatterId)
+                    _uiState.value
+                }
+            }
+
+            is MyEvent.RemoveChatter -> {
+                _uiState.update { currentState ->
+                    val currentChatterIds = _uiState.value.chatterIds
+                    currentChatterIds.remove(event.chatterId)
+                    _uiState.value
+                }
+            }
         }
     }
+}
 
-    fun getCaption(): String {
-        return _uiState.value.caption
-    }
-
-    fun setContent(contentViewModel: ContentViewModel){
-        _uiState.update { currentState ->
-            currentState.copy(
-                contents = contentViewModel
-            )
-        }
-    }
-
-    fun createPostRequestContent(): PostRequestContent {
-        val contents = _uiState.value.contents
-        val postRequestContent = PostRequestContent(
-            image = contents?.uiState?.value?.image,
-            video = contents?.uiState?.value?.video,
-        )
-        return postRequestContent
-    }
-
-    fun setCircleIds(newCircleIds: List<String>) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                circleIds = newCircleIds
-            )
-        }
-    }
-
-    fun getCircleIds(): List<String> {
-        return _uiState.value.circleIds
-    }
-
-    fun createPostRequest(): PostRequest {
-        val caption = getCaption()
-        val content = createPostRequestContent()
-        val postRequest = PostRequest(caption,content)
-        return postRequest
-    }
-
-    fun resetNewPost() {
-        _uiState.value = NewPostUiState()
-    }
-
+sealed interface MyEvent {
+    object ResetNewPost : MyEvent
+    data class SetContent(val content: ByteArray) : MyEvent
+    data class SetCaption(val caption: String) : MyEvent
+    data class AddChatter(val chatterId: String) : MyEvent
+    data class RemoveChatter(val chatterId: String) : MyEvent
 }

@@ -39,6 +39,7 @@ import androidx.compose.foundation.verticalScroll
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.api.data.NewPostUiState
 import com.katielonsdale.chatterbox.api.data.source.PostDataSource.createPost
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.NewOptionIcon
@@ -49,16 +50,14 @@ import java.io.ByteArrayOutputStream
 
 @Composable
 fun NewPostScreen(
-    currentUserChatters: List<Circle>,
-    onClickPost: () -> Unit,
-    newPostViewModel: NewPostViewModel,
+    userChatters: List<Circle>,
+    onDone: () -> Unit,
+    newPostUiState: NewPostUiState,
+    onEvent: (MyEvent) -> Unit,
 ){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var showError by remember { mutableStateOf(false) }
-    val selectedChatterIds = remember {mutableStateListOf<String>()}
-    val userChatters = currentUserChatters
-    val newPostUiState by newPostViewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
     Column(
@@ -116,7 +115,7 @@ fun NewPostScreen(
                         .padding(10.dp)
                 ) {
                     MediaUploadButton(
-                        onMediaSelected = {newPostViewModel.setContent(it)}
+                        onEvent = onEvent
                     )
                 }
 
@@ -125,12 +124,10 @@ fun NewPostScreen(
                         .padding(10.dp)
                         .fillMaxWidth()
                 ){
-                    var caption by remember { mutableStateOf("") }
                     TextFieldOnSurface(
-                        value = caption,
-                        onValueChange = { newCaption ->
-                            caption = newCaption
-                            newPostViewModel.setCaption(newCaption)
+                        value = newPostUiState.caption,
+                        onValueChange = { caption ->
+                            onEvent(MyEvent.SetCaption(caption))
                         },
                         label = "Write something...",
                         maxLines = 5,
@@ -161,7 +158,8 @@ fun NewPostScreen(
                     if (userChatters.isNotEmpty()) {
                         SelectChatters(
                             chatters = userChatters,
-                            selectedChatterIds = selectedChatterIds,
+                            onEvent = onEvent,
+                            newPostUiState = newPostUiState,
                         )
                     } else {
                         Text(
@@ -172,7 +170,7 @@ fun NewPostScreen(
                     }
                 }
 
-                if (userChatters.isNotEmpty() && selectedChatterIds.isNotEmpty()) {
+                if (userChatters.isNotEmpty() && newPostUiState.chatterIds.isNotEmpty()) {
                     Spacer(Modifier.height(20.dp))
                     Row(
                         verticalAlignment = Alignment.Bottom,
@@ -181,12 +179,8 @@ fun NewPostScreen(
                     ) {
                         Button(
                             onClick = {
-                                if (newPostUiState.caption.isBlank() && newPostUiState.contents == null) {
-                                    showError = true
-                                } else {
-                                    createPost(selectedChatterIds,newPostUiState)
-                                    onClickPost()
-                                }
+                                createPost(newPostUiState)
+                                onDone()
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
@@ -210,7 +204,7 @@ fun NewPostScreen(
 
 @Composable
 fun MediaUploadButton(
-    onMediaSelected: (ContentViewModel) -> Unit
+    onEvent: (MyEvent) -> Unit
 ){
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
@@ -231,6 +225,7 @@ fun MediaUploadButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
                 alpha = 0.5F
+
             ),
                 contentColor = MaterialTheme.colorScheme.primary
         )
@@ -247,9 +242,7 @@ fun MediaUploadButton(
 
     val byteArray = convertUriToByteArray(selectedImageUri, context)
     if (byteArray != null) {
-        val contentViewModel = ContentViewModel()
-        contentViewModel.setImage(byteArray)
-        onMediaSelected(contentViewModel)
+        onEvent(MyEvent.SetContent(byteArray))
     }
 
     // Show selected image if available
@@ -274,7 +267,6 @@ fun MediaUploadButton(
 
 @Composable
 private fun convertUriToByteArray(uri: Uri?, context: Context): ByteArray? {
-    val contentResolver = context.contentResolver
     var byteArray by remember { mutableStateOf<ByteArray?>(null) }
 
     // Run the coroutine only when the `uri` changes
@@ -325,9 +317,10 @@ fun NewPostScreenPreview(){
     userViewModel.setCurrentUserChatters(SampleData.returnSampleChatters)
     ChatterBoxTheme {
         NewPostScreen(
-            currentUserChatters = userViewModel.getCurrentUserChatters(),
-            onClickPost = {},
-            newPostViewModel = NewPostViewModel()
+            userChatters = userViewModel.getCurrentUserChatters(),
+            onDone = {},
+            newPostUiState = NewPostUiState(),
+            onEvent = {}
         )
     }
 }
