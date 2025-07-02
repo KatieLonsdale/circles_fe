@@ -1,6 +1,5 @@
 package com.katielonsdale.chatterbox.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -19,11 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,31 +27,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.R
-import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Friend
-import com.katielonsdale.chatterbox.api.data.NewCircleAttributes
-import com.katielonsdale.chatterbox.api.data.NewCircleRequest
-import com.katielonsdale.chatterbox.api.data.NewCircleResponse
+import com.katielonsdale.chatterbox.api.data.states.NewChatterUiState
+import com.katielonsdale.chatterbox.api.data.viewModels.MyEvent
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.NewOptionIcon
 import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.katielonsdale.chatterbox.ui.components.SelectFriends
+import com.katielonsdale.chatterbox.api.data.source.ChatterDataSource.createChatter
 
 val TAG = "NewChatterScreen"
+
 @Composable
 fun NewChatterScreen(
     currentUserFriends: List<Friend>,
-    onClickCreate: () -> Unit
+    onClickCreate: () -> Unit,
+    newChatterUiState: NewChatterUiState,
+    onEvent: (MyEvent) -> Unit
 ){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    var chatterName by remember { mutableStateOf("") }
-    var chatterDescription by remember { mutableStateOf("") }
-    val selectedFriendIds = remember {mutableStateListOf<String>()}
 
     Column(
         modifier = Modifier
@@ -114,9 +103,9 @@ fun NewChatterScreen(
                         .fillMaxWidth()
                 ) {
                     TextFieldOnSurface(
-                        value = chatterName,
-                        onValueChange = { value ->
-                            chatterName = value
+                        value = newChatterUiState.name,
+                        onValueChange = { name ->
+                            onEvent(MyEvent.SetName(name))
                         },
                         label = "Chatter Name",
                         maxLines = 2,
@@ -129,9 +118,9 @@ fun NewChatterScreen(
                         .fillMaxWidth()
                 ) {
                     TextFieldOnSurface(
-                        value = chatterDescription,
-                        onValueChange = { value ->
-                            chatterDescription = value
+                        value = newChatterUiState.description,
+                        onValueChange = { description ->
+                            onEvent(MyEvent.SetDescription(description))
                         },
                         label = "Description of your chatter",
                         maxLines = 5,
@@ -173,7 +162,8 @@ fun NewChatterScreen(
 //                    if (userFriends.isNotEmpty()) {
 //                        SelectFriends(
 //                            friends = userFriends,
-//                            selectedChatterIds = selectedFriendIds,
+//                            newChatterUiState = newChatterUiState,
+//                            onEvent = onEvent,
 //                        )
 //                    } else {
                         Text(
@@ -187,7 +177,7 @@ fun NewChatterScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                if (currentUserFriends.isNotEmpty() && selectedFriendIds.isNotEmpty()) {
+                if (currentUserFriends.isNotEmpty() && newChatterUiState.memberIds.isNotEmpty()) {
                     Row(
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.End,
@@ -196,8 +186,8 @@ fun NewChatterScreen(
                         Button(
                             onClick = {
                                 createChatter(
-                                    chatterName = chatterName,
-                                    chatterDescription = chatterDescription
+                                    chatterName = newChatterUiState.name,
+                                    chatterDescription = newChatterUiState.description,
                                 )
                                 onClickCreate()
                             },
@@ -221,39 +211,6 @@ fun NewChatterScreen(
     }
 }
 
-private fun createChatter(
-    chatterName: String,
-    chatterDescription: String,
-) {
-    val userId = SessionManager.getUserId()
-    val newChatterRequest = NewCircleRequest(
-        circle = NewCircleAttributes(
-            userId = userId,
-            name = chatterName,
-            description = chatterDescription,
-        )
-    )
-    RetrofitClient.apiService.createCircle(userId, newChatterRequest).enqueue(object :
-        Callback<NewCircleResponse> {
-        override fun onResponse(
-            call: Call<NewCircleResponse>,
-            response: Response<NewCircleResponse>
-        ) {
-            if (response.isSuccessful) {
-                Log.e(TAG, "Chatter created successfully: ${response.body()}"
-                )
-            } else {
-                Log.e(TAG, "Failed to create chatter: ${response.body()} status: ${response.code()}"
-                )
-            }
-        }
-
-        override fun onFailure(call: Call<NewCircleResponse>, t: Throwable) {
-            Log.e(TAG, "Error creating chatter", t)
-        }
-    })
-}
-
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NewChatterScreenPreview() {
@@ -261,6 +218,8 @@ fun NewChatterScreenPreview() {
         NewChatterScreen(
             currentUserFriends = emptyList<Friend>(),
             onClickCreate = {},
+            newChatterUiState = NewChatterUiState(),
+            onEvent = {}
         )
     }
 }

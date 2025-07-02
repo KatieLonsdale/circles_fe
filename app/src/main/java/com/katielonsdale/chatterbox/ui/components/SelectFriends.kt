@@ -34,12 +34,15 @@ import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.Friend
+import com.katielonsdale.chatterbox.api.data.states.NewChatterUiState
+import com.katielonsdale.chatterbox.api.data.viewModels.MyEvent
 
 
 @Composable
 fun SelectFriends(
     friends: List<Friend>,
-    selectedFriendIds: MutableList<String>
+    newChatterUiState: NewChatterUiState,
+    onEvent: (MyEvent) -> Unit,
 ){
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -70,7 +73,7 @@ fun SelectFriends(
                 )
             ) {
                 items(friends) { friend: Friend ->
-                    val selected = selectedFriendIds.contains(friend.id.toString())
+                    val selected = newChatterUiState.memberIds.contains(friend.id.toString())
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -83,10 +86,12 @@ fun SelectFriends(
                                 ) else Color.Transparent
                             )
                             .clickable {
-                                onFriendToggle(
-                                    friendId = friend.id.toString(),
-                                    selectedFriendIds = selectedFriendIds,
-                                )
+                                val friendId = friend.id.toString()
+                                if (newChatterUiState.memberIds.contains(friendId)) {
+                                    onEvent(MyEvent.RemoveMember(friendId))
+                                } else {
+                                    onEvent(MyEvent.AddMember(friendId))
+                                }
                             }
                             .padding(
                                 start = 5.dp,
@@ -118,17 +123,6 @@ fun SelectFriends(
                 }
             }
         }
-    }
-}
-
-fun onFriendToggle(
-    friendId: String,
-    selectedFriendIds: MutableList<String>,
-) {
-    if (selectedFriendIds.contains(friendId)) {
-        selectedFriendIds.remove(friendId)
-    } else {
-        selectedFriendIds.add(friendId)
     }
 }
 
