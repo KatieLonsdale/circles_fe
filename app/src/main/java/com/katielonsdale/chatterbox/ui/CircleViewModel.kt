@@ -22,5 +22,5 @@ class CircleViewModel : ViewModel() {
             )
         }
     }
-
 }
+

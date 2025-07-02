@@ -3,10 +3,14 @@ package com.katielonsdale.chatterbox.api.data
 import com.google.gson.annotations.SerializedName
 
 data class FriendshipResponse(
-    val data: FriendshipData
+    val data: Friendship
 )
 
-data class FriendshipData(
+data class FriendshipsResponse(
+    val data: List<Friendship>
+)
+
+data class Friendship(
     val id: String,
     val type: String,
     val attributes: FriendshipAttributes
@@ -17,11 +21,11 @@ data class FriendshipAttributes(
     val status: String,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
-    val friend: FriendshipUser,
-    val user: FriendshipUser
+    val friend: Friend,
+    val user: Friend
 )
 
-data class FriendshipUser(
+data class Friend(
     val id: Int,
     val email: String,
     @SerializedName("display_name") val displayName: String

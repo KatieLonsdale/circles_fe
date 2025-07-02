@@ -18,7 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,18 +31,18 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.katielonsdale.chatterbox.SampleData
-import com.katielonsdale.chatterbox.api.data.Circle
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.R
-import com.katielonsdale.chatterbox.api.data.NewPostUiState
-import com.katielonsdale.chatterbox.ui.MyEvent
+import com.katielonsdale.chatterbox.api.data.Friend
+import com.katielonsdale.chatterbox.api.data.states.NewChatterUiState
+import com.katielonsdale.chatterbox.api.data.viewModels.MyEvent
 
 
 @Composable
-fun SelectChatters(
-    chatters: List<Circle>,
+fun SelectFriends(
+    friends: List<Friend>,
+    newChatterUiState: NewChatterUiState,
     onEvent: (MyEvent) -> Unit,
-    newPostUiState: NewPostUiState
 ){
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -59,7 +59,7 @@ fun SelectChatters(
                 )
         ) {
             Text(
-                text = "Post to Chatters:",
+                text = "Invite friends",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(
@@ -72,26 +72,25 @@ fun SelectChatters(
                     end = 5.dp
                 )
             ) {
-                items(chatters) { chatter ->
-                    val selected = remember {mutableStateOf<Boolean>(newPostUiState.chatterIds.contains(chatter.id))}
+                items(friends) { friend: Friend ->
+                    val selected = newChatterUiState.memberIds.contains(friend.id.toString())
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(MaterialTheme.shapes.small)
                             .background(
-                                if (selected.value) MaterialTheme.colorScheme.primary.copy(
+                                if (selected) MaterialTheme.colorScheme.primary.copy(
                                     alpha = 0.7F
                                 ) else Color.Transparent
                             )
                             .clickable {
-                                val chatterId = chatter.id
-                                if (newPostUiState.chatterIds.contains(chatterId)) {
-                                    onEvent(MyEvent.RemoveChatter(chatterId))
-                                    selected.value = false
+                                val friendId = friend.id.toString()
+                                if (newChatterUiState.memberIds.contains(friendId)) {
+                                    onEvent(MyEvent.RemoveMember(friendId))
                                 } else {
-                                    onEvent(MyEvent.AddChatter(chatterId))
-                                    selected.value = true
+                                    onEvent(MyEvent.AddMember(friendId))
                                 }
                             }
                             .padding(
@@ -106,18 +105,18 @@ fun SelectChatters(
                                 .data("https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
                                 .crossfade(true)
                                 .build(),
-                            placeholder = painterResource(id = R.drawable.my_chatters_nav),
+                            placeholder = painterResource(id = R.drawable.me_nav),
                             error = painterResource(R.drawable.ic_image_error_24dp),
-                            contentDescription = "Chatter image",
+                            contentDescription = "Friend profile picture",
                             modifier = Modifier
                                 .size(30.dp)
                                 .clip(CircleShape)
                         )
                         Spacer(Modifier.width(5.dp))
                         Text(
-                            text = chatter.attributes.name,
+                            text = friend.displayName,
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (selected.value) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.primary,
+                            color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.primary,
                         )
                     }
                     Spacer(Modifier.height(5.dp))
@@ -129,8 +128,7 @@ fun SelectChatters(
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
-fun PreviewSelectChatters(){
-    val chatters = SampleData.returnSampleChatters
+fun PreviewSelectFriends(){
     ChatterBoxTheme{
         Column(
             modifier = Modifier
@@ -142,9 +140,9 @@ fun PreviewSelectChatters(){
                 .fillMaxWidth()
                 .padding(5.dp)
         ) {
-            SelectChatters(
-                chatters = chatters,
-                newPostUiState = NewPostUiState(),
+            SelectFriends(
+                friends = emptyList<Friend>(),
+                newChatterUiState = NewChatterUiState(),
                 onEvent = {}
             )
         }

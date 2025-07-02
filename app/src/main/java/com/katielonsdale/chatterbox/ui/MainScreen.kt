@@ -23,6 +23,8 @@ import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.data.PostViewModel
 import com.katielonsdale.chatterbox.ui.notifications.NotificationsScreen
 import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.api.data.states.NewChatterUiState
+import com.katielonsdale.chatterbox.api.data.viewModels.NewChatterViewModel
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
 import com.katielonsdale.chatterbox.ui.components.CreateNewFloatingActionButton
 import com.katielonsdale.chatterbox.ui.components.NavBar
@@ -59,6 +61,7 @@ fun MainScreen(
     val newPostViewModel: NewPostViewModel = viewModel()
     val postViewModel: PostViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
+    val newChatterViewModel: NewChatterViewModel = viewModel()
     val notificationViewModel: NotificationViewModel = viewModel()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val allowFullAccess = isUserLoggedIn && isTouUpToDate
@@ -115,6 +118,7 @@ fun MainScreen(
     ) { innerPadding ->
         val circleUiState by circleViewModel.uiState.collectAsState()
         val newPostUiState by newPostViewModel.uiState.collectAsState()
+        val newChatterUiState by newChatterViewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -184,18 +188,19 @@ fun MainScreen(
             }
             composable(route = InnerCirclesScreen.NewPost.name) {
                 NewPostScreen(
-                    currentUserChatters = userViewModel.getCurrentUserChatters(),
-                    onClickPost = {
-                        newPostViewModel.resetNewPost()
-                        navController.navigate(Screen.MyCircles.route)
-                    },
-                    newPostViewModel = newPostViewModel
+                    userChatters = userViewModel.getCurrentUserChatters(),
+                    onDone = { navController.navigate(Screen.MyCircles.route) },
+                    newPostUiState = newPostUiState,
+                    onEvent = newPostViewModel::onEvent
                 )
             }
 
             composable(route = InnerCirclesScreen.NewChatter.name) {
-                NewCircleScreen(
-                    onClickCreate = { navController.navigate(Screen.MyCircles.route) }
+                NewChatterScreen(
+                    currentUserFriends = userViewModel.getCurrentUserFriends(),
+                    onClickCreate = { navController.navigate(Screen.MyCircles.route) },
+                    newChatterUiState = newChatterUiState,
+                    onEvent = newChatterViewModel::onEvent
                 )
             }
 

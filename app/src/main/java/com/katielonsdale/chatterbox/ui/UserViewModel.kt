@@ -6,6 +6,8 @@ import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient.apiService
 import com.katielonsdale.chatterbox.api.data.Circle
 import com.katielonsdale.chatterbox.api.data.CirclesResponse
+import com.katielonsdale.chatterbox.api.data.Friend
+import com.katielonsdale.chatterbox.api.data.FriendshipsResponse
 import com.katielonsdale.chatterbox.api.data.UserAttributes
 import com.katielonsdale.chatterbox.api.data.UserResponse
 import com.katielonsdale.chatterbox.api.data.UserUiState
@@ -43,8 +45,20 @@ class UserViewModel : ViewModel() {
         }
     }
 
+    fun setCurrentUserFriends(userFriends: List<Friend>) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                myFriends = userFriends
+            )
+        }
+    }
+
     fun getCurrentUserChatters(): List<Circle>{
         return _uiState.value.myChatters
+    }
+
+    fun getCurrentUserFriends(): List<Friend>{
+        return _uiState.value.myFriends
     }
 
     fun getCurrentUser(): UserUiState {
@@ -106,4 +120,28 @@ class UserViewModel : ViewModel() {
             }
         })
     }
+
+//    fun getUserFriends(
+//        userId: String,
+//    ){
+//        apiService.getFriendships(userId).enqueue(object: Callback<FriendshipsResponse> {
+//            override fun onResponse(call: Call<FriendshipsResponse>, response: Response<FriendshipsResponse>) {
+//                if (response.isSuccessful){
+//                    setCurrentUserFriends(
+//                        userFriends = response.body()!!.data
+//                    )
+//                } else {
+//                    val errorMessage = response.message()
+//                    Log.e(TAG, "onResponse: $errorMessage")
+//                    return
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<FriendshipsResponse>, t: Throwable) {
+//                Log.e(TAG, "onFailure: $t")
+//            }
+//        })
+//        }
+//        )
+//    }
 }

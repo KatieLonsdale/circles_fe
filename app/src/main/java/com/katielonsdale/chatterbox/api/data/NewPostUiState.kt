@@ -5,5 +5,5 @@ import com.katielonsdale.chatterbox.ui.ContentViewModel
 data class NewPostUiState(
     val caption: String = "",
     val contents: ContentViewModel? = null,
-    val circleIds: List<String> = listOf(),
+    val chatterIds: MutableList<String> = mutableListOf<String>()
 )

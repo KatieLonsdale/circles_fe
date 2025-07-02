@@ -8,4 +8,5 @@ data class UserUiState (
         val lastTouAcceptance: String? = null,
         val notificationsToken: String? = null,
         val myChatters: List<Circle> = emptyList<Circle>(),
+        val myFriends: List<Friend> = emptyList<Friend>()
 )
