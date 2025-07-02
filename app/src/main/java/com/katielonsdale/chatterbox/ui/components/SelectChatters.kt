@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,15 +73,14 @@ fun SelectChatters(
                 )
             ) {
                 items(chatters) { chatter ->
-                    val selected = newPostUiState.chatterIds.contains(chatter.id)
-
+                    val selected = remember {mutableStateOf<Boolean>(newPostUiState.chatterIds.contains(chatter.id))}
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(MaterialTheme.shapes.small)
                             .background(
-                                if (selected) MaterialTheme.colorScheme.primary.copy(
+                                if (selected.value) MaterialTheme.colorScheme.primary.copy(
                                     alpha = 0.7F
                                 ) else Color.Transparent
                             )
@@ -87,8 +88,10 @@ fun SelectChatters(
                                 val chatterId = chatter.id
                                 if (newPostUiState.chatterIds.contains(chatterId)) {
                                     onEvent(MyEvent.RemoveChatter(chatterId))
+                                    selected.value = false
                                 } else {
                                     onEvent(MyEvent.AddChatter(chatterId))
+                                    selected.value = true
                                 }
                             }
                             .padding(
@@ -114,7 +117,7 @@ fun SelectChatters(
                         Text(
                             text = chatter.attributes.name,
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (selected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.primary,
+                            color = if (selected.value) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.primary,
                         )
                     }
                     Spacer(Modifier.height(5.dp))

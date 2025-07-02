@@ -180,6 +180,7 @@ fun NewPostScreen(
                         Button(
                             onClick = {
                                 createPost(newPostUiState)
+                                onEvent(MyEvent.ResetNewPost)
                                 onDone()
                             },
                             colors = ButtonDefaults.buttonColors(
