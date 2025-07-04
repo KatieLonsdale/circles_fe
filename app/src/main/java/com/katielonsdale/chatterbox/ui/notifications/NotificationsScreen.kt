@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +40,7 @@ import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Notification
 import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 import com.katielonsdale.chatterbox.api.data.NotificationsResponse
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -82,32 +84,34 @@ fun NotificationsFeed(
     notifications: List<Notification>,
     onClickPostNotification: (NotificationAttributes) -> Unit = {}
 ){
-    if (notifications.isEmpty()) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        if (notifications.isEmpty()) {
             Text(
                 text = "No notifications.",
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .padding(16.dp)
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
             )
-        }
-    } else {
-        val sortedNotifications = notifications.sortedByDescending { it.attributes.createdAt }
-        LazyColumn {
-            items(sortedNotifications) { notification ->
-                NotificationCard(
-                    notification,
-                    onClickPostNotification
-                )
-                Spacer(modifier = Modifier.padding(
-                    top = 1.dp,
-                    bottom = 1.dp,
-                    start = 2.dp,
-                    end = 2.dp
-                )
-                )
+        } else {
+            val sortedNotifications = notifications.sortedByDescending { it.attributes.createdAt }
+            LazyColumn {
+                items(sortedNotifications) { notification ->
+                    NotificationCard(
+                        notification,
+                        onClickPostNotification
+                    )
+                    Spacer(
+                        modifier = Modifier.padding(
+                            top = 1.dp,
+                            bottom = 1.dp,
+                            start = 2.dp,
+                            end = 2.dp
+                        )
+                    )
+                }
             }
         }
     }
@@ -128,47 +132,37 @@ fun NotificationCard(
                     Log.e(TAG, "Notification type not supported: ${notification.attributes.notifiableType}")
                 }
             }
-            .background(Color.LightGray)
-            .border(
-                width = 1.dp,
-                color = Color.DarkGray,
-                shape = RoundedCornerShape(4.dp)
-            )
+            .background(MaterialTheme.colorScheme.background)
     ){
         if (!notification.attributes.read) {
             Icon(
-                painter = painterResource(id = R.drawable.unread_notification),
+                painter = painterResource(id = R.drawable.new_notification_icon),
                 contentDescription = "Unread",
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(start = 4.dp)
             )
 
             Text(
                 text = notification.attributes.message,
-                modifier = Modifier.padding(
-                    start = 4.dp,
-                    end = 7.dp,
-                    top = 10.dp,
-                    bottom = 10.dp
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = Bold
                 ),
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.primary,
             )
         } else {
             Text(
                 text = notification.attributes.message,
-                modifier = Modifier.padding(
-                    start = 7.dp,
-                    end = 7.dp,
-                    top = 10.dp,
-                    bottom = 10.dp
-                ),
-                fontSize = 15.sp
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
+}
+
+@Composable
+fun NewNotificationIcon(){
+    Icon
 }
 
 private fun getNotifications(
@@ -192,37 +186,45 @@ private fun getNotifications(
     })
 }
 
-@Preview(apiLevel = 34, showBackground = true)
-@Composable
-fun NotificationsScreenPreview(){
-    NotificationsScreen ()
-}
+//@Preview(apiLevel = 34, showBackground = true)
+//@Composable
+//fun NotificationsScreenPreview(){
+//    ChatterBoxTheme {
+//        NotificationsScreen()
+//    }
+//}
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NotificationsFeedPreview(){
     val exampleNotifications = SampleData.returnSampleNotifications
-    NotificationsFeed(
-        notifications = exampleNotifications
-    )
+    ChatterBoxTheme {
+        NotificationsFeed(
+            notifications = exampleNotifications
+        )
+    }
 }
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun EmptyNotificationsFeedPreview(){
     val exampleNotifications = emptyList<Notification>()
-    NotificationsFeed(
-        notifications = exampleNotifications
-    )
+    ChatterBoxTheme {
+        NotificationsFeed(
+            notifications = exampleNotifications
+        )
+    }
 }
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun NotificationCardPreview(){
     val exampleNotification = SampleData.returnSampleNotifications[0]
-    NotificationCard(
-        notification = exampleNotification
-    )
+    ChatterBoxTheme {
+        NotificationCard(
+            notification = exampleNotification
+        )
+    }
 }
 
 //todo: allow multiple notifications tokens for multiple devices under one user
