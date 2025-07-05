@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,10 +30,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -132,37 +138,84 @@ fun NotificationCard(
                     Log.e(TAG, "Notification type not supported: ${notification.attributes.notifiableType}")
                 }
             }
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background),
+        verticalAlignment = Alignment.CenterVertically
+
     ){
         if (!notification.attributes.read) {
-            Icon(
-                painter = painterResource(id = R.drawable.new_notification_icon),
-                contentDescription = "Unread",
-                tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-            )
-
+            NewNotificationIcon()
+            Spacer(Modifier.width(5.dp))
             Text(
                 text = notification.attributes.message,
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = Bold
                 ),
                 color = MaterialTheme.colorScheme.primary,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(
+                        top = 5.dp,
+                        bottom = 5.dp,
+                        start = 2.dp,
+                        end = 2.dp,
+                    )
             )
         } else {
             Text(
                 text = notification.attributes.message,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(
+                        top = 5.dp,
+                        bottom = 5.dp,
+                        start = 2.dp,
+                        end = 2.dp,
+                    )
             )
         }
+    }
+    Row(
+        modifier = Modifier.padding(
+            top = 10.dp,
+            bottom = 10.dp
+        )
+            .fillMaxWidth()
+    ){
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            thickness = 0.5.dp,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5F)
+        )
     }
 }
 
 @Composable
 fun NewNotificationIcon(){
-    Icon
+    val canvasColor = MaterialTheme.colorScheme.secondary
+    Text(
+        text = "NEW",
+        style = MaterialTheme.typography.titleSmall.copy(
+            fontWeight = Bold,
+            fontSize = 10.sp
+        ),
+        color = MaterialTheme.colorScheme.background,
+        modifier = Modifier
+            .drawBehind {
+                drawRoundRect(
+                    color = canvasColor,
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx())
+                )
+            }
+            .padding(
+                start = 3.dp,
+                end = 3.dp,
+                top = 5.dp,
+                bottom = 5.dp,
+            )
+    )
 }
 
 private fun getNotifications(

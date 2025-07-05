@@ -274,7 +274,7 @@ object SampleData {
             type = "notification",
             attributes = NotificationAttributes(
                 id = "123",
-                message = "Max commented: what a great idea!",
+                message = "Max commented: what a great idea! I am a very long notification and should be cut off at some point. Probably here. Or here? Hmmmmmmm",
                 read = false,
                 action = "comment_created",
                 createdAt = "2025-03-27 19:20:43.598264",
