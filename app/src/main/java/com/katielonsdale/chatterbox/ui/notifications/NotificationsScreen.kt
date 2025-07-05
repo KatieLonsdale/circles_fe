@@ -46,6 +46,8 @@ import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Notification
 import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 import com.katielonsdale.chatterbox.api.data.NotificationsResponse
+import com.katielonsdale.chatterbox.api.data.PostViewModel
+import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,15 +58,15 @@ val TAG = "NotificationsScreen"
 
 @Composable
 fun NotificationsScreen(
-    onClickPostNotification: (NotificationAttributes) -> Unit = {},
-    onRequestNotificationPermission: () -> Unit = {}
+    onRequestNotificationPermission: () -> Unit = {},
+    userNotifications: List<Notification>,
+    onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
+    onPostEvent: (PostViewModel.MyEvent) -> Unit,
+    onDone: (NotificationAttributes) -> Unit,
 ){
-    val userNotifications = remember { mutableStateListOf<Notification>() }
     var isLoading by remember { mutableStateOf(true) }
-    val userId = SessionManager.getUserId()
 
     LaunchedEffect(Unit) {
-        getNotifications(userId, userNotifications)
         isLoading = false
         val permissionChecked = SessionManager.wasPushNotificationsPermissionChecked()
         if (!permissionChecked) {
@@ -74,12 +76,13 @@ fun NotificationsScreen(
 
     Column() {
         if (isLoading) {
-            // Show loading indicator while posts are being fetched
             CircularProgressIndicator()
         } else {
             NotificationsFeed(
                 userNotifications,
-                onClickPostNotification
+                onNotificationEvent = onNotificationEvent,
+                onPostEvent = onPostEvent,
+                onDone = onDone
             )
         }
     }
@@ -88,7 +91,9 @@ fun NotificationsScreen(
 @Composable
 fun NotificationsFeed(
     notifications: List<Notification>,
-    onClickPostNotification: (NotificationAttributes) -> Unit = {}
+    onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
+    onPostEvent: (PostViewModel.MyEvent) -> Unit,
+    onDone: (NotificationAttributes) -> Unit
 ){
     Column(
         modifier = Modifier
@@ -107,7 +112,9 @@ fun NotificationsFeed(
                 items(sortedNotifications) { notification ->
                     NotificationCard(
                         notification,
-                        onClickPostNotification
+                        onNotificationEvent = onNotificationEvent,
+                        onPostEvent = onPostEvent,
+                        onDone = onDone,
                     )
                     Spacer(
                         modifier = Modifier.padding(
@@ -126,14 +133,23 @@ fun NotificationsFeed(
 @Composable
 fun NotificationCard(
     notification: Notification,
-    onClickPostNotification: (NotificationAttributes) -> Unit = {}
+    onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
+    onPostEvent: (PostViewModel.MyEvent) -> Unit,
+    onDone: (NotificationAttributes) -> Unit,
+
 ){
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 if (notification.attributes.postId != null) {
-                    onClickPostNotification(notification.attributes)
+                    onNotificationEvent(NotificationViewModel.MyEvent.ResetNotification)
+                    onNotificationEvent(NotificationViewModel.MyEvent.SetCurrentNotification(notification.attributes))
+                    onPostEvent(PostViewModel.MyEvent.GetPost(
+                        postId = notification.attributes.postId,
+                        circleId = notification.attributes.circleId ?: "",
+                    ))
+                    onDone(notification.attributes)
                 } else {
                     Log.e(TAG, "Notification type not supported: ${notification.attributes.notifiableType}")
                 }
@@ -218,27 +234,6 @@ fun NewNotificationIcon(){
     )
 }
 
-private fun getNotifications(
-    userId: String,
-    userNotifications: MutableList<Notification>
-){
-    RetrofitClient.apiService.getUserNotifications(userId).enqueue(object :
-        Callback<NotificationsResponse> {
-        override fun onResponse(call: Call<NotificationsResponse>, response: Response<NotificationsResponse>) {
-            if (response.isSuccessful) {
-                val notifications = response.body()?.data ?: emptyList()
-                if (notifications.isNotEmpty()) { userNotifications.addAll(notifications) }
-            } else {
-                Log.e(TAG, "Failed to fetch notifications: ${response.errorBody()?.string()}")
-            }
-        }
-
-        override fun onFailure(call: Call<NotificationsResponse>, t: Throwable) {
-            Log.e(TAG, "Error fetching notifications", t)
-        }
-    })
-}
-
 //@Preview(apiLevel = 34, showBackground = true)
 //@Composable
 //fun NotificationsScreenPreview(){
@@ -253,7 +248,10 @@ fun NotificationsFeedPreview(){
     val exampleNotifications = SampleData.returnSampleNotifications
     ChatterBoxTheme {
         NotificationsFeed(
-            notifications = exampleNotifications
+            notifications = exampleNotifications,
+            onNotificationEvent = {},
+            onPostEvent = {},
+            onDone = {},
         )
     }
 }
@@ -264,7 +262,10 @@ fun EmptyNotificationsFeedPreview(){
     val exampleNotifications = emptyList<Notification>()
     ChatterBoxTheme {
         NotificationsFeed(
-            notifications = exampleNotifications
+            notifications = exampleNotifications,
+            onNotificationEvent = {},
+            onPostEvent = {},
+            onDone = {}
         )
     }
 }
@@ -275,7 +276,10 @@ fun NotificationCardPreview(){
     val exampleNotification = SampleData.returnSampleNotifications[0]
     ChatterBoxTheme {
         NotificationCard(
-            notification = exampleNotification
+            notification = exampleNotification,
+            onNotificationEvent = {},
+            onPostEvent = {},
+            onDone = {},
         )
     }
 }

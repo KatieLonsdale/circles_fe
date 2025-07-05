@@ -39,11 +39,11 @@ class NewChatterViewModel : ViewModel() {
             }
         }
     }
+    sealed interface MyEvent {
+        data class SetName(val name: String) : MyEvent
+        data class SetDescription(val description: String) : MyEvent
+        data class AddMember(val memberId: String) : MyEvent
+        data class RemoveMember(val memberId: String) : MyEvent
+    }
 }
 
-sealed interface MyEvent {
-    data class SetName(val name: String) : MyEvent
-    data class SetDescription(val description: String) : MyEvent
-    data class AddMember(val memberId: String) : MyEvent
-    data class RemoveMember(val memberId: String) : MyEvent
-}

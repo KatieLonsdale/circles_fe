@@ -24,7 +24,18 @@ class NotificationViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NotificationUiState())
     val uiState: StateFlow<NotificationUiState> = _uiState.asStateFlow()
 
-    fun setCurrentNotification(notification: NotificationAttributes) {
+    fun onEvent(event: MyEvent) {
+        when (event) {
+            is MyEvent.ResetNotification -> {
+                _uiState.value = NotificationUiState()
+            }
+            is MyEvent.SetCurrentNotification -> {
+                setCurrentNotification(event.notification)
+            }
+        }
+    }
+
+    private fun setCurrentNotification(notification: NotificationAttributes) {
         val notificationUiState = NotificationUiState(
             notification.id,
             notification.message,
@@ -92,7 +103,8 @@ class NotificationViewModel : ViewModel() {
             })
     }
 
-    fun resetNotification() {
-        _uiState.value = NotificationUiState()
+    sealed interface MyEvent {
+        data object ResetNotification : MyEvent
+        data class SetCurrentNotification(val notification: NotificationAttributes) : MyEvent
     }
 }

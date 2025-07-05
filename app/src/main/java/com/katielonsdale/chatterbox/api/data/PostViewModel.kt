@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
+import com.katielonsdale.chatterbox.ui.MyEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,14 @@ class PostViewModel : ViewModel() {
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
     private val _errorChannel = Channel<String>(Channel.BUFFERED)
     val errorFlow = _errorChannel.receiveAsFlow()
+
+    fun onEvent(event: MyEvent) {
+        when (event) {
+            is MyEvent.GetPost -> {
+                getPost(event.postId, event.circleId)
+            }
+        }
+    }
 
     fun setCurrentPost(post: Post) {
         val postAttributes = post.attributes
@@ -113,5 +122,12 @@ class PostViewModel : ViewModel() {
                 Log.e(TAG, "Error fetching post", t)
             }
         })
+    }
+
+    sealed interface MyEvent {
+        data class GetPost(
+            val postId: String,
+            val circleId: String,
+        ) : MyEvent
     }
 }
