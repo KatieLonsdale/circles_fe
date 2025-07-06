@@ -144,17 +144,13 @@ fun MainScreen(
             }
             composable(Screen.Notifications.route) {
                 NotificationsScreen(
-                    onClickPostNotification = {
-                        notificationViewModel.resetNotification()
-                        notificationViewModel.setCurrentNotification(it)
-                        postViewModel.getPost(
-                            postId = it.postId ?: "",
-                            circleId = it.circleId ?: "",
-                        )
-                        val route = notificationViewModel.getNavigationScreen(it)
-                        navController.navigate(route)
-                    },
-                    onRequestNotificationPermission = onRequestNotificationPermission
+                    onRequestNotificationPermission = onRequestNotificationPermission,
+                    userUiState = userViewModel.uiState.collectAsState().value,
+                    onUserEvent = userViewModel::onEvent,
+                    onNotificationEvent = notificationViewModel::onEvent,
+                    onPostEvent = postViewModel::onEvent,
+                    onDone = {
+                        navController.navigate(notificationViewModel.getNavigationScreen(it))}
                 )
             }
             composable(Screen.Me.route) {

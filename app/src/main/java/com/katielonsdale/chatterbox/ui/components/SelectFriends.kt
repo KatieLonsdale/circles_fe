@@ -35,14 +35,14 @@ import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.Friend
 import com.katielonsdale.chatterbox.api.data.states.NewChatterUiState
-import com.katielonsdale.chatterbox.api.data.viewModels.MyEvent
+import com.katielonsdale.chatterbox.api.data.viewModels.NewChatterViewModel
 
 
 @Composable
 fun SelectFriends(
     friends: List<Friend>,
     newChatterUiState: NewChatterUiState,
-    onEvent: (MyEvent) -> Unit,
+    onEvent: (NewChatterViewModel.MyEvent) -> Unit,
 ){
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -88,9 +88,9 @@ fun SelectFriends(
                             .clickable {
                                 val friendId = friend.id.toString()
                                 if (newChatterUiState.memberIds.contains(friendId)) {
-                                    onEvent(MyEvent.RemoveMember(friendId))
+                                    onEvent(NewChatterViewModel.MyEvent.RemoveMember(friendId))
                                 } else {
-                                    onEvent(MyEvent.AddMember(friendId))
+                                    onEvent(NewChatterViewModel.MyEvent.AddMember(friendId))
                                 }
                             }
                             .padding(

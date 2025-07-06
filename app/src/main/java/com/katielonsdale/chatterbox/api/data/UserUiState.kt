@@ -7,6 +7,7 @@ data class UserUiState (
         val notificationFrequency: String = "",
         val lastTouAcceptance: String? = null,
         val notificationsToken: String? = null,
-        val myChatters: List<Circle> = emptyList<Circle>(),
-        val myFriends: List<Friend> = emptyList<Friend>()
+        val myChatters: MutableList<Circle> = mutableListOf<Circle>(),
+        val myFriends: MutableList<Friend> = mutableListOf<Friend>(),
+        val myNotifications: MutableList<Notification> = mutableListOf<Notification>(),
 )

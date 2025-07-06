@@ -1,11 +1,13 @@
 package com.katielonsdale.chatterbox.api.data.states
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.gson.annotations.SerializedName
 
 data class NotificationUiState(
     val id: String = "",
     val message: String = "",
-    val read: Boolean = false,
+    val read: MutableState<Boolean> = mutableStateOf(false),
     val action: String = "",
     val createdAt: String = "",
     val updatedAt: String = "",

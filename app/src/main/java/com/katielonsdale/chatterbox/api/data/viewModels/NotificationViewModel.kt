@@ -1,6 +1,7 @@
 package com.katielonsdale.chatterbox.api.data.viewModels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
@@ -11,6 +12,7 @@ import com.katielonsdale.chatterbox.api.data.NotificationResponse
 import com.katielonsdale.chatterbox.api.data.states.NotificationUiState
 import com.katielonsdale.chatterbox.ui.InnerCirclesScreen
 import com.katielonsdale.chatterbox.ui.Screen
+import com.katielonsdale.chatterbox.ui.UserViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,11 +26,26 @@ class NotificationViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NotificationUiState())
     val uiState: StateFlow<NotificationUiState> = _uiState.asStateFlow()
 
-    fun setCurrentNotification(notification: NotificationAttributes) {
+    fun onEvent(event: MyEvent) {
+        when (event) {
+            is MyEvent.ResetNotification -> {
+                _uiState.value = NotificationUiState()
+            }
+            is MyEvent.SetCurrentNotification -> {
+                setCurrentNotification(event.notification)
+            }
+            is MyEvent.UpdateNotifications -> {
+                val userViewModel = UserViewModel()
+                userViewModel.getUserNotifications()
+            }
+        }
+    }
+
+    private fun setCurrentNotification(notification: NotificationAttributes) {
         val notificationUiState = NotificationUiState(
             notification.id,
             notification.message,
-            notification.read,
+            mutableStateOf(notification.read),
             notification.action,
             notification.createdAt,
             notification.updatedAt,
@@ -59,7 +76,7 @@ class NotificationViewModel : ViewModel() {
 
     private fun markNotificationAsRead(notificationId: String) {
         updateNotification(notificationId)
-        _uiState.value = _uiState.value.copy(read = true)
+        _uiState.value = _uiState.value.copy(read = mutableStateOf(true))
     }
 
     private fun updateNotification(
@@ -92,7 +109,9 @@ class NotificationViewModel : ViewModel() {
             })
     }
 
-    fun resetNotification() {
-        _uiState.value = NotificationUiState()
+    sealed interface MyEvent {
+        data object ResetNotification : MyEvent
+        data class SetCurrentNotification(val notification: NotificationAttributes) : MyEvent
+        data object UpdateNotifications : MyEvent
     }
 }

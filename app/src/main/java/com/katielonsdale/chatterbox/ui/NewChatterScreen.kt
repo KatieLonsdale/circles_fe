@@ -29,12 +29,12 @@ import androidx.compose.ui.unit.dp
 import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.Friend
 import com.katielonsdale.chatterbox.api.data.states.NewChatterUiState
-import com.katielonsdale.chatterbox.api.data.viewModels.MyEvent
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.components.NewOptionIcon
 import com.katielonsdale.chatterbox.ui.components.TextFieldOnSurface
 import com.katielonsdale.chatterbox.ui.components.SelectFriends
 import com.katielonsdale.chatterbox.api.data.source.ChatterDataSource.createChatter
+import com.katielonsdale.chatterbox.api.data.viewModels.NewChatterViewModel
 
 val TAG = "NewChatterScreen"
 
@@ -43,7 +43,7 @@ fun NewChatterScreen(
     currentUserFriends: List<Friend>,
     onClickCreate: () -> Unit,
     newChatterUiState: NewChatterUiState,
-    onEvent: (MyEvent) -> Unit
+    onEvent: (NewChatterViewModel.MyEvent) -> Unit
 ){
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -105,7 +105,7 @@ fun NewChatterScreen(
                     TextFieldOnSurface(
                         value = newChatterUiState.name,
                         onValueChange = { name ->
-                            onEvent(MyEvent.SetName(name))
+                            onEvent(NewChatterViewModel.MyEvent.SetName(name))
                         },
                         label = "Chatter Name",
                         maxLines = 2,
@@ -120,7 +120,7 @@ fun NewChatterScreen(
                     TextFieldOnSurface(
                         value = newChatterUiState.description,
                         onValueChange = { description ->
-                            onEvent(MyEvent.SetDescription(description))
+                            onEvent(NewChatterViewModel.MyEvent.SetDescription(description))
                         },
                         label = "Description of your chatter",
                         maxLines = 5,
