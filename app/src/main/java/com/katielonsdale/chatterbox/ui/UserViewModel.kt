@@ -55,7 +55,7 @@ class UserViewModel : ViewModel() {
     fun setCurrentUserChatters(userChatters: List<Circle>) {
         _uiState.update { currentState ->
             currentState.copy(
-                myChatters = userChatters
+                myChatters = userChatters.toMutableStateList()
             )
         }
     }
@@ -71,7 +71,7 @@ class UserViewModel : ViewModel() {
     fun setCurrentUserFriends(userFriends: List<Friend>) {
         _uiState.update { currentState ->
             currentState.copy(
-                myFriends = userFriends
+                myFriends = userFriends.toMutableStateList()
             )
         }
     }
