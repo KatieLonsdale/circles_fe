@@ -69,7 +69,6 @@ fun NotificationsScreen(
     onDone: (NotificationAttributes) -> Unit,
 ){
     var isLoading by remember { mutableStateOf(true) }
-    val notifications = userUiState.myNotifications
 
     LaunchedEffect(Unit) {
         isLoading = false
@@ -77,7 +76,10 @@ fun NotificationsScreen(
         if (!permissionChecked) {
             onRequestNotificationPermission()
         }
+        onUserEvent(UserViewModel.MyEvent.UpdateMyNotifications)
     }
+
+    val notifications = userUiState.myNotifications
 
     Column() {
         if (isLoading) {
@@ -87,7 +89,6 @@ fun NotificationsScreen(
                 notifications,
                 onNotificationEvent = onNotificationEvent,
                 onPostEvent = onPostEvent,
-                onUserEvent = onUserEvent,
                 onDone = onDone
             )
         }
@@ -99,7 +100,6 @@ fun NotificationsFeed(
     notifications: MutableList<Notification>,
     onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
     onPostEvent: (PostViewModel.MyEvent) -> Unit,
-    onUserEvent: (UserViewModel.MyEvent) -> Unit,
     onDone: (NotificationAttributes) -> Unit
 ){
     Column(
@@ -121,7 +121,6 @@ fun NotificationsFeed(
                         notification,
                         onNotificationEvent = onNotificationEvent,
                         onPostEvent = onPostEvent,
-                        onUserEvent = onUserEvent,
                         onDone = onDone,
                     )
                     Spacer(
@@ -143,7 +142,6 @@ fun NotificationCard(
     notification: Notification,
     onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
     onPostEvent: (PostViewModel.MyEvent) -> Unit,
-    onUserEvent: (UserViewModel.MyEvent) -> Unit,
     onDone: (NotificationAttributes) -> Unit,
 
 ){
@@ -159,7 +157,6 @@ fun NotificationCard(
                         circleId = notification.attributes.circleId ?: "",
                     ))
                     onNotificationEvent(NotificationViewModel.MyEvent.UpdateNotifications)
-                    onUserEvent(UserViewModel.MyEvent.UpdateMyNotifications)
                     onDone(notification.attributes)
                 } else {
                     Log.e(TAG, "Notification type not supported: ${notification.attributes.notifiableType}")
@@ -262,7 +259,6 @@ fun NotificationsFeedPreview(){
             notifications = exampleNotifications.toMutableStateList(),
             onNotificationEvent = {},
             onPostEvent = {},
-            onUserEvent = {},
             onDone = {},
         )
     }
@@ -277,7 +273,6 @@ fun EmptyNotificationsFeedPreview(){
             notifications = exampleNotifications.toMutableStateList(),
             onNotificationEvent = {},
             onPostEvent = {},
-            onUserEvent = {},
             onDone = {}
         )
     }
@@ -292,7 +287,6 @@ fun NotificationCardPreview(){
             notification = exampleNotification,
             onNotificationEvent = {},
             onPostEvent = {},
-            onUserEvent = {},
             onDone = {},
         )
     }
