@@ -1,6 +1,7 @@
 package com.katielonsdale.chatterbox.ui
 
 import android.util.Log
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
@@ -27,6 +28,17 @@ class UserViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UserUiState())
     val uiState: StateFlow<UserUiState> = _uiState.asStateFlow()
 
+    fun onEvent(event: MyEvent) {
+        when (event) {
+            is MyEvent.UpdateMyNotifications -> {
+                getUserNotifications()
+            }
+        }
+    }
+    sealed interface MyEvent {
+        data object UpdateMyNotifications : MyEvent
+    }
+
     fun setCurrentUser(user: UserAttributes) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -51,7 +63,7 @@ class UserViewModel : ViewModel() {
     fun setCurrentUserNotifications(userNotifications: List<Notification>) {
         _uiState.update { currentState ->
             currentState.copy(
-                myNotifications = userNotifications
+                myNotifications = userNotifications.toMutableStateList()
             )
         }
     }
@@ -66,10 +78,6 @@ class UserViewModel : ViewModel() {
 
     fun getCurrentUserChatters(): List<Circle>{
         return _uiState.value.myChatters
-    }
-
-    fun getCurrentUserNotifications(): List<Notification>{
-        return _uiState.value.myNotifications
     }
 
     fun getCurrentUserFriends(): List<Friend>{
@@ -91,8 +99,8 @@ class UserViewModel : ViewModel() {
                     // HTTP 200: Success
                     val userAttributes = response.body()!!.data.attributes
                     setCurrentUser(userAttributes)
-                    getUserChatters(userId)
-                    getUserNotifications(userId)
+                    getUserChatters()
+                    getUserNotifications()
                     if (!userAttributes.notificationsToken.isNullOrEmpty()) {
                         SessionManager.saveFcmToken(userAttributes.notificationsToken)
                     }
@@ -115,9 +123,8 @@ class UserViewModel : ViewModel() {
         })
     }
 
-    private fun getUserChatters(
-        userId: String,
-    ){
+    private fun getUserChatters(){
+        val userId = getCurrentUser().id
         apiService.getCircles(userId).enqueue(object : Callback<CirclesResponse> {
             override fun onResponse(call: Call<CirclesResponse>, response: Response<CirclesResponse>) {
                 if (response.isSuccessful){
@@ -137,9 +144,8 @@ class UserViewModel : ViewModel() {
         })
     }
 
-    private fun getUserNotifications(
-        userId: String,
-    ){
+    fun getUserNotifications(){
+        val userId = getCurrentUser().id
         apiService.getUserNotifications(userId).enqueue(object :
             Callback<NotificationsResponse> {
             override fun onResponse(call: Call<NotificationsResponse>, response: Response<NotificationsResponse>) {

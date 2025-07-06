@@ -145,7 +145,8 @@ fun MainScreen(
             composable(Screen.Notifications.route) {
                 NotificationsScreen(
                     onRequestNotificationPermission = onRequestNotificationPermission,
-                    userNotifications = userViewModel.getCurrentUserNotifications(),
+                    userUiState = userViewModel.uiState.collectAsState().value,
+                    onUserEvent = userViewModel::onEvent,
                     onNotificationEvent = notificationViewModel::onEvent,
                     onPostEvent = postViewModel::onEvent,
                     onDone = {

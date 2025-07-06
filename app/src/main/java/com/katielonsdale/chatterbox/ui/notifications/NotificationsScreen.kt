@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -47,8 +48,10 @@ import com.katielonsdale.chatterbox.api.data.Notification
 import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 import com.katielonsdale.chatterbox.api.data.NotificationsResponse
 import com.katielonsdale.chatterbox.api.data.PostViewModel
+import com.katielonsdale.chatterbox.api.data.UserUiState
 import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.ui.UserViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,12 +62,14 @@ val TAG = "NotificationsScreen"
 @Composable
 fun NotificationsScreen(
     onRequestNotificationPermission: () -> Unit = {},
-    userNotifications: List<Notification>,
+    userUiState: UserUiState,
     onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
     onPostEvent: (PostViewModel.MyEvent) -> Unit,
+    onUserEvent: (UserViewModel.MyEvent) -> Unit,
     onDone: (NotificationAttributes) -> Unit,
 ){
     var isLoading by remember { mutableStateOf(true) }
+    val notifications = userUiState.myNotifications
 
     LaunchedEffect(Unit) {
         isLoading = false
@@ -79,9 +84,10 @@ fun NotificationsScreen(
             CircularProgressIndicator()
         } else {
             NotificationsFeed(
-                userNotifications,
+                notifications,
                 onNotificationEvent = onNotificationEvent,
                 onPostEvent = onPostEvent,
+                onUserEvent = onUserEvent,
                 onDone = onDone
             )
         }
@@ -90,9 +96,10 @@ fun NotificationsScreen(
 
 @Composable
 fun NotificationsFeed(
-    notifications: List<Notification>,
+    notifications: MutableList<Notification>,
     onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
     onPostEvent: (PostViewModel.MyEvent) -> Unit,
+    onUserEvent: (UserViewModel.MyEvent) -> Unit,
     onDone: (NotificationAttributes) -> Unit
 ){
     Column(
@@ -114,6 +121,7 @@ fun NotificationsFeed(
                         notification,
                         onNotificationEvent = onNotificationEvent,
                         onPostEvent = onPostEvent,
+                        onUserEvent = onUserEvent,
                         onDone = onDone,
                     )
                     Spacer(
@@ -135,6 +143,7 @@ fun NotificationCard(
     notification: Notification,
     onNotificationEvent: (NotificationViewModel.MyEvent) -> Unit,
     onPostEvent: (PostViewModel.MyEvent) -> Unit,
+    onUserEvent: (UserViewModel.MyEvent) -> Unit,
     onDone: (NotificationAttributes) -> Unit,
 
 ){
@@ -149,6 +158,8 @@ fun NotificationCard(
                         postId = notification.attributes.postId,
                         circleId = notification.attributes.circleId ?: "",
                     ))
+                    onNotificationEvent(NotificationViewModel.MyEvent.UpdateNotifications)
+                    onUserEvent(UserViewModel.MyEvent.UpdateMyNotifications)
                     onDone(notification.attributes)
                 } else {
                     Log.e(TAG, "Notification type not supported: ${notification.attributes.notifiableType}")
@@ -248,9 +259,10 @@ fun NotificationsFeedPreview(){
     val exampleNotifications = SampleData.returnSampleNotifications
     ChatterBoxTheme {
         NotificationsFeed(
-            notifications = exampleNotifications,
+            notifications = exampleNotifications.toMutableStateList(),
             onNotificationEvent = {},
             onPostEvent = {},
+            onUserEvent = {},
             onDone = {},
         )
     }
@@ -262,9 +274,10 @@ fun EmptyNotificationsFeedPreview(){
     val exampleNotifications = emptyList<Notification>()
     ChatterBoxTheme {
         NotificationsFeed(
-            notifications = exampleNotifications,
+            notifications = exampleNotifications.toMutableStateList(),
             onNotificationEvent = {},
             onPostEvent = {},
+            onUserEvent = {},
             onDone = {}
         )
     }
@@ -279,6 +292,7 @@ fun NotificationCardPreview(){
             notification = exampleNotification,
             onNotificationEvent = {},
             onPostEvent = {},
+            onUserEvent = {},
             onDone = {},
         )
     }
