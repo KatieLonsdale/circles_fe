@@ -11,13 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.katielonsdale.chatterbox.SessionManager
-import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Circle
-import com.katielonsdale.chatterbox.api.data.CirclesResponse
 import com.katielonsdale.chatterbox.api.data.NewPostUiState
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,10 +25,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import com.katielonsdale.chatterbox.api.data.PostRequest
-import com.katielonsdale.chatterbox.api.data.PostRequestContent
-import com.katielonsdale.chatterbox.api.data.NewPostResponse
-import com.katielonsdale.chatterbox.ui.components.BackButton
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import com.katielonsdale.chatterbox.api.data.source.ChatterDataSource.getChatters
+import com.katielonsdale.chatterbox.api.data.source.PostDataSource.createPost
+
 
 var circles by mutableStateOf(emptyList<Circle>())
 
@@ -41,20 +36,19 @@ var circles by mutableStateOf(emptyList<Circle>())
 fun SelectCirclesScreen(
     newPostUiState: NewPostUiState = NewPostUiState(),
     onClickPost: () -> Unit = {},
-    onClickBack: () -> Unit = {}
 ){
     var isLoading by remember { mutableStateOf(true) }
     val userId = SessionManager.getUserId()
 
     LaunchedEffect(Unit) {
-        getCircles(userId)  // Await the result of getPosts
-        isLoading = false    // Set loading to false after fetching the posts
+        getChatters(userId)
+        isLoading = false
     }
 
     if (isLoading) {
         CircularProgressIndicator()
     } else {
-        SelectCircles(newPostUiState, onClickPost, onClickBack)
+        SelectCircles(newPostUiState, onClickPost)
     }
 }
 
@@ -62,7 +56,6 @@ fun SelectCirclesScreen(
 fun SelectCircles(
     newPostUiState: NewPostUiState = NewPostUiState(),
     onClickPost: () -> Unit = {},
-    onClickBack: () -> Unit = {},
 ){
     var showError by remember { mutableStateOf(false) }
 
@@ -71,8 +64,6 @@ fun SelectCircles(
             .fillMaxWidth()
     ) {
         val selectedCircleIds = remember { mutableStateListOf<String>() }
-
-        BackButton(onClickBack = onClickBack)
 
         Text(
             text = "Select Chatters",
@@ -88,15 +79,13 @@ fun SelectCircles(
                     checked = selectedCircleIds.contains(circle.id),
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            // Add the circle.id to the list if checked
                             selectedCircleIds.add(circle.id)
                         } else {
-                            // Remove the circle.id if unchecked
                             selectedCircleIds.remove(circle.id)
                         }
                     }
                 )
-                Text(circle.attributes.name) // Show the circle's name as label for the checkbox
+                Text(circle.attributes.name)
             }
         }
 
@@ -107,7 +96,7 @@ fun SelectCircles(
                 onClick = {
                     Log.e("SelectCirclesScreen", "Button clicked")
                     // Call the ViewModel's method with the selectedCircleIds
-                    createPost(selectedCircleIds.toList(),newPostUiState)
+                    createPost(newPostUiState)
                     onClickPost()
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -129,83 +118,10 @@ fun SelectCircles(
     }
 }
 
-private fun getCircles(userId: String?) {
-    RetrofitClient.apiService.getCircles(userId).enqueue(object : Callback<CirclesResponse> {
-        override fun onResponse(call: Call<CirclesResponse>, response: Response<CirclesResponse>) {
-            if (response.isSuccessful) {
-                circles = response.body()?.data ?: emptyList()
-            } else {
-                Log.e("SelectCirclesScreen", "Failed to fetch newsfeed: ${response.errorBody()?.string()}")
-            }
-        }
-
-        override fun onFailure(call: Call<CirclesResponse>, t: Throwable) {
-            Log.e("SelectCirclesScreen", "Error fetching posts", t)
-        }
-    })
-}
-
-private fun createPost(
-    circleIds: List<String>,
-    newPostUiState: NewPostUiState
-) : Boolean {
-    val userId = SessionManager.getUserId()
-    val postRequest = createPostRequest(newPostUiState)
-    var success = false
-
-    for (circleId in circleIds) {
-        RetrofitClient.apiService.createPost(userId, circleId, postRequest).enqueue(object : Callback<NewPostResponse> {
-            override fun onResponse(
-                call: Call<NewPostResponse>,
-                response: Response<NewPostResponse>
-            ) {
-                if (response.isSuccessful) {
-                    success = true
-                    Log.e(
-                        "SelectCirclesScreen",
-                        "Post created successfully: ${response.body()}"
-                    )
-                } else {
-                    Log.e(
-                        "SelectCirclesScreen",
-                        "Failed to createPost: ${response.body()} status: ${response.code()}"
-                    )
-                }
-            }
-
-            override fun onFailure(call: Call<NewPostResponse>, t: Throwable) {
-                Log.e("SelectCirclesScreen", "Error creating posts", t)
-            }
-        })
-    }
-    return success
-}
-
-private fun createPostRequest(newPostUiState: NewPostUiState): PostRequest {
-    val caption = newPostUiState.caption
-    val image = newPostUiState.contents?.getImage()
-//    TODO: make compatible with videos
-    if (image != null) {
-        val postRequestContent = PostRequestContent(image, null)
-        val postRequest = PostRequest(caption,postRequestContent)
-        return postRequest
-    } else {
-       return PostRequest(caption,null)
-    }
-}
-
-//@Preview(apiLevel = 34, showBackground = true)
-//@Composable
-//fun SelectCirclesScreenPreview(){
-//    MaterialTheme {
-//        SelectCirclesScreen()
-//    }
-//}
-
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun SelectCirclesPreview() {
-    MaterialTheme {
+    ChatterBoxTheme {
         SelectCircles()
     }
 }

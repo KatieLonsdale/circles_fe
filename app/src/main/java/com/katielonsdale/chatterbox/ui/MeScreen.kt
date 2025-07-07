@@ -11,28 +11,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.api.data.UserUiState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.Dp
 import com.katielonsdale.chatterbox.R
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+import androidx.compose.foundation.layout.height
 
 
 @Composable
@@ -41,74 +40,126 @@ fun MeScreen(
     onClickEdit: () -> Unit,
     onClickLogOut: () -> Unit,
 ){
-    val displayedUser = remember {mutableStateOf(currentUser)}
+//    Row(
+//        verticalAlignment = Alignment.Top,
+//        horizontalArrangement = Arrangement.End,
+//        modifier = Modifier
+//            .padding(
+//                top = 20.dp,
+//                bottom = 20.dp
+//            )
+//            .fillMaxWidth()
+//    ){
+//        IconButton(
+//            onClick = { onClickEdit }
+//        ) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.edit_icon_24dp),
+//                contentDescription = "edit profile icon",
+//                modifier = Modifier.size(35.dp),
+//                tint = MaterialTheme.colorScheme.primary
+//            )
+//        }
+//    }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp),
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        //todo: placeholder for future profile picture
-        CircleWithText(
-            text = displayedUser.value.displayName
-        )
-        Spacer(modifier = Modifier.padding(10.dp))
-        //todo: enable user to edit profile
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.Center,
-//            modifier = Modifier
-//                .padding(
-//                    top = 20.dp,
-//                    bottom = 20.dp
-//                )
-//                .fillMaxWidth()
-//        ){
-//            Text(
-//                text = "Edit",
-//                fontSize = 30.sp,
-//            )
-//            IconButton(
-//                onClick = { onClickEdit }
-//            ) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.edit_icon_24dp),
-//                    contentDescription = "edit profile icon",
-//                    modifier = Modifier.size(35.dp),
-//                    tint = Color.DarkGray
-//                )
-//            }
-//        }
-        Text(
-            text = displayedUser.value.email,
-            fontSize = 15.sp,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-        Text(
-            text = "Notification Frequency: " + displayedUser.value.notificationFrequency,
-            fontSize = 15.sp,
-            modifier = Modifier.padding(bottom = 20.dp)
-        )
-        //todo: enable user to change password
-//        TextButton(
+        Row(){
+            Icon(
+                painter = painterResource(id = R.drawable.me_nav),
+                contentDescription = "user icon",
+                modifier = Modifier.size(300.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = currentUser.displayName,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(
+                    start = 50.dp,
+                ),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "Email: ",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = Bold,
+                ),
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.alignByBaseline()
+            )
+            Text(
+                text = currentUser.email,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.alignByBaseline()
+            )
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 50.dp,
+                ),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "Notification Frequency: ",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = Bold,
+                ),
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.alignByBaseline()
+            )
+            Text(
+                text = currentUser.notificationFrequency,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.alignByBaseline()
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+//        ElevatedButton(
 //            onClick = { /*TODO*/ },
-//            colors = ButtonDefaults.textButtonColors(
-//                containerColor = Color.LightGray,
-//                contentColor = Color.DarkGray
-//            )
+//            colors = ButtonDefaults.buttonColors(
+//                containerColor = MaterialTheme.colorScheme.primary,
+//                contentColor = MaterialTheme.colorScheme.background,
+//            ),
 //        ) {
-//            Text("Change Password")
+//            Text(
+//                text = "Change Password",
+//                style = MaterialTheme.typography.labelSmall
+//            )
 //        }
+//        Spacer(modifier = Modifier.height(10.dp))
 
         ElevatedButton(
             onClick = onClickLogOut,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.LightGray,
-                contentColor = Color.DarkGray,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.background,
             ),
         ) {
-            Text("Log Out")
+            Text(
+                text = "Log Out",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }
@@ -145,11 +196,17 @@ fun PreviewMeScreen() {
         displayName = "currentUser123",
         notificationFrequency = "live",
     )
-    Surface() {
-        MeScreen(
-            currentUser = currentUser,
-            onClickEdit = {},
-            onClickLogOut = {}
-        )
+    ChatterBoxTheme {
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize()
+            ){
+                MeScreen(
+                    currentUser = currentUser,
+                    onClickEdit = {},
+                    onClickLogOut = {}
+                )
+        }
     }
 }

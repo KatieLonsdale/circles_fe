@@ -1,15 +1,19 @@
 package com.katielonsdale.chatterbox.ui.mycircles
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.katielonsdale.chatterbox.SessionManager
 import com.katielonsdale.chatterbox.api.RetrofitClient
 import com.katielonsdale.chatterbox.api.data.Circle
@@ -32,9 +35,17 @@ import retrofit2.Response
 import androidx.compose.material3.*
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.api.data.CircleAttributes
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
+
+val TAG = "MyCirclesScreen"
 
 @Composable
 fun MyCirclesScreen(
@@ -67,9 +78,16 @@ fun MyCirclesList(
     chatters: MutableList<Circle>,
     onCircleClick: (Circle) -> Unit
 ) {
-    LazyColumn {
-        items(chatters) { chatter ->
-            CircleCard(chatter, onCircleClick)
+    val sortedChatters = chatters.sortedBy { it.attributes.name }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        LazyColumn {
+            items(sortedChatters) { chatter ->
+                CircleCard(chatter, onCircleClick)
+            }
         }
     }
 }
@@ -80,40 +98,76 @@ fun CircleCard(
     onCircleClick: (Circle) -> Unit = {}
 ) {
     val chatterAttributes = chatter.attributes
-    Column(
-        modifier = Modifier.clickable(
-            //todo: when setting chatter, add its attributes as well
-            onClick = {
-                onCircleClick(chatter)
-            })
+//    val unreadCount = chatter.unreadCount ?: 0
+
+    Row(
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                start = 5.dp,
-                top = 5.dp,
-            )
+            .clickable(
+                //todo: when setting chatter, add its attributes as well
+                onClick = {
+                    onCircleClick(chatter)
+                }),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row() {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(id = R.drawable.my_chatters_nav),
+            error = painterResource(R.drawable.ic_image_error_24dp),
+            contentDescription = stringResource(R.string.description),
+            modifier = Modifier
+                .clip(shape = CircleShape)
+                .height(60.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape
+                )
+        )
+        Spacer(modifier = Modifier.width(15.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(6F)
+        ) {
+            Spacer(modifier = Modifier.height(15.dp))
             Text(
                 text = chatterAttributes.name,
-                color = Color.DarkGray,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Bottom)
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleSmall
             )
-        }
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        Row() {
+            Spacer(modifier = Modifier.height(5.dp))
             Text(
                 text = chatterAttributes.description,
-                color = Color.DarkGray,
-                fontSize = 15.sp,
-                modifier = Modifier.align(Alignment.Bottom)
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodySmall
             )
+            Spacer(modifier = Modifier.height(15.dp))
         }
+        Spacer(modifier = Modifier.width(15.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
+        //todo: add unread notification logic
+//        if (unreadCount > 0) {
+//            Box(
+//                contentAlignment = Alignment.Center,
+//                modifier = Modifier
+//                    .size(30.dp)
+//                    .align(
+//                        Alignment.CenterVertically
+//                    )
+//                    .background(MaterialTheme.colorScheme.error, shape = CircleShape)
+//            ) {
+//                Text(
+////                    text = unreadCount.toString(),
+//                    text = "3",
+//                    color = MaterialTheme.colorScheme.background,
+//                    style = MaterialTheme.typography.labelSmall,
+//                )
+//            }
+//        }
     }
 }
 
@@ -160,9 +214,29 @@ fun PreviewMyCirclesList() {
             description = "High school friends. This description is super long. I need to make it look nicer."
         )
     )
-    MaterialTheme {
+    val circle3 = Circle(
+        id = "3",
+        type = "circle",
+        attributes = CircleAttributes(
+            id = 3,
+            userId = "2",
+            name = "House Bonanza",
+            description = "Erie crew"
+        )
+    )
+    val circle4 = Circle(
+        id = "3",
+        type = "circle",
+        attributes = CircleAttributes(
+            id = 3,
+            userId = "2",
+            name = "Basketball Team",
+            description = "rec basketball team chat"
+        )
+    )
+    ChatterBoxTheme {
         MyCirclesList(
-            mutableStateListOf(circle1, circle2),
+            mutableStateListOf(circle1, circle2, circle3, circle4),
             onCircleClick = {}
         )
     }

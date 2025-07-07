@@ -18,6 +18,7 @@ import com.katielonsdale.chatterbox.api.data.CircleMemberRequest
 import com.katielonsdale.chatterbox.api.data.CircleMemberResponse
 import com.katielonsdale.chatterbox.api.data.FriendshipRequest
 import com.katielonsdale.chatterbox.api.data.FriendshipResponse
+import com.katielonsdale.chatterbox.api.data.FriendshipsResponse
 import com.katielonsdale.chatterbox.api.data.NewCircleResponse
 import com.katielonsdale.chatterbox.api.data.NotificationRequest
 import com.katielonsdale.chatterbox.api.data.NotificationResponse
@@ -86,7 +87,7 @@ interface ApiService {
 
 //    POSTS
     @GET("users/{userId}/circles/{circleId}/posts")
-    fun getPostsForCircle(
+    fun getPostsForChatter(
         @Path("userId") userId: String?,
         @Path("circleId") circleId: String
     ): Call<PostsResponse>
@@ -145,7 +146,7 @@ interface ApiService {
     @GET("users/{userId}/friendships")
     fun getFriendships(
         @Path("userId") userId: String?
-    ): Call<UsersResponse>
+    ): Call<FriendshipsResponse>
     
     @GET("users/{userId}/friendships/pending")
     fun getPendingFriendships(

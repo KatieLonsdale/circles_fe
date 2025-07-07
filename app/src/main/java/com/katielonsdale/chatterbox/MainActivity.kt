@@ -1,17 +1,17 @@
 package com.katielonsdale.chatterbox
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.MaterialTheme
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 import com.katielonsdale.chatterbox.ui.MainScreen
 import com.katielonsdale.chatterbox.utils.NotificationsManager
 
@@ -19,6 +19,9 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+        enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
 
         // Log the device SDK version
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         notificationsPermissionManager.checkPushNotificationPermissions()
 
         setContent {
-            MaterialTheme {
+            ChatterBoxTheme {
                 MainScreen(
                     route = intent?.getStringExtra("route"),
                     circleId = intent?.getStringExtra("circle_id"),

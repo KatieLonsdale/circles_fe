@@ -3,6 +3,8 @@ package com.katielonsdale.chatterbox
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.google.gson.Gson
+import com.katielonsdale.chatterbox.api.data.Circle
+import com.katielonsdale.chatterbox.api.data.CircleAttributes
 import com.katielonsdale.chatterbox.api.data.Notification
 import com.katielonsdale.chatterbox.api.data.NotificationAttributes
 
@@ -30,7 +32,7 @@ object SampleData {
                         "type": "content",
                         "attributes": {
                             "id": 1,
-                            "presigned_image_url": "https://inner-circles-app.s3.amazonaws.com/36_1_images/c462a314d8341b9ef679.jpg"
+                            "presigned_image_url": "https://images.unsplash.com/photo-1749587452499-ea1fd591e63f?q=80&w=1056&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         }
                     }
                     ]
@@ -74,7 +76,8 @@ object SampleData {
                                                                 "comment_text": "Here is a very long comment that should wrap properly and not cover the reply button",
                                                                 "created_at": "2024-08-10T21:52:58.186Z",
                                                                 "updated_at": "2024-08-10T21:52:58.186Z",
-                                                                "author_display_name": "chagurlll"
+                                                                "author_display_name": "chagurlll",
+                                                                "replies": {"data": []}
                                                             }
                                                         }
                                                     ]
@@ -91,7 +94,8 @@ object SampleData {
                                                 "comment_text": "I disagree",
                                                 "created_at": "2024-08-10T20:52:58.186Z",
                                                 "updated_at": "2024-08-10T20:52:58.186Z",
-                                                "author_display_name": "chagurlll"
+                                                "author_display_name": "chagurlll",
+                                                "replies": {"data": []}
                                             }
                                         }
                                     ]
@@ -109,7 +113,8 @@ object SampleData {
                                 "comment_text": "I agree",
                                 "created_at": "2024-08-10T20:42:58.186Z",
                                 "updated_at": "2024-08-10T20:42:58.186Z",
-                                "author_display_name": "chagurlll"
+                                "author_display_name": "chagurlll",
+                                "replies": {"data": []}
                             }
                         }
                     ]
@@ -153,7 +158,8 @@ object SampleData {
                                 "comment_text": "beautiful shot",
                                 "created_at": "2024-08-23T17:40:52.444Z",
                                 "updated_at": "2024-08-23T17:40:52.444Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -167,7 +173,8 @@ object SampleData {
                                 "comment_text": "tght",
                                 "created_at": "2024-08-24T17:05:58.194Z",
                                 "updated_at": "2024-08-24T17:05:58.194Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -181,7 +188,8 @@ object SampleData {
                                 "comment_text": "tght",
                                 "created_at": "2024-08-24T17:06:29.173Z",
                                 "updated_at": "2024-08-24T17:06:29.173Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -195,7 +203,8 @@ object SampleData {
                                 "comment_text": "tght",
                                 "created_at": "2024-08-24T17:06:57.094Z",
                                 "updated_at": "2024-08-24T17:06:57.094Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         },
                         {
@@ -209,7 +218,8 @@ object SampleData {
                                 "comment_text": "new new",
                                 "created_at": "2024-08-24T17:07:13.418Z",
                                 "updated_at": "2024-08-24T17:07:13.418Z",
-                                "author_display_name": "KT"
+                                "author_display_name": "KT",
+                                "replies": {"data": []}
                             }
                         }
                     ]
@@ -264,7 +274,7 @@ object SampleData {
             type = "notification",
             attributes = NotificationAttributes(
                 id = "123",
-                message = "Max commented: what a great idea!",
+                message = "Max commented: what a great idea! I am a very long notification and should be cut off at some point. Probably here. Or here? Hmmmmmmm",
                 read = false,
                 action = "comment_created",
                 createdAt = "2025-03-27 19:20:43.598264",
@@ -364,5 +374,72 @@ object SampleData {
     )
 
     val returnSampleNotifications: List<Notification> = notifications
+
+
+    val chatters = listOf(
+        Circle(
+            id = "1",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 1,
+                userId = "1",
+                name = "High School Friends",
+                description = "ole pals from RHS class of 2008"
+            )
+        ),
+    Circle(
+            id = "2",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 2,
+                userId = "1",
+                name = "The Fam",
+                description = "Lonsdale/Forbes family chat"
+            )
+        ),
+    Circle(
+            id = "3",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 3,
+                userId = "1",
+                name = "College Roomies",
+                description = "125 Husky Lane 4-ever <3"
+            )
+        ),
+    Circle(
+            id = "4",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 4,
+                userId = "1",
+                name = "Work budz",
+                description = "planning happy hours & yap"
+            )
+        ),
+    Circle(
+            id = "5",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 5,
+                userId = "1",
+                name = "Willowleaf Neighbors",
+                description = "Chat to organize block parties, can drives, and communicate any issues! Invite any neighbors who want to join."
+            )
+        ),
+    Circle(
+            id = "6",
+            type = "circle",
+            attributes = CircleAttributes(
+                id = 6,
+                userId = "1",
+                name = "Tues Night Run Club",
+                description = "We meet Tuesdays at 5pm at Clement Park for a 5 mile jog followed by drinks at Lakehouse!"
+            )
+        ),
+    )
+
+    val returnSampleChatters: List<Circle> = chatters
+
 
 }
