@@ -65,10 +65,7 @@ fun NewChatterScreen(
     ){
         Surface(
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.padding(
-                10.dp
-            )
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Column(
                 modifier = Modifier

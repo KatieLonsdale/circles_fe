@@ -77,9 +77,7 @@ fun NewPostScreen(
     ) {
         Surface(
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.padding(
-                10.dp
-            )
+            modifier = Modifier
                 .fillMaxSize()
         ) {
             Column(

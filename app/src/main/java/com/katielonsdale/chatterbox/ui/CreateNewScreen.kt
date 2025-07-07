@@ -36,9 +36,6 @@ fun CreateNewScreen(
     ) {
         Surface(
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.padding(
-                10.dp
-            )
         ) {
             Column(
                 modifier = Modifier
