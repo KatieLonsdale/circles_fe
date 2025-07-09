@@ -160,36 +160,30 @@ fun SignInScreen(
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Surface(
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.width(280.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(20.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(20.dp)
+            Text(
+                text = "Don't have a ChatterBox account?",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+                    onClickSignUp()
+                }
             ) {
                 Text(
-                    text = "Don't have a ChatterBox account?",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center
+                    text = "Sign Up",
+                    style = MaterialTheme.typography.bodySmall
                 )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-
-                Button(
-                    onClick = {
-                        onClickSignUp()
-                    }
-                ) {
-                    Text(
-                        text = "Sign Up",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
             }
         }
     }
