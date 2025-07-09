@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -52,125 +51,110 @@ fun SignUpScreen(
             )
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.small,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.secondary.copy(
-                            alpha = (0.5F)
-                        )
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Image(
-                    painterResource(
-                        id = R.drawable.cb_logo_dark
-                    ),
-                    contentDescription = "ChatterBox Logo",
-                    modifier = Modifier
-                        .height(125.dp),
+        Image(
+            painterResource(
+                id = R.drawable.cb_logo_dark
+            ),
+            contentDescription = "ChatterBox Logo",
+            modifier = Modifier
+                .height(125.dp),
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Sign up for ChatterBox",
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.onError,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp
                 )
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
-                Spacer(modifier = Modifier.height(20.dp))
+        TextFieldOnSurface(
+            value = displayName,
+            onValueChange = { displayName = it },
+            label = "Display Name",
+            modifier =  Modifier.width(280.dp),
+        )
 
-                Text(
-                    text = "Sign up for ChatterBox",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+        Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(20.dp))
+        TextFieldOnSurface(
+            value = email,
+            onValueChange = { email = it },
+            label = "Email",
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            modifier =  Modifier.width(280.dp),
+        )
 
-                errorMessage?.let {
-                    Text(
-                        text = it,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(
-                            start = 20.dp,
-                            end = 20.dp
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
+        Spacer(modifier = Modifier.height(16.dp))
 
-                TextFieldOnSurface(
-                    value = displayName,
-                    onValueChange = { displayName = it },
-                    label = "Display Name",
-                    modifier =  Modifier.width(280.dp),
-                )
+        TextFieldOnSurface(
+            value = password,
+            onValueChange = { password = it },
+            label = "Password",
+            hidden = true,
+            modifier =  Modifier.width(280.dp),
+        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-                TextFieldOnSurface(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = "Email",
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    modifier =  Modifier.width(280.dp),
-                )
+        TextFieldOnSurface(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = "Confirm Password",
+            hidden = true,
+            modifier =  Modifier.width(280.dp),
+        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-                TextFieldOnSurface(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Password",
-                    hidden = true,
-                    modifier =  Modifier.width(280.dp),
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextFieldOnSurface(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = "Confirm Password",
-                    hidden = true,
-                    modifier =  Modifier.width(280.dp),
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Button(
-                    onClick = {
-                        if (displayName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()) {
-                            if (password.trim() == confirmPassword.trim()) {
-                                isLoading = true
-                                signUpUser(
-                                    email.trim(),
-                                    password.trim(),
-                                    confirmPassword.trim(),
-                                    displayName.trim()
-                                ) { isSuccess, error ->
-                                    isLoading = false
-                                    if (isSuccess) {
-                                        onClickSignUp()
-                                    } else {
-                                        errorMessage = error ?: "Sign up failed"
-                                    }
-                                }
+        Button(
+            onClick = {
+                if (displayName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()) {
+                    if (password.trim() == confirmPassword.trim()) {
+                        isLoading = true
+                        signUpUser(
+                            email.trim(),
+                            password.trim(),
+                            confirmPassword.trim(),
+                            displayName.trim()
+                        ) { isSuccess, error ->
+                            isLoading = false
+                            if (isSuccess) {
+                                onClickSignUp()
                             } else {
-                                errorMessage = "Passwords do not match"
+                                errorMessage = error ?: "Sign up failed"
                             }
-                        } else {
-                            errorMessage = "Please fill out all fields"
                         }
-                    },
-                    enabled = !isLoading
-                ) {
-                    Text(
-                        text = "Sign Up",
-                        style = MaterialTheme.typography.labelSmall
-                    )
+                    } else {
+                        errorMessage = "Passwords do not match"
+                    }
+                } else {
+                    errorMessage = "Please fill out all fields"
                 }
-            }
+            },
+            enabled = !isLoading
+        ) {
+            Text(
+                text = "Sign Up",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

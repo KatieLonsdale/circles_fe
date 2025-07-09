@@ -33,51 +33,31 @@ fun CreateNewScreen(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
+            .padding(top = 50.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.small,
+        Text(
+            text = "Create New...",
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(Modifier.height(40.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.secondary.copy(
-                            alpha = (0.5F)
-                        )
-                    )
-                    .padding(
-                        top = 20.dp,
-                        bottom = 20.dp,
-                        start = 10.dp,
-                        end = 10.dp,
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Create New...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Spacer(Modifier.height(40.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    NewOptionIcon(
-                        action = onClickNewPost,
-                        icon = R.drawable.new_post,
-                        label = "Post"
-                    )
-                    Spacer(Modifier.width(25.dp))
-                    NewOptionIcon(
-                        action = onClickNewChatter,
-                        icon = R.drawable.new_chatter,
-                        label = "Chatter"
-                    )
-                }
-            }
+            NewOptionIcon(
+                action = onClickNewPost,
+                icon = R.drawable.new_post,
+                label = "Post"
+            )
+            Spacer(Modifier.height(50.dp))
+            NewOptionIcon(
+                action = onClickNewChatter,
+                icon = R.drawable.new_chatter,
+                label = "Chatter"
+            )
         }
     }
 }
