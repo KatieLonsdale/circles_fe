@@ -34,7 +34,6 @@ import com.katielonsdale.chatterbox.R
 import com.katielonsdale.chatterbox.SampleData
 import com.katielonsdale.chatterbox.api.data.Post
 import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.ZoneId
