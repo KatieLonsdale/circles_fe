@@ -140,7 +140,7 @@ fun NewPostScreen(
                 Text(
                     text = "You don't belong to any Chatters! Please create or join a Chatter before posting.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    color = MaterialTheme.colorScheme.onError,
                 )
             }
         }
