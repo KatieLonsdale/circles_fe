@@ -62,138 +62,128 @@ fun SignInScreen(
             )
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.small,
+        Image(
+            painterResource(
+                id = R.drawable.cb_logo_dark
+            ),
+            contentDescription = "ChatterBox Logo",
             modifier = Modifier
-                .padding(10.dp)
-        ) {
-            Column(
+                .height(175.dp)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        //successful sign up message
+        if (signedUp) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
                     .background(
-                        MaterialTheme.colorScheme.secondary.copy(
-                            alpha = (0.5F)
-                        )
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(50)
+                    )
             ) {
-                Image(
-                    painterResource(
-                        id = R.drawable.cb_logo_dark
-                    ),
-                    contentDescription = "ChatterBox Logo",
-                    modifier = Modifier
-                        .height(175.dp)
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                //successful sign up message
-                if (signedUp) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                shape = RoundedCornerShape(50)
-                            )
-                    ) {
-                        Text(
-                            text = "Successful sign up. Please log in.",
-                            color = MaterialTheme.colorScheme.onSecondary,
-                            style = MaterialTheme.typography.bodySmall,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(
-                                top = 5.dp,
-                                bottom = 5.dp,
-                                start = 10.dp,
-                                end = 10.dp
-                            )
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                TextFieldOnSurface(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = "Email address",
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    modifier = Modifier.width(280.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextFieldOnSurface(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Password",
-                    hidden = true,
-                    modifier = Modifier.width(280.dp),
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        errorMessage = ""
-                        loginUser(
-                            email,
-                            password.trimEnd(),
-                            updateUser,
-                        ) { isSuccess, error ->
-                            if (isSuccess) {
-                                onClickSignIn()
-                            } else if (error === "TOU NOT UP TO DATE") {
-                                onTouOutdated()
-                            } else {
-                                errorMessage = error ?: "An unknown error occurred"
-                            }
-                        }
-                    }
-                ) {
-                    Text(
-                        text = "Sign In",
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-
-                if (errorMessage.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = errorMessage,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(
-                            start = 20.dp,
-                            end = 20.dp
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(50.dp))
-
                 Text(
-                    text = "Don't have a ChatterBox account?",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-
-                Button(
-                    onClick = {
-                        onClickSignUp()
-                    }
-                ) {
-                    Text(
-                        text = "Sign Up",
-                        style = MaterialTheme.typography.bodySmall
+                    text = "Successful sign up. Please log in.",
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(
+                        top = 5.dp,
+                        bottom = 5.dp,
+                        start = 10.dp,
+                        end = 10.dp
                     )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        TextFieldOnSurface(
+            value = email,
+            onValueChange = { email = it },
+            label = "Email address",
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+            modifier = Modifier.width(280.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextFieldOnSurface(
+            value = password,
+            onValueChange = { password = it },
+            label = "Password",
+            hidden = true,
+            modifier = Modifier.width(280.dp),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                errorMessage = ""
+                loginUser(
+                    email,
+                    password.trimEnd(),
+                    updateUser,
+                ) { isSuccess, error ->
+                    if (isSuccess) {
+                        onClickSignIn()
+                    } else if (error === "TOU NOT UP TO DATE") {
+                        onTouOutdated()
+                    } else {
+                        errorMessage = error ?: "An unknown error occurred"
+                    }
                 }
+            }
+        ) {
+            Text(
+                text = "Sign In",
+                style = MaterialTheme.typography.labelSmall
+            )
+        }
+
+        if (errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.onError,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(20.dp)
+        ) {
+            Text(
+                text = "Don't have a ChatterBox account?",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+                    onClickSignUp()
+                }
+            ) {
+                Text(
+                    text = "Sign Up",
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }

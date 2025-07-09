@@ -15,7 +15,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.katielonsdale.chatterbox.theme.ChatterBoxTheme
 
 @Composable
 fun TextFieldOnSurface(
@@ -43,10 +45,8 @@ fun TextFieldOnSurface(
             textStyle = MaterialTheme.typography.labelSmall,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
-                    alpha = (0.7F)
-                ),
-                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                 cursorColor = MaterialTheme.colorScheme.primary,
@@ -76,10 +76,8 @@ fun TextFieldOnSurface(
             textStyle = MaterialTheme.typography.labelSmall,
             shape = MaterialTheme.shapes.small,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(
-                    alpha = (0.7F)
-                ),
-                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.secondary,
                 cursorColor = MaterialTheme.colorScheme.primary,
@@ -96,6 +94,18 @@ fun TextFieldOnSurface(
                 focusManager.clearFocus()
             }),
             visualTransformation = PasswordVisualTransformation(),
+        )
+    }
+}
+
+@Preview(apiLevel = 34)
+@Composable
+fun PreviewTextFieldOnSurface(){
+    ChatterBoxTheme {
+        TextFieldOnSurface(
+            value = "",
+            onValueChange = {},
+            label = "label",
         )
     }
 }

@@ -63,102 +63,71 @@ fun NewChatterScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ){
-        Surface(
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.padding(
-                10.dp
-            )
-                .fillMaxSize()
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.secondary.copy(
-                            alpha = (0.5F)
-                        )
-                    )
-                    .padding(
-                        top = 20.dp,
-                        bottom = 20.dp,
-                        start = 10.dp,
-                        end = 10.dp,
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+            NewOptionIcon(
+                icon = R.drawable.new_chatter,
+                label = "Chatter"
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+        ) {
+            TextFieldOnSurface(
+                value = newChatterUiState.name,
+                onValueChange = { name ->
+                    onEvent(NewChatterViewModel.MyEvent.SetName(name))
+                },
+                label = "Chatter Name",
+                maxLines = 2,
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+        ) {
+            TextFieldOnSurface(
+                value = newChatterUiState.description,
+                onValueChange = { description ->
+                    onEvent(NewChatterViewModel.MyEvent.SetDescription(description))
+                },
+                label = "Description of your chatter",
+                maxLines = 5,
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    // add image to new chatter //
+                },
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                ) {
-                    NewOptionIcon(
-                        icon = R.drawable.new_chatter,
-                        label = "Chatter"
-                    )
-                }
+                Text(
+                    text = "Add Image",
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
+        }
 
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                ) {
-                    TextFieldOnSurface(
-                        value = newChatterUiState.name,
-                        onValueChange = { name ->
-                            onEvent(NewChatterViewModel.MyEvent.SetName(name))
-                        },
-                        label = "Chatter Name",
-                        maxLines = 2,
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                ) {
-                    TextFieldOnSurface(
-                        value = newChatterUiState.description,
-                        onValueChange = { description ->
-                            onEvent(NewChatterViewModel.MyEvent.SetDescription(description))
-                        },
-                        label = "Description of your chatter",
-                        maxLines = 5,
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = {
-                            // add image to new chatter //
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                alpha = 0.5F
-                            ),
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
-                    ) {
-                        Text(
-                            text = "Add Image",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(
-                            start = 10.dp,
-                            end = 10.dp,
-                        ),
-                ){
+        Row(
+            modifier = Modifier
+                .padding(
+                    start = 10.dp,
+                    end = 10.dp,
+                ),
+        ){
 //                    if (userFriends.isNotEmpty()) {
 //                        SelectFriends(
 //                            friends = userFriends,
@@ -166,45 +135,43 @@ fun NewChatterScreen(
 //                            onEvent = onEvent,
 //                        )
 //                    } else {
-                        Text(
-                            text = "Please add friends before creating a Chatter.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            textAlign = TextAlign.Center
-                        )
+                Text(
+                    text = "Please add friends before creating a Chatter.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onError,
+                    textAlign = TextAlign.Center
+                )
 //                    }
-                }
+        }
 
-                Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(20.dp))
 
-                if (currentUserFriends.isNotEmpty() && newChatterUiState.memberIds.isNotEmpty()) {
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Button(
-                            onClick = {
-                                createChatter(
-                                    chatterName = newChatterUiState.name,
-                                    chatterDescription = newChatterUiState.description,
-                                )
-                                onClickCreate()
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                    alpha = 0.5F
-                                ),
-                                contentColor = MaterialTheme.colorScheme.primary
-                            ),
-                        ) {
-                            Text(
-                                text = "Create",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                    }
+        if (currentUserFriends.isNotEmpty() && newChatterUiState.memberIds.isNotEmpty()) {
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = {
+                        createChatter(
+                            chatterName = newChatterUiState.name,
+                            chatterDescription = newChatterUiState.description,
+                        )
+                        onClickCreate()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                            alpha = 0.5F
+                        ),
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                ) {
+                    Text(
+                        text = "Create",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
             }
         }
