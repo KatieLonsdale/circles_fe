@@ -75,7 +75,7 @@ fun SignUpScreen(
         errorMessage?.let {
             Text(
                 text = it,
-                color = MaterialTheme.colorScheme.onErrorContainer,
+                color = MaterialTheme.colorScheme.onError,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(
                     start = 20.dp,

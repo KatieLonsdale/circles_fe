@@ -149,7 +149,7 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = errorMessage,
-                color = MaterialTheme.colorScheme.onErrorContainer,
+                color = MaterialTheme.colorScheme.onError,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(
                     start = 20.dp,

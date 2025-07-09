@@ -75,128 +75,101 @@ fun NewPostScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.padding(
-                10.dp
-            )
-                .fillMaxSize()
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
         ) {
-            Column(
+            NewOptionIcon(
+                icon = R.drawable.new_post,
+                label = "Post"
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            MediaUploadButton(
+                onEvent = onEvent
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+        ){
+            TextFieldOnSurface(
+                value = newPostUiState.caption,
+                onValueChange = { caption ->
+                    onEvent(MyEvent.SetCaption(caption))
+                },
+                label = "Write something...",
+                maxLines = 5,
+            )
+        }
+
+        if (showError) {
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.secondary.copy(
-                            alpha = (0.5F)
-                        )
-                    )
-                    .padding(
-                        top = 20.dp,
-                        bottom = 20.dp,
-                        start = 10.dp,
-                        end = 10.dp,
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-
+                    .padding(10.dp)
+                    .fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
+                Text(
+                    text = "Please add either an image or a caption",
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(
+                    start = 10.dp,
+                    end = 10.dp,
+                )
+        ){
+            if (userChatters.isNotEmpty()) {
+                SelectChatters(
+                    chatters = userChatters,
+                    onEvent = onEvent,
+                    newPostUiState = newPostUiState,
+                )
+            } else {
+                Text(
+                    text = "You don't belong to any Chatters! Please create or join a Chatter before posting.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        }
+
+        if (userChatters.isNotEmpty() && newPostUiState.chatterIds.isNotEmpty()) {
+            Spacer(Modifier.height(20.dp))
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = {
+                        createPost(newPostUiState)
+                        onEvent(MyEvent.ResetNewPost)
+                        onDone()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
+                            alpha = 0.5F
+                        ),
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
                 ) {
-                    NewOptionIcon(
-                        icon = R.drawable.new_post,
-                        label = "Post"
+                    Text(
+                        text = "Post",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
                     )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                ) {
-                    MediaUploadButton(
-                        onEvent = onEvent
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                ){
-                    TextFieldOnSurface(
-                        value = newPostUiState.caption,
-                        onValueChange = { caption ->
-                            onEvent(MyEvent.SetCaption(caption))
-                        },
-                        label = "Write something...",
-                        maxLines = 5,
-                    )
-                }
-
-                if (showError) {
-                    Row(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Please add either an image or a caption",
-                            color = Color.Red,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(
-                            start = 10.dp,
-                            end = 10.dp,
-                        )
-                ){
-                    if (userChatters.isNotEmpty()) {
-                        SelectChatters(
-                            chatters = userChatters,
-                            onEvent = onEvent,
-                            newPostUiState = newPostUiState,
-                        )
-                    } else {
-                        Text(
-                            text = "You don't belong to any Chatters! Please create or join a Chatter before posting.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                        )
-                    }
-                }
-
-                if (userChatters.isNotEmpty() && newPostUiState.chatterIds.isNotEmpty()) {
-                    Spacer(Modifier.height(20.dp))
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Button(
-                            onClick = {
-                                createPost(newPostUiState)
-                                onEvent(MyEvent.ResetNewPost)
-                                onDone()
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                    alpha = 0.5F
-                                ),
-                                contentColor = MaterialTheme.colorScheme.primary
-                            ),
-                        ) {
-                            Text(
-                                text = "Post",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -223,18 +196,10 @@ fun MediaUploadButton(
 
     Button(
         onClick = { launcher.launch("image/*") },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                alpha = 0.5F
-
-            ),
-                contentColor = MaterialTheme.colorScheme.primary
-        )
     ) {
         Text(
             text = "Add Image",
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelSmall,
             )
         }
     }

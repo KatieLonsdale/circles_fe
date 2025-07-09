@@ -50,7 +50,7 @@ fun SelectChatters(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background.copy(
+                .background(MaterialTheme.colorScheme.surface.copy(
                     alpha = 0.7F
                 ))
                 .heightIn(
