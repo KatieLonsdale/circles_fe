@@ -204,7 +204,8 @@ fun MainScreen(
                 DisplayPostScreen(
                     postViewModel = postViewModel,
                     addCommentToPost = { postViewModel.addComment(it) },
-                    onFailedLoad = { navController.navigate(Screen.MyCircles.route) }
+                    onFailedLoad = { navController.navigate(Screen.MyCircles.route) },
+                    onEvent = postViewModel::onEvent
                 )
             }
 

@@ -1,6 +1,7 @@
 package com.katielonsdale.chatterbox.api.data
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.katielonsdale.chatterbox.SessionManager
@@ -28,7 +29,12 @@ class PostViewModel : ViewModel() {
     fun onEvent(event: MyEvent) {
         when (event) {
             is MyEvent.GetPost -> {
-                getPost(event.postId, event.circleId)
+                getPost(
+                    postId = event.postId,
+                    circleId = event.circleId,
+                    isRefreshing = event.isRefreshing
+
+                )
             }
         }
     }
@@ -100,6 +106,7 @@ class PostViewModel : ViewModel() {
     fun getPost(
         postId: String,
         circleId: String,
+        isRefreshing: MutableState<Boolean>? = null
     ) {
         resetPost()
         val userId = SessionManager.getUserId()
@@ -116,10 +123,12 @@ class PostViewModel : ViewModel() {
                 } else {
                     Log.e(TAG, "Failed to fetch post: ${response.errorBody()?.string()}")
                 }
+                isRefreshing?.value = false
             }
 
             override fun onFailure(call: Call<PostResponse>, t: Throwable) {
                 Log.e(TAG, "Error fetching post", t)
+                isRefreshing?.value = false
             }
         })
     }
@@ -128,6 +137,7 @@ class PostViewModel : ViewModel() {
         data class GetPost(
             val postId: String,
             val circleId: String,
+            val isRefreshing: MutableState<Boolean>? = null
         ) : MyEvent
     }
 }

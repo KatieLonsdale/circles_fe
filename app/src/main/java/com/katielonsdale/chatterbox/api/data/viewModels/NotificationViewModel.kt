@@ -1,6 +1,7 @@
 package com.katielonsdale.chatterbox.api.data.viewModels
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.katielonsdale.chatterbox.SessionManager
@@ -26,6 +27,9 @@ class NotificationViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NotificationUiState())
     val uiState: StateFlow<NotificationUiState> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     fun onEvent(event: MyEvent) {
         when (event) {
             is MyEvent.ResetNotification -> {
@@ -36,7 +40,9 @@ class NotificationViewModel : ViewModel() {
             }
             is MyEvent.UpdateNotifications -> {
                 val userViewModel = UserViewModel()
-                userViewModel.getUserNotifications()
+                userViewModel.getUserNotifications(
+                    isRefreshing = event.isRefreshing
+                )
             }
         }
     }
@@ -112,6 +118,6 @@ class NotificationViewModel : ViewModel() {
     sealed interface MyEvent {
         data object ResetNotification : MyEvent
         data class SetCurrentNotification(val notification: NotificationAttributes) : MyEvent
-        data object UpdateNotifications : MyEvent
+        data class UpdateNotifications(val isRefreshing: MutableState<Boolean>? = null) : MyEvent
     }
 }
