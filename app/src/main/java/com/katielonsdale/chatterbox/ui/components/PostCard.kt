@@ -226,12 +226,16 @@ fun formatTimeStamp(originalTimestamp: String): String {
 @Composable
 fun PostCardPreview(){
     val posts = SampleData.returnSamplePosts()
-    val post = posts.first()
+    val post = posts[0]
     ChatterBoxTheme {
+        Column(
+            Modifier.fillMaxSize()
+        ){
         PostCard(
             post,
             onClickDisplayPost = {},
             true
         )
+            }
     }
 }

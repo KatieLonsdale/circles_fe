@@ -173,7 +173,8 @@ fun MainScreen(
                         postViewModel.resetPost()
                         postViewModel.setCurrentPost(it)
                         navController.navigate(InnerCirclesScreen.DisplayPost.name)
-                    }
+                    },
+                    onChatterEvent = circleViewModel::onEvent,
                 )
             }
             composable(route = InnerCirclesScreen.SelectCircles.name) {

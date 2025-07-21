@@ -5,178 +5,188 @@ import com.katielonsdale.chatterbox.api.data.PostsResponse
 import com.google.gson.Gson
 import com.katielonsdale.chatterbox.api.data.Circle
 import com.katielonsdale.chatterbox.api.data.CircleAttributes
+import com.katielonsdale.chatterbox.api.data.Comment
+import com.katielonsdale.chatterbox.api.data.CommentAttributes
+import com.katielonsdale.chatterbox.api.data.Comments
+import com.katielonsdale.chatterbox.api.data.Content
+import com.katielonsdale.chatterbox.api.data.ContentAttributes
+import com.katielonsdale.chatterbox.api.data.Contents
 import com.katielonsdale.chatterbox.api.data.Notification
 import com.katielonsdale.chatterbox.api.data.NotificationAttributes
+import com.katielonsdale.chatterbox.api.data.PostAttributes
+import com.katielonsdale.chatterbox.api.data.Replies
 
 object SampleData {
+
+    val posts = listOf(
+        Post(
+            id = "1",
+            type = "post",
+            attributes = PostAttributes(
+                id = 1,
+                authorId = 1,
+                caption = "This is a caption. It is very long. These captions should look nicer when they are really long.",
+                createdAt = "2024-07-20T00:34:51.898Z",
+                updatedAt =  "2024-07-20T00:34:51.898Z",
+                authorDisplayName = "KT",
+                circleId = "1",
+                circleName = "High school friends",
+                contents = Contents(
+                    data = listOf(
+                        Content(
+                            id = "1",
+                            type = "content",
+                            attributes = ContentAttributes(
+                                id = 1,
+                                imageUrl = "https://images.unsplash.com/photo-1749587452499-ea1fd591e63f?q=80&w=1056&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                videoUrl = null
+                            )
+                        )
+                    )
+                ),
+                comments = Comments(
+                    data = listOf(
+                        Comment(
+                            id = "1",
+                            attributes = CommentAttributes(
+                                id = "1",
+                                authorId = "1",
+                                parentCommentId = null,
+                                postId = "1",
+                                commentText = "great picture",
+                                createdAt = "2024-08-10T20:04:17.534Z",
+                                updatedAt = "2024-08-10T20:04:17.534Z",
+                                authorDisplayName = "KT",
+                                replies = Replies(
+                                    data = listOf(
+                                        Comment(
+                                            id = "7",
+                                            attributes = CommentAttributes(
+                                                id = "7",
+                                                authorId = "1",
+                                                parentCommentId = "1",
+                                                postId = "1",
+                                                commentText = "I agree",
+                                                createdAt = "2024-08-10T20:39:58.186Z",
+                                                updatedAt = "2024-08-10T20:39:58.186Z",
+                                                authorDisplayName = "maxwell",
+                                                replies = Replies(
+                                                    data = listOf(
+                                                        Comment(
+                                                            id = "10",
+                                                            attributes = CommentAttributes(
+                                                                id = "10",
+                                                                authorId = "3",
+                                                                parentCommentId = "7",
+                                                                postId = "1",
+                                                                commentText = "Here is a very long comment that should wrap properly and not cover the reply button",
+                                                                createdAt = "2024-08-10T21:52:58.186Z",
+                                                                updatedAt = "2024-08-10T21:52:58.186Z",
+                                                                authorDisplayName = "chagurlll",
+                                                                replies = Replies(
+                                                                    data = emptyList()
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+
+                )
+            )
+        ),
+        Post(
+            id = "39",
+            type = "post",
+            attributes = PostAttributes(
+                id = 39,
+                authorId = 1,
+                caption = "7/28",
+                createdAt = "2024-07-28T18:16:48.258Z",
+                updatedAt = "2024-07-28T18:16:48.258Z",
+                authorDisplayName = "Maxwell",
+                circleId = "1",
+                circleName = "High school friends",
+                contents = Contents(
+                    data = listOf(
+                        Content(
+                            id = "11",
+                            type = "content",
+                            attributes = ContentAttributes(
+                                id = 11,
+                                imageUrl = "https://images.unsplash.com/photo-1749587452499-ea1fd591e63f?q=80&w=1056&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA",
+                                videoUrl = null
+                            )
+                        )
+                    )
+                ),
+                comments = Comments(
+                    data = listOf(
+                        Comment(
+                            id = "6",
+                            attributes = CommentAttributes(
+                                id = "6",
+                                authorId = "1",
+                                parentCommentId = null,
+                                postId = "39",
+                                commentText = "beautiful shot",
+                                createdAt = "2024-08-23T17:40:52.444Z",
+                                updatedAt = "2024-08-23T17:40:52.444Z",
+                                authorDisplayName = "KT",
+                                replies = Replies(
+                                    data = emptyList()
+                                )
+                            )
+                        ),
+                        Comment(
+                            id = "7",
+                            attributes = CommentAttributes(
+                                id = "7",
+                                authorId = "1",
+                                parentCommentId = "1",
+                                postId = "39",
+                                commentText = "tght",
+                                createdAt = "2024-08-24T17:05:58.194Z",
+                                updatedAt = "2024-08-24T17:05:58.194Z",
+                                authorDisplayName = "KT",
+                                replies = Replies(
+                                    data = emptyList()
+                                )
+                            )
+                        ),
+                        Comment(
+                            id = "8",
+                            attributes = CommentAttributes(
+                                id = "8",
+                                authorId = "1",
+                                parentCommentId = "1",
+                                postId = "39",
+                                commentText = "tght",
+                                createdAt = "2024-08-24T17:06:2",
+                                updatedAt = "2024-08-24T17:06:29.173Z",
+                                authorDisplayName = "KT",
+                                replies = Replies(
+                                    data = emptyList()
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
 
     private val jsonResponse = """
 {
     "data": [
-        {
-            "id": "1",
-            "type": "post",
-            "attributes": {
-                "id": 1,
-                "author_id": 1,
-                "caption": "This is a caption. It is very long. These captions should look nicer when they are really long.",
-                "created_at": "2024-07-20T00:34:51.898Z",
-                "updated_at": "2024-07-20T00:34:51.898Z",
-                "author_display_name": "KT",
-                "circle_id": 1,
-                "circle_name": "High school friends",
-                "contents": {
-                    "data": [
-                    {
-                        "id": "1",
-                        "type": "content",
-                        "attributes": {
-                            "id": 1,
-                            "presigned_image_url": "https://images.unsplash.com/photo-1749587452499-ea1fd591e63f?q=80&w=1056&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        }
-                    }
-                    ]
-                },
                 "comments": {
                     "data": [
-                        {
-                            "id": "1",
-                            "type": "comment",
-                            "attributes": {
-                                "id": 1,
-                                "author_id": 1,
-                                "parent_comment_id": null,
-                                "post_id": 1,
-                                "comment_text": "great picture",
-                                "created_at": "2024-08-10T20:04:17.534Z",
-                                "updated_at": "2024-08-10T20:04:17.534Z",
-                                "author_display_name": "KT",
-                                "replies": {
-                                    "data": [
-                                        {
-                                            "id": "7",
-                                            "attributes": {
-                                                "id": 7,
-                                                "author_id": 1,
-                                                "parent_comment_id": 1,
-                                                "post_id": 1,
-                                                "comment_text": "I agree",
-                                                "created_at": "2024-08-10T20:39:58.186Z",
-                                                "updated_at": "2024-08-10T20:39:58.186Z",
-                                                "author_display_name": "maxwell",
-                                                "replies": {
-                                                    "data": [
-                                                        {
-                                                            "id": "10",
-                                                            "attributes": {
-                                                                "id": 10,
-                                                                "author_id": 3,
-                                                                "parent_comment_id": 7,
-                                                                "post_id": 1,
-                                                                "comment_text": "Here is a very long comment that should wrap properly and not cover the reply button",
-                                                                "created_at": "2024-08-10T21:52:58.186Z",
-                                                                "updated_at": "2024-08-10T21:52:58.186Z",
-                                                                "author_display_name": "chagurlll",
-                                                                "replies": {"data": []}
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "id": "2",
-                                            "attributes": {
-                                                "id": 2,
-                                                "author_id": 3,
-                                                "parent_comment_id": 1,
-                                                "post_id": 1,
-                                                "comment_text": "I disagree",
-                                                "created_at": "2024-08-10T20:52:58.186Z",
-                                                "updated_at": "2024-08-10T20:52:58.186Z",
-                                                "author_display_name": "chagurlll",
-                                                "replies": {"data": []}
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "id": "2",
-                            "type": "comment",
-                            "attributes": {
-                                "id": 2,
-                                "author_id": 3,
-                                "parent_comment_id": 1,
-                                "post_id": 1,
-                                "comment_text": "I agree",
-                                "created_at": "2024-08-10T20:42:58.186Z",
-                                "updated_at": "2024-08-10T20:42:58.186Z",
-                                "author_display_name": "chagurlll",
-                                "replies": {"data": []}
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": "39",
-            "type": "post",
-            "attributes": {
-                "id": 39,
-                "author_id": 1,
-                "caption": "7/28",
-                "created_at": "2024-07-28T18:16:48.258Z",
-                "updated_at": "2024-07-28T18:16:48.258Z",
-                "author_display_name": "Maxwell",
-                "circle_name": "High school friends",
-                "contents": {
-                    "data": [
-                        {
-                            "id": "11",
-                            "type": "content",
-                            "attributes": {
-                                "id": 11,
-                                "video_url": null,
-                                "presigned_image_url": "https://inner-circles-app.s3.amazonaws.com/1_39_images/5109f0394de575d0b9ac.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6ESHSQUIBSVWTSGG%2F20240827%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240827T014345Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=570c732348669a3842fc1e1304545722135aea414a56d8755599b8d2c19f40ee"
-                            }
-                        }
-                    ]
-                },
-                "comments": {
-                    "data": [
-                        {
-                            "id": "6",
-                            "type": "comment",
-                            "attributes": {
-                                "id": 6,
-                                "author_id": 1,
-                                "parent_comment_id": null,
-                                "post_id": 39,
-                                "comment_text": "beautiful shot",
-                                "created_at": "2024-08-23T17:40:52.444Z",
-                                "updated_at": "2024-08-23T17:40:52.444Z",
-                                "author_display_name": "KT",
-                                "replies": {"data": []}
-                            }
-                        },
-                        {
-                            "id": "7",
-                            "type": "comment",
-                            "attributes": {
-                                "id": 7,
-                                "author_id": 1,
-                                "parent_comment_id": 1,
-                                "post_id": 39,
-                                "comment_text": "tght",
-                                "created_at": "2024-08-24T17:05:58.194Z",
-                                "updated_at": "2024-08-24T17:05:58.194Z",
-                                "author_display_name": "KT",
-                                "replies": {"data": []}
-                            }
-                        },
                         {
                             "id": "8",
                             "type": "comment",
@@ -260,12 +270,9 @@ object SampleData {
 """
 
     val gson = Gson()
-    val postsResponse: PostsResponse = gson.fromJson(jsonResponse, PostsResponse::class.java)
-
-    private val samplePosts: List<Post> = gson.fromJson(jsonResponse, PostsResponse::class.java).data
 
     fun returnSamplePosts(): List<Post> {
-        return samplePosts
+        return posts
     }
 
     val notifications = listOf(
