@@ -217,8 +217,8 @@ fun DisplayedPost(
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 // reset: annotatedString breaks previews
-//                     text = AnnotatedString.rememberAutoLinkText(post.caption),
-                text = post.caption,
+                     text = AnnotatedString.rememberAutoLinkText(post.caption),
+//                text = post.caption,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall
             )

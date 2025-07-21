@@ -183,8 +183,8 @@ fun CommentCard(
                     }
                     Text(
                         // reset: AnnotatedString breaks preview
-//                        text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-                        text = comment.attributes.commentText,
+                        text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+//                        text = comment.attributes.commentText,
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
@@ -293,8 +293,8 @@ fun SelectedCommentCard(
                     }
                     Text(
                         // reset: AnnotatedString breaks preview
-//                        text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
-                        text = comment.attributes.commentText,
+                        text = AnnotatedString.rememberAutoLinkText(comment.attributes.commentText),
+//                        text = comment.attributes.commentText,
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
