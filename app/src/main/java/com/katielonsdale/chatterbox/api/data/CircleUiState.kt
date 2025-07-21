@@ -5,4 +5,5 @@ data class CircleUiState (
     val name: String = "",
     val description: String = "",
     val userId: String = "",
+    val posts: MutableList<Post> = mutableListOf<Post>(),
 )

@@ -1,6 +1,7 @@
 package com.katielonsdale.chatterbox.ui
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.katielonsdale.chatterbox.SessionManager
@@ -144,8 +145,10 @@ class UserViewModel : ViewModel() {
         })
     }
 
-    fun getUserNotifications(){
-        val userId = getCurrentUser().id
+    fun getUserNotifications(
+        isRefreshing: MutableState<Boolean>? = null
+    ){
+        val userId = SessionManager.getUserId()
         apiService.getUserNotifications(userId).enqueue(object :
             Callback<NotificationsResponse> {
             override fun onResponse(call: Call<NotificationsResponse>, response: Response<NotificationsResponse>) {
@@ -156,10 +159,12 @@ class UserViewModel : ViewModel() {
                 } else {
                     Log.e(com.katielonsdale.chatterbox.ui.notifications.TAG, "Failed to fetch notifications: ${response.errorBody()?.string()}")
                 }
+                isRefreshing?.value = false
             }
 
             override fun onFailure(call: Call<NotificationsResponse>, t: Throwable) {
                 Log.e(com.katielonsdale.chatterbox.ui.notifications.TAG, "Error fetching notifications", t)
+                isRefreshing?.value = false
             }
         })
     }

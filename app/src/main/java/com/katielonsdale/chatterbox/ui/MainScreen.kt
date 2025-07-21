@@ -173,7 +173,8 @@ fun MainScreen(
                         postViewModel.resetPost()
                         postViewModel.setCurrentPost(it)
                         navController.navigate(InnerCirclesScreen.DisplayPost.name)
-                    }
+                    },
+                    onChatterEvent = circleViewModel::onEvent,
                 )
             }
             composable(route = InnerCirclesScreen.SelectCircles.name) {
@@ -204,7 +205,8 @@ fun MainScreen(
                 DisplayPostScreen(
                     postViewModel = postViewModel,
                     addCommentToPost = { postViewModel.addComment(it) },
-                    onFailedLoad = { navController.navigate(Screen.MyCircles.route) }
+                    onFailedLoad = { navController.navigate(Screen.MyCircles.route) },
+                    onEvent = postViewModel::onEvent
                 )
             }
 

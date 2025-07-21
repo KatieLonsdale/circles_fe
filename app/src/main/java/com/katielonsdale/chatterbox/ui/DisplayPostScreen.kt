@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,10 +19,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -61,23 +66,22 @@ import sh.calvin.autolinktext.rememberAutoLinkText
 import com.katielonsdale.chatterbox.ui.components.formatTimeStamp
 import com.katielonsdale.chatterbox.utils.CommentCreator.createComment
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import com.katielonsdale.chatterbox.api.data.PostViewModel
+import com.katielonsdale.chatterbox.api.data.viewModels.NotificationViewModel
+import com.katielonsdale.chatterbox.ui.components.PullToRefreshLazyColumn
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisplayPostScreen(
     postViewModel: PostViewModel,
     addCommentToPost: (Comment) -> Unit,
     onFailedLoad: () -> Unit,
+    onEvent: (PostViewModel.MyEvent) -> Unit
 ){
-    val post by postViewModel.uiState.collectAsState()
-    val contents = post.contents
-    var hasContent = true;
-    if (contents.isEmpty()) { hasContent = false }
-
-    // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val post by postViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         postViewModel.errorFlow.collect { errorMsg ->
@@ -86,6 +90,53 @@ fun DisplayPostScreen(
         }
     }
 
+    var isRefreshing = remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val state = rememberPullToRefreshState()
+
+    PullToRefreshBox(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        isRefreshing = isRefreshing.value,
+        onRefresh = {
+            scope.launch {
+                isRefreshing.value = true
+                onEvent(PostViewModel.MyEvent.GetPost(
+                    postId = post.id,
+                    circleId = post.circleId,
+                    isRefreshing = isRefreshing
+                ))
+            }
+        },
+        indicator = {
+            Indicator(
+                isRefreshing = isRefreshing.value,
+                state = state,
+                modifier = Modifier.align(
+                    Alignment.TopCenter
+                ),
+                containerColor = MaterialTheme.colorScheme.background,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+    ) {
+        DisplayedPost(
+            post = post,
+            addCommentToPost = addCommentToPost,
+        )
+    }
+
+}
+
+@Composable
+fun DisplayedPost(
+    post: PostUiState,
+    addCommentToPost: (Comment) -> Unit,
+){
+    val contents = post.contents
+    // Get the FocusManager and KeyboardController to manage focus and keyboard behavior
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,54 +175,54 @@ fun DisplayPostScreen(
                     .clip(MaterialTheme.shapes.small)
             )
         }
-             Column(
-                 modifier = Modifier
-                     .padding(
-                         start = 4.dp,
-                         end = 4.dp,
-                     )
-             ) {
-                 Row(
-                     modifier = Modifier
-                         .fillMaxWidth(),
-                     verticalAlignment = Alignment.CenterVertically,
-                 ) {
-                     Image(
-                         painter = painterResource(R.drawable.me_nav),
-                         modifier = Modifier
-                             .clip(shape = CircleShape)
-                             .height(30.dp)
-                             .width(30.dp),
-                         contentDescription = "place holder for profile picture"
-                     )
-                     Spacer(Modifier.width(5.dp))
-                     Text(
-                         text = post.authorDisplayName,
-                         color = MaterialTheme.colorScheme.onSurface,
-                         style = MaterialTheme.typography.bodyMedium,
-                         modifier = Modifier.alignByBaseline(),
-                     )
-                     Spacer(Modifier.width(5.dp))
-                     Text(
-                         text = formatTimeStamp(post.updatedAt),
-                         color = MaterialTheme.colorScheme.onSurface,
-                         style = MaterialTheme.typography.bodySmall.copy(
-                             fontSize = 15.sp,
-                         ),
-                         modifier = Modifier.alignByBaseline(),
-                         maxLines = 1,
-                         overflow = TextOverflow.Ellipsis
-                     )
-                 }
-                 Spacer(modifier = Modifier.width(10.dp))
-                 Text(
-                     // reset: annotatedString breaks previews
+        Column(
+            modifier = Modifier
+                .padding(
+                    start = 4.dp,
+                    end = 4.dp,
+                )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.me_nav),
+                    modifier = Modifier
+                        .clip(shape = CircleShape)
+                        .height(30.dp)
+                        .width(30.dp),
+                    contentDescription = "place holder for profile picture"
+                )
+                Spacer(Modifier.width(5.dp))
+                Text(
+                    text = post.authorDisplayName,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.alignByBaseline(),
+                )
+                Spacer(Modifier.width(5.dp))
+                Text(
+                    text = formatTimeStamp(post.updatedAt),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 15.sp,
+                    ),
+                    modifier = Modifier.alignByBaseline(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                // reset: annotatedString breaks previews
                      text = AnnotatedString.rememberAutoLinkText(post.caption),
-//                     text = post.caption,
-                     color = MaterialTheme.colorScheme.onSurface,
-                     style = MaterialTheme.typography.bodySmall
-                 )
-             }
+//                text = post.caption,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -213,7 +264,6 @@ fun DisplayPostScreen(
         }
     }
 }
-
 @Composable
 fun CommentInput(
     post: PostUiState,
@@ -286,22 +336,15 @@ fun CommentInput(
 fun DisplayPostScreenPreview() {
     val posts = SampleData.returnSamplePosts()
     val post = posts[0]
-    val postUiState = PostUiState(
-        post.id,
-        post.attributes.authorDisplayName,
-        post.attributes.caption,
-        post.attributes.contents.data,
-        post.attributes.comments.data,
-        post.attributes.createdAt,
-        post.attributes.updatedAt
-    )
+    val postViewModel = PostViewModel()
+    postViewModel.setCurrentPost(post)
 
-    val commentUiState = CommentUiState()
     ChatterBoxTheme {
         DisplayPostScreen(
-            viewModel(),
+            postViewModel,
             addCommentToPost = {},
             onFailedLoad = {},
+            onEvent = {}
         )
     }
 }
