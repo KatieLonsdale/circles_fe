@@ -5,6 +5,7 @@ This repo is the Android frontend. If you’re looking for the backend/API, see:
 ## Table of Contents
 - [Features](#features)
 - [Screenshots](#screenshots)
+- [Tech Stack](#tech-stack)
 
 ## Features
 - Create and manage Chatters (private groups)
@@ -28,4 +29,9 @@ This repo is the Android frontend. If you’re looking for the backend/API, see:
 ### Notifications
 <img src="https://github.com/user-attachments/assets/eca41f2e-2abc-4504-acf6-be1d7823f36d" alt="Alt text" width="300" />
 
-
+## Tech Stack
+- Language: Kotlin
+- UI: Jetpack Compose, Material 3
+- Networking: Retrofit + OkHttp (with logging)
+- Image loading: Coil (Compose)
+- Push Notifications: Firebase Cloud Messaging
