@@ -35,3 +35,34 @@ This repo is the Android frontend. If you’re looking for the backend/API, see:
 - Networking: Retrofit + OkHttp (with logging)
 - Image loading: Coil (Compose)
 - Push Notifications: Firebase Cloud Messaging
+
+## Getting started
+### Prerequisites
+- Android Studio Koala+ (or latest stable)
+- JDK 17
+- Android Gradle Plugin
+- Android SDK: compile/target SDK as declared in build.gradle.kts
+
+### Clone
+```
+git clone https://github.com/KatieLonsdale/circles_fe.git
+cd circles_fe
+```
+
+### Running the app
+From Android Studio: Click Run ▶ (choose a device/emulator)
+
+### Environment & Config
+
+The app expects the [ChatterBox backend API](https://github.com/KatieLonsdale/circles_app). Clone down and run locally.
+In build.gradle.app file
+```
+buildTypes {
+        debug {
+            // Development URL (emulator localhost)
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:{your_local_port}/api/v0/\"")
+        }...
+}
+```
+
+
