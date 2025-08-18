@@ -6,6 +6,8 @@ This repo is the Android frontend. If you’re looking for the backend/API, see:
 - [Features](#features)
 - [Screenshots](#screenshots)
 - [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [License](#license)
 
 ## Features
 - Create and manage Chatters (private groups)
@@ -64,5 +66,6 @@ buildTypes {
         }...
 }
 ```
-
+## License
+License: Proprietary, evaluation-only. See LICENSE.
 
